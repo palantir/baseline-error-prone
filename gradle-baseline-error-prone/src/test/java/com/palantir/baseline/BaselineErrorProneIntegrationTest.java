@@ -40,35 +40,35 @@ class BaselineErrorProneIntegrationTest {
         project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
 
         return project.buildGradle().append("""
-                repositories {
-                    mavenLocal()
-                    // TODO(forozco): figure out why pTML no longer works
-                    mavenCentral()
-                }
-                """);
+            repositories {
+                mavenLocal()
+                // TODO(forozco): figure out why pTML no longer works
+                mavenCentral()
+            }
+            """);
     }
 
     // ***DELINEATOR FOR REVIEW: validJavaFile
     private static final String validJavaFile = """
-            package test;
-            public class Test { void test() {} }
-            """;
+        package test;
+        public class Test { void test() {} }
+        """;
 
     // ***DELINEATOR FOR REVIEW: invalidJavaFile
     private static final String invalidJavaFile = """
-            package test;
-            import java.util.Optional;
-            public class Test {
-                void test() {
-                    int[] a = {1, 2, 3};
-                    int[] b = {1, 2, 3};
-                    if (a.equals(b)) {
-                      System.out.println("arrays are equal!");
-                      Optional.of("hello").orElse(System.getProperty("world"));
-                    }
+        package test;
+        import java.util.Optional;
+        public class Test {
+            void test() {
+                int[] a = {1, 2, 3};
+                int[] b = {1, 2, 3};
+                if (a.equals(b)) {
+                  System.out.println("arrays are equal!");
+                  Optional.of("hello").orElse(System.getProperty("world"));
                 }
             }
-            """;
+        }
+        """;
 
     // ***DELINEATOR FOR REVIEW: can_apply_plugin
     @Test
@@ -86,21 +86,22 @@ class BaselineErrorProneIntegrationTest {
         // ***DELINEATOR FOR REVIEW: when
         standardBuildFile(project);
         project.mainSourceSet().java().writeClass("""
-                package test;
-                public class Test {
-                    void test() throws java.io.IOException {
-                        java.nio.file.Files.list(java.nio.file.Paths.get("/")).collect(java.util.stream.Collectors.toList());
-                    }
+            package test;
+            public class Test {
+                void test() throws java.io.IOException {
+                    java.nio.file.Files.list(java.nio.file.Paths.get("/"))
+                        .collect(java.util.stream.Collectors.toList());
                 }
-                """);
+            }
+            """);
 
         // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
         assertThat(result).task(":compileJava").failed();
         assertThat(result)
                 .output()
-                .contains(
-                        "[StreamResourceLeak] Streams that encapsulate a closeable resource should be closed using try-with-resources");
+                .contains("[StreamResourceLeak] Streams that encapsulate a closeable resource should be closed using"
+                        + " try-with-resources");
     }
 
     // ***DELINEATOR FOR REVIEW: compileJava_fails_when_error_prone_finds_errors
@@ -113,9 +114,7 @@ class BaselineErrorProneIntegrationTest {
         // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
         assertThat(result).task(":compileJava").failed();
-        assertThat(result)
-                .output()
-                .contains("[ArrayEquals] Reference equality used to compare arrays");
+        assertThat(result).output().contains("[ArrayEquals] Reference equality used to compare arrays");
     }
 
     // ***DELINEATOR FOR REVIEW: compileJava_fails_when_using_deprecated_APIs
@@ -124,31 +123,29 @@ class BaselineErrorProneIntegrationTest {
         // ***DELINEATOR FOR REVIEW: when
         standardBuildFile(project);
         project.buildGradle().append("""
-                dependencies {
-                    // CheckedServiceException constructors are deprecated for removal in this version
-                    implementation 'com.palantir.conjure.java.api:errors:2.65.0'
-                }
-                """);
+            dependencies {
+                // CheckedServiceException constructors are deprecated for removal in this version
+                implementation 'com.palantir.conjure.java.api:errors:2.65.0'
+            }
+            """);
 
         project.mainSourceSet().java().writeClass("""
-                package test;
+            package test;
 
-                import com.palantir.conjure.java.api.errors.CheckedServiceException;
-                import com.palantir.conjure.java.api.errors.ErrorType;
+            import com.palantir.conjure.java.api.errors.CheckedServiceException;
+            import com.palantir.conjure.java.api.errors.ErrorType;
 
-                public class Test extends CheckedServiceException {
-                    public Test() {
-                        super(ErrorType.CONFLICT);
-                    }
+            public class Test extends CheckedServiceException {
+                public Test() {
+                    super(ErrorType.CONFLICT);
                 }
-                """);
+            }
+            """);
 
         // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
         assertThat(result).task(":compileJava").failed();
-        assertThat(result)
-                .output()
-                .contains("CheckedServiceException#<init> is deprecated for removal");
+        assertThat(result).output().contains("CheckedServiceException#<init> is deprecated for removal");
     }
 
     // ***DELINEATOR FOR REVIEW:
@@ -159,30 +156,30 @@ class BaselineErrorProneIntegrationTest {
         // ***DELINEATOR FOR REVIEW: when
         standardBuildFile(project);
         project.buildGradle().append("""
-                dependencies {
-                    // CheckedServiceException constructors are deprecated for removal in this version
-                    implementation 'com.palantir.conjure.java.api:errors:2.65.0'
+            dependencies {
+                // CheckedServiceException constructors are deprecated for removal in this version
+                implementation 'com.palantir.conjure.java.api:errors:2.65.0'
+            }
+            tasks.withType(JavaCompile) {
+                options.compilerArgs += ['-Werror']
+                options.errorprone {
+                    check 'DeprecatedForRemovalApiUsage', net.ltgt.gradle.errorprone.CheckSeverity.OFF
                 }
-                tasks.withType(JavaCompile) {
-                    options.compilerArgs += ['-Werror']
-                    options.errorprone {
-                        check 'DeprecatedForRemovalApiUsage', net.ltgt.gradle.errorprone.CheckSeverity.OFF
-                    }
-                }
-                """);
+            }
+            """);
 
         project.mainSourceSet().java().writeClass("""
-                package test;
+            package test;
 
-                import com.palantir.conjure.java.api.errors.CheckedServiceException;
-                import com.palantir.conjure.java.api.errors.ErrorType;
+            import com.palantir.conjure.java.api.errors.CheckedServiceException;
+            import com.palantir.conjure.java.api.errors.ErrorType;
 
-                public class Test extends CheckedServiceException {
-                    public Test() {
-                        super(ErrorType.CONFLICT);
-                    }
+            public class Test extends CheckedServiceException {
+                public Test() {
+                    super(ErrorType.CONFLICT);
                 }
-                """);
+            }
+            """);
 
         // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
@@ -196,36 +193,36 @@ class BaselineErrorProneIntegrationTest {
         // ***DELINEATOR FOR REVIEW: when
         standardBuildFile(project);
         project.buildGradle().append("""
-                tasks.withType(JavaCompile) {
-                    options.compilerArgs += ['-Werror']
-                }
-                """);
+            tasks.withType(JavaCompile) {
+                options.compilerArgs += ['-Werror']
+            }
+            """);
 
         project.mainSourceSet().java().writeClass("""
-                package test;
+            package test;
+            @Deprecated(forRemoval = true)
+            public class DeprecatedClass {
                 @Deprecated(forRemoval = true)
-                public class DeprecatedClass {
-                    @Deprecated(forRemoval = true)
-                    static void deprecated() {}
+                static void deprecated() {}
 
-                    // Testing nested classes too
-                    @Deprecated(forRemoval = true)
-                    public static class Inner {}
-                }
-                """);
+                // Testing nested classes too
+                @Deprecated(forRemoval = true)
+                public static class Inner {}
+            }
+            """);
 
         project.mainSourceSet().java().writeClass("""
-                package test;
-                public class Test {
-                    // The object parameter is to ensure that we also notice classes
-                    //   marked as deprecated in the same project/repo
-                    void test(DeprecatedClass obj) {
-                        obj.deprecated();
-                    }
-
-                    void testInner(DeprecatedClass.Inner _obj) {}
+            package test;
+            public class Test {
+                // The object parameter is to ensure that we also notice classes
+                //   marked as deprecated in the same project/repo
+                void test(DeprecatedClass obj) {
+                    obj.deprecated();
                 }
-                """);
+
+                void testInner(DeprecatedClass.Inner _obj) {}
+            }
+            """);
 
         // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
@@ -241,64 +238,64 @@ class BaselineErrorProneIntegrationTest {
         project.buildGradle().plugins().add("java");
         project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
         project.buildGradle().append("""
-                repositories {
-                    mavenLocal()
-                    // TODO(forozco): figure out why pTML no longer works
-                    mavenCentral()
-                }
-                tasks.withType(JavaCompile) {
-                    options.compilerArgs += ['-Werror']
-                }
-                """);
+            repositories {
+                mavenLocal()
+                // TODO(forozco): figure out why pTML no longer works
+                mavenCentral()
+            }
+            tasks.withType(JavaCompile) {
+                options.compilerArgs += ['-Werror']
+            }
+            """);
 
         lib.buildGradle().plugins().add("java-library");
         lib.buildGradle().plugins().add("com.palantir.baseline-error-prone");
         lib.buildGradle().append("""
-                repositories {
-                    mavenLocal()
-                    // TODO(forozco): figure out why pTML no longer works
-                    mavenCentral()
-                }
-                """);
+            repositories {
+                mavenLocal()
+                // TODO(forozco): figure out why pTML no longer works
+                mavenCentral()
+            }
+            """);
 
         app.buildGradle().plugins().add("java");
         app.buildGradle().plugins().add("com.palantir.baseline-error-prone");
         app.buildGradle().append("""
-                repositories {
-                    mavenLocal()
-                    // TODO(forozco): figure out why pTML no longer works
-                    mavenCentral()
-                }
-                dependencies {
-                    implementation project(':lib')
-                }
-                """);
+            repositories {
+                mavenLocal()
+                // TODO(forozco): figure out why pTML no longer works
+                mavenCentral()
+            }
+            dependencies {
+                implementation project(':lib')
+            }
+            """);
 
         lib.mainSourceSet().java().writeClass("""
-                package test;
+            package test;
+            @Deprecated(forRemoval = true)
+            public class DeprecatedClass {
                 @Deprecated(forRemoval = true)
-                public class DeprecatedClass {
-                    @Deprecated(forRemoval = true)
-                    static void deprecated() {}
+                static void deprecated() {}
 
-                    // Testing nested classes too
-                    @Deprecated(forRemoval = true)
-                    public static class Inner {}
-                }
-                """);
+                // Testing nested classes too
+                @Deprecated(forRemoval = true)
+                public static class Inner {}
+            }
+            """);
 
         app.mainSourceSet().java().writeClass("""
-                package test;
-                public class Test {
-                    // The object parameter is to ensure that we also notice classes
-                    //   marked as deprecated in the same project/repo
-                    void test(DeprecatedClass obj) {
-                        obj.deprecated();
-                    }
-
-                    void testInner(DeprecatedClass.Inner _obj) {}
+            package test;
+            public class Test {
+                // The object parameter is to ensure that we also notice classes
+                //   marked as deprecated in the same project/repo
+                void test(DeprecatedClass obj) {
+                    obj.deprecated();
                 }
-                """);
+
+                void testInner(DeprecatedClass.Inner _obj) {}
+            }
+            """);
 
         // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
@@ -312,13 +309,13 @@ class BaselineErrorProneIntegrationTest {
         // ***DELINEATOR FOR REVIEW: when
         standardBuildFile(project);
         project.mainSourceSet().java().writeClass("""
-                package test;
-                public class Test {
-                    void test() {
-                        int a = 5;
-                    }
+            package test;
+            public class Test {
+                void test() {
+                    int a = 5;
                 }
-                """);
+            }
+            """);
 
         // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
@@ -350,9 +347,7 @@ class BaselineErrorProneIntegrationTest {
         InvocationResult result =
                 gradle.withArgs("compileJava", "-Didea.active=true").buildsWithFailure();
         assertThat(result).task(":compileJava").failed();
-        assertThat(result)
-                .output()
-                .contains("[ArrayEquals] Reference equality used to compare arrays");
+        assertThat(result).output().contains("[ArrayEquals] Reference equality used to compare arrays");
     }
 
     // ***DELINEATOR FOR REVIEW: error_prone_can_be_enabled_using_property
@@ -364,14 +359,10 @@ class BaselineErrorProneIntegrationTest {
 
         // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs(
-                        "compileJava",
-                        "-Pcom.palantir.baseline-error-prone.disable=false",
-                        "-Didea.active=true")
+                        "compileJava", "-Pcom.palantir.baseline-error-prone.disable=false", "-Didea.active=true")
                 .buildsWithFailure();
         assertThat(result).task(":compileJava").failed();
-        assertThat(result)
-                .output()
-                .contains("[ArrayEquals] Reference equality used to compare arrays");
+        assertThat(result).output().contains("[ArrayEquals] Reference equality used to compare arrays");
     }
 
     // ***DELINEATOR FOR REVIEW: compileJava_succeeds_when_error_prone_finds_no_errors
@@ -397,25 +388,21 @@ class BaselineErrorProneIntegrationTest {
         InvocationResult result =
                 gradle.withArgs("compileJava", "-PerrorProneApply").buildsSuccessfully();
         assertThat(result).task(":compileJava").succeeded();
-        project.mainSourceSet()
-                .java()
-                .fileByClassName("test.Test")
-                .assertThat()
-                .hasContent("""
-                        package test;
-                        import java.util.Arrays;
-                        import java.util.Optional;
-                        public class Test {
-                            void test() {
-                                int[] a = {1, 2, 3};
-                                int[] b = {1, 2, 3};
-                                if (Arrays.equals(a, b)) {
-                                  System.out.println("arrays are equal!");
-                                  Optional.of("hello").orElseGet(() -> System.getProperty("world"));
-                                }
-                            }
-                        }
-                        """);
+        project.mainSourceSet().java().fileByClassName("test.Test").assertThat().hasContent("""
+            package test;
+            import java.util.Arrays;
+            import java.util.Optional;
+            public class Test {
+                void test() {
+                    int[] a = {1, 2, 3};
+                    int[] b = {1, 2, 3};
+                    if (Arrays.equals(a, b)) {
+                      System.out.println("arrays are equal!");
+                      Optional.of("hello").orElseGet(() -> System.getProperty("world"));
+                    }
+                }
+            }
+            """);
     }
 
     // ***DELINEATOR FOR REVIEW: compileJava_applies_patches_when_errorProneApply_contains_specific_checks
@@ -430,24 +417,20 @@ class BaselineErrorProneIntegrationTest {
         InvocationResult result = gradle.withArgs("compileJava", "-PerrorProneApply=OptionalOrElseMethodInvocation")
                 .buildsSuccessfully();
         assertThat(result).task(":compileJava").succeeded();
-        project.mainSourceSet()
-                .java()
-                .fileByClassName("test.Test")
-                .assertThat()
-                .hasContent("""
-                        package test;
-                        import java.util.Optional;
-                        public class Test {
-                            void test() {
-                                int[] a = {1, 2, 3};
-                                int[] b = {1, 2, 3};
-                                if (a.equals(b)) {
-                                  System.out.println("arrays are equal!");
-                                  Optional.of("hello").orElseGet(() -> System.getProperty("world"));
-                                }
-                            }
-                        }
-                        """);
+        project.mainSourceSet().java().fileByClassName("test.Test").assertThat().hasContent("""
+            package test;
+            import java.util.Optional;
+            public class Test {
+                void test() {
+                    int[] a = {1, 2, 3};
+                    int[] b = {1, 2, 3};
+                    if (a.equals(b)) {
+                      System.out.println("arrays are equal!");
+                      Optional.of("hello").orElseGet(() -> System.getProperty("world"));
+                    }
+                }
+            }
+            """);
     }
 
     enum CheckConfigurationMethod {
@@ -463,50 +446,43 @@ class BaselineErrorProneIntegrationTest {
             CheckConfigurationMethod checkConfigurationMethod, GradleInvoker gradle, RootProject project) {
         // ***DELINEATOR FOR REVIEW: setup
         String checkName = "Slf4jLogsafeArgs";
-        String turnOffCheck = switch (checkConfigurationMethod) {
-            case ARG -> "options.errorprone.disable '" + checkName + "'";
-            case DSL -> """
+        String turnOffCheck =
+                switch (checkConfigurationMethod) {
+                    case ARG -> "options.errorprone.disable '" + checkName + "'";
+                    case DSL -> """
                         options.errorprone {
                             check '%s', net.ltgt.gradle.errorprone.CheckSeverity.OFF
                         }
-                        """
-                    .formatted(checkName);
-        };
+                        """.formatted(checkName);
+                };
 
         standardBuildFile(project);
-        project.buildGradle()
-                .append(
-                        """
-                tasks.withType(JavaCompile) {
-                    %s
-                }
-                dependencies {
-                    implementation 'org.slf4j:slf4j-api:1.7.25'
-                }
-                """,
-                        turnOffCheck);
+        project.buildGradle().append("""
+            tasks.withType(JavaCompile) {
+                %s
+            }
+            dependencies {
+                implementation 'org.slf4j:slf4j-api:1.7.25'
+            }
+            """, turnOffCheck);
 
         String correctJavaFile = """
-                package test;
-                import org.slf4j.LoggerFactory;
-                import org.slf4j.Logger;
-                public class Test {
-                    void test() {
-                        Logger log = LoggerFactory.getLogger("foo");
-                        log.info("Hi there {}", "non safe arg");
-                    }
+            package test;
+            import org.slf4j.LoggerFactory;
+            import org.slf4j.Logger;
+            public class Test {
+                void test() {
+                    Logger log = LoggerFactory.getLogger("foo");
+                    log.info("Hi there {}", "non safe arg");
                 }
-                """;
+            }
+            """;
         project.mainSourceSet().java().writeClass(correctJavaFile);
 
         // ***DELINEATOR FOR REVIEW: expect
         InvocationResult result =
                 gradle.withArgs("compileJava", "-PerrorProneApply").buildsSuccessfully();
         assertThat(result).task(":compileJava").succeeded();
-        project.mainSourceSet()
-                .java()
-                .fileByClassName("test.Test")
-                .assertThat()
-                .hasContent(correctJavaFile);
+        project.mainSourceSet().java().fileByClassName("test.Test").assertThat().hasContent(correctJavaFile);
     }
 }
