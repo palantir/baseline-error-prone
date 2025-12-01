@@ -13,26 +13,13 @@ dependencies {
     implementation 'io.github.eisop:dataflow-errorprone'
 
     testImplementation gradleApi()
-    testImplementation 'com.fasterxml.jackson.core:jackson-annotations'
     testImplementation 'com.google.errorprone:error_prone_test_helpers'
-    testImplementation 'com.palantir.conjure.java.api:test-utils'
-    testImplementation 'com.palantir.conjure.java:conjure-lib'
-    testImplementation 'com.palantir.ri:resource-identifier'
-    testImplementation 'com.palantir.safe-logging:logger'
     testImplementation 'com.palantir.safe-logging:preconditions'
-    testImplementation 'com.palantir.safe-logging:preconditions-assertj'
     testImplementation 'com.palantir.safe-logging:safe-logging'
-    testImplementation 'com.palantir.tokens:auth-tokens'
-    testImplementation 'com.palantir.tritium:tritium-registry'
-    testImplementation 'commons-io:commons-io'
-    testImplementation 'commons-lang:commons-lang'
     testImplementation 'javax.ws.rs:javax.ws.rs-api'
-    testImplementation 'org.apache.commons:commons-lang3'
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.immutables:value::annotations'
-    testImplementation 'org.jooq:jooq'
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.slf4j:slf4j-api'
 
     testCompileOnly 'org.immutables:value::annotations'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-migrationsupport'
@@ -68,17 +55,17 @@ publishing.publications.maven {
 
 moduleJvmArgs {
     exports = [
-        'jdk.compiler/com.sun.tools.javac.api',
-        'jdk.compiler/com.sun.tools.javac.file',
-        'jdk.compiler/com.sun.tools.javac.code',
-        'jdk.compiler/com.sun.tools.javac.util',
-        'jdk.compiler/com.sun.tools.javac.comp',
-        'jdk.compiler/com.sun.tools.javac.main',
-        'jdk.compiler/com.sun.tools.javac.model',
-        'jdk.compiler/com.sun.tools.javac.parser',
-        'jdk.compiler/com.sun.tools.javac.processing',
-        'jdk.compiler/com.sun.tools.javac.tree',
-        'jdk.compiler/com.sun.tools.javac.util'
+            'jdk.compiler/com.sun.tools.javac.api',
+            'jdk.compiler/com.sun.tools.javac.file',
+            'jdk.compiler/com.sun.tools.javac.code',
+            'jdk.compiler/com.sun.tools.javac.util',
+            'jdk.compiler/com.sun.tools.javac.comp',
+            'jdk.compiler/com.sun.tools.javac.main',
+            'jdk.compiler/com.sun.tools.javac.model',
+            'jdk.compiler/com.sun.tools.javac.parser',
+            'jdk.compiler/com.sun.tools.javac.processing',
+            'jdk.compiler/com.sun.tools.javac.tree',
+            'jdk.compiler/com.sun.tools.javac.util'
     ]
     opens = ['jdk.compiler/com.sun.tools.javac.comp']
 }

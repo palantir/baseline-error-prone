@@ -108,6 +108,9 @@ Generated Eclipse projects have default per-project code formatting rules as wel
 The Eclipse plugin is compatible with the following versions: Checkstyle 7.5+, JDK 1.7, 1.8
 
 
+<a href="https://autorelease.general.dmz.palantir.tech/palantir/baseline-error-prone"><img src="https://img.shields.io/badge/Perform%20an-Autorelease-success.svg" alt="Autorelease"></a>
+</p>
+
 ## com.palantir.baseline-error-prone
 The `com.palantir.baseline-error-prone` plugin brings in the `net.ltgt.errorprone-javacplugin` plugin. The minimal setup is as follows:
 
@@ -152,6 +155,7 @@ checks](https://errorprone.info):
 - `Slf4jLevelCheck`: Slf4j level checks (`if (log.isInfoEnabled()) {`) must match the most severe level in the containing block.
 - `Slf4jLogsafeArgs`: Allow only com.palantir.logsafe.Arg types as parameter inputs to slf4j log messages. More information on
 Safe Logging can be found at [github.com/palantir/safe-logging](https://github.com/palantir/safe-logging).
+  Safe Logging can be found at [github.com/palantir/safe-logging](https://github.com/palantir/safe-logging).
 - `PreferCollectionTransform`: Prefer Guava's Lists.transform or Collections2.transform instead of Iterables.transform when first argument's declared type is a List or Collection type for performance reasons.
 - `PreferListsPartition`: Prefer Guava's `Lists.partition(List, int)` instead of `Iterables.partition(Iterable, int)` when first argument's declared type is a list for performance reasons.
 - `PreferSafeLoggableExceptions`: Users should throw `SafeRuntimeException` instead of `RuntimeException` so that messages will not be needlessly redacted when logs are collected:
@@ -522,3 +526,4 @@ $ unzip -p /path/to/your-project-1.2.3.jar META-INF/MANIFEST.MF
 ```
 
 _Note, this plugin should be used with **caution** because preview features may change or be removed, which might make upgrading to a new Java version harder._
+```
