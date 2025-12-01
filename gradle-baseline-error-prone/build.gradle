@@ -1,0 +1,91 @@
+apply plugin: 'java-library'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'com.palantir.external-publish-jar'
+apply plugin: 'com.palantir.external-publish-gradle-plugin'
+apply plugin: 'com.palantir.gradle-plugin-testing'
+
+import org.gradle.api.internal.classpath.ModuleRegistry
+import org.gradle.api.internal.project.ProjectInternal
+
+dependencies {
+    implementation gradleApi()
+    implementation 'com.palantir.suppressible-error-prone:gradle-suppressible-error-prone'
+    implementation 'net.ltgt.gradle:gradle-errorprone-plugin'
+    implementation 'com.google.guava:guava'
+
+    testImplementation gradleTestKit()
+    testImplementation 'com.github.stefanbirkner:system-rules'
+    testImplementation 'com.netflix.nebula:nebula-test' // for better temp directory junit rule only
+    testImplementation 'commons-io:commons-io'
+    testImplementation 'junit:junit'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine', {
+        because 'allows JUnit 3 and JUnit 4 tests to run'
+    }
+    testRuntimeOnly 'org.unbroken-dome.gradle-plugins:gradle-testsets-plugin'
+    gradlePluginForTesting 'org.unbroken-dome.gradle-plugins:gradle-testsets-plugin'
+
+    // necessary because of https://github.com/gradle/gradle/issues/16774
+    def toolingApiBuildersJar = (project as ProjectInternal).services.get(ModuleRegistry.class)
+            .getModule("gradle-tooling-api-builders")
+            .classpath
+            .asFiles
+            .first()
+    testRuntimeOnly(files(toolingApiBuildersJar))
+
+    annotationProcessor 'org.immutables:value'
+    compileOnly 'org.immutables:value::annotations'
+}
+
+// Baseline errorprone needs to give jars to the compilation process to enable testing, so we publish to maven
+// local first then they are available to the test process.
+tasks.test.dependsOn ':baseline-error-prone:publishToMavenLocal'
+tasks.test.dependsOn ':baseline-null-away:publishToMavenLocal'
+tasks.test.dependsOn tasks.named('publishToMavenLocal')
+
+// Incorrectly identifies tests as jqwuik usage
+tasks.checkJUnitDependencies.enabled = false
+
+tasks.withType(JavaCompile) {
+    options.errorprone {
+        disable('StrictUnusedVariable')
+    }
+}
+
+test {
+    environment 'CIRCLE_ARTIFACTS', "${buildDir}/artifacts"
+    environment 'CIRCLE_TEST_REPORTS', "${buildDir}/circle-reports"
+
+    // This sets the baselineErrorProneGradle property so that the tests know which version of baseline-error-prone
+    // to request from mavenLocal()
+    environment 'ORG_GRADLE_PROJECT_baselineErrorProneVersion', project.version
+
+    systemProperty 'ignoreDeprecations', 'true'
+}
+
+gradlePlugin {
+    website = 'https://github.com/palantir/gradle-baseline'
+    vcsUrl = 'https://github.com/palantir/gradle-baseline'
+
+    plugins {
+        baselineErrorPronePlugin {
+            id = 'com.palantir.baseline-error-prone'
+            displayName = 'Palantir Baseline Error Prone Plugin'
+            implementationClass = 'com.palantir.baseline.BaselineErrorProne'
+            description = 'Baseline Java is a collection of Gradle plugins for configuring code quality tools in builds.'
+            tags.set(['java', 'checkstyle', 'code quality'])
+        }
+        baselineNullAwayPlugin {
+            id = 'com.palantir.baseline-null-away'
+            displayName = 'Palantir Baseline NullAway Plugin'
+            implementationClass = 'com.palantir.baseline.BaselineNullAway'
+            description = 'Configures NullAway for Palantir use.'
+        }
+    }
+}
+
+dependencies {
+    testImplementation 'com.palantir.gradle.plugintesting:gradle-plugin-testing-junit'
+}
+

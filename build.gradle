@@ -7,8 +7,9 @@ buildscript {
     dependencies {
         classpath 'com.palantir.gradle.jdks:gradle-jdks:0.69.0'
         classpath 'com.palantir.gradle.jdkslatest:gradle-jdks-latest:0.24.0'
-        classpath 'com.palantir.gradle.plugintesting:gradle-plugin-testing:0.31.0'
+        classpath 'com.palantir.gradle.plugintesting:gradle-plugin-testing:0.41.0'
         classpath 'com.palantir.jakartapackagealignment:jakarta-package-alignment:0.6.0'
+        classpath 'com.gradle.publish:plugin-publish-plugin:2.0.0'
         classpath 'com.palantir.gradle.externalpublish:gradle-external-publish-plugin:1.27.0'
         classpath 'com.palantir.gradle.failure-reports:gradle-failure-reports:1.18.0'
         classpath 'com.palantir.javaformat:gradle-palantir-java-format:2.82.0'
@@ -43,10 +44,26 @@ allprojects {
 
     repositories {
         mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
+        gradlePluginPortal()
     }
 
     group 'com.palantir.baseline-error-prone'
     version rootProject.version
+}
+
+gradlePlugin {
+    website = 'https://github.com/palantir/baseline-error-prone'
+    vcsUrl = 'https://github.com/palantir/baseline-error-prone'
+
+    plugins {
+        baselineErrorPronePlugin {
+            id = 'com.palantir.baseline-error-prone'
+            displayName = 'Palantir Baseline Error Prone Plugin'
+            implementationClass = 'com.palantir.baseline.plugins.BaselineErrorProne'
+            description = 'Baseline Error Prone configures error-prone with Palantir-specific.'
+            tags.set(['java', 'checkstyle', 'code quality'])
+        }
+    }
 }
 
 javaVersions {
