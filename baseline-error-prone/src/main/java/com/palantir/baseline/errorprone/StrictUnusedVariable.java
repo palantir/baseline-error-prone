@@ -408,14 +408,14 @@ public final class StrictUnusedVariable extends BugChecker implements BugChecker
     }
 
     // https://docs.oracle.com/javase/specs/jls/se11/html/jls-14.html#jls-ExpressionStatement
-    private static final ImmutableSet<Kind> TOP_LEVEL_EXPRESSIONS = ImmutableSet.of(
-            Kind.ASSIGNMENT,
-            Kind.PREFIX_INCREMENT,
-            Kind.PREFIX_DECREMENT,
-            Kind.POSTFIX_INCREMENT,
-            Kind.POSTFIX_DECREMENT,
-            Kind.METHOD_INVOCATION,
-            Kind.NEW_CLASS);
+    private static final ImmutableSet<Tree.Kind> TOP_LEVEL_EXPRESSIONS = ImmutableSet.of(
+            Tree.Kind.ASSIGNMENT,
+            Tree.Kind.PREFIX_INCREMENT,
+            Tree.Kind.PREFIX_DECREMENT,
+            Tree.Kind.POSTFIX_INCREMENT,
+            Tree.Kind.POSTFIX_DECREMENT,
+            Tree.Kind.METHOD_INVOCATION,
+            Tree.Kind.NEW_CLASS);
 
     private static boolean needsBlock(TreePath path) {
         Tree leaf = path.getLeaf();
