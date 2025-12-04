@@ -1,43 +1,27 @@
-# IntelliJ
 *.iml
 *.ipr
 *.iws
-.idea/
-
-# Eclipse
-.classpath
+*.swp
+.DS_Store
 .checkstyle
-.factorypath
+.classpath
+.ecbuild
+.gradle
+.idea/
+.java-version
 .project
 .settings
-*.launch
-
-# Codegen
-.generated
-.apt_generated
-generated_src/
-**/src/generated/
-
-# OS X
-.DS_Store
-
-# Java
-*.class
-
-# Build Systems
-.gradle/
+.factorypath
+.apt_generated_tests/
+.profileconfig.json
 bin/
-build/
+build
 out/
-reports/
-
-
-# SublimeText + TextMate + Vim
-*.sublime-workspace
-*.sublime-project
-*.tmproj
-*.tmproject
-*.sw[op]
+docs/node_modules/
+generated_src
+generated_testSrc
+generated
+generated_tests
 
 # Gradle JDKs setup
 !gradle/*
