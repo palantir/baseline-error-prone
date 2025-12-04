@@ -56,7 +56,7 @@ org.checkerframework:dataflow-nullaway:3.49.2 (2 constraints: 7811bbf2)
 
 org.immutables:value:2.11.7 (2 constraints: 0615a6c2)
 
-org.jspecify:jspecify:1.0.0 (16 constraints: d70964e9)
+org.jspecify:jspecify:1.0.0 (15 constraints: 52f9b470)
 
 org.ow2.asm:asm:9.9 (2 constraints: b226b820)
 
@@ -75,8 +75,6 @@ com.fasterxml.jackson.core:jackson-core:2.20.0 (3 constraints: 1b3a0c72)
 com.fasterxml.jackson.core:jackson-databind:2.20.0 (4 constraints: 6a45df10)
 
 com.fasterxml.jackson.module:jackson-module-afterburner:2.20.0 (1 constraints: 3605333b)
-
-com.github.stefanbirkner:system-rules:1.19.0 (1 constraints: 3d05443b)
 
 com.google.auto.value:auto-value:1.10 (1 constraints: e711f8e8)
 
@@ -138,15 +136,13 @@ io.r2dbc:r2dbc-spi:1.0.0.RELEASE (1 constraints: ea08e898)
 
 javax.ws.rs:javax.ws.rs-api:2.1.1 (1 constraints: 0605f935)
 
-junit:junit:4.13.2 (8 constraints: 1e723e1a)
-
-junit:junit-dep:4.11 (1 constraints: ba1063b3)
+junit:junit:4.13.2 (6 constraints: 0c5a17e1)
 
 net.bytebuddy:byte-buddy:1.17.7 (2 constraints: 9e161a3f)
 
 org.apache.commons:commons-lang3:3.20.0 (1 constraints: 3705393b)
 
-org.apiguardian:apiguardian-api:1.1.2 (8 constraints: e08b1baf)
+org.apiguardian:apiguardian-api:1.1.2 (7 constraints: 677be455)
 
 org.assertj:assertj-core:3.27.6 (4 constraints: d744198a)
 
@@ -178,11 +174,9 @@ org.junit.jupiter:junit-jupiter-params:6.0.1 (2 constraints: c22426d7)
 
 org.junit.platform:junit-platform-commons:6.0.1 (2 constraints: d520474a)
 
-org.junit.platform:junit-platform-engine:6.0.1 (4 constraints: 9e40c7e2)
+org.junit.platform:junit-platform-engine:6.0.1 (3 constraints: 22304b56)
 
 org.junit.platform:junit-platform-launcher:6.0.1 (2 constraints: 571b2362)
-
-org.junit.vintage:junit-vintage-engine:6.0.1 (1 constraints: 09050a36)
 
 org.mockito:mockito-core:5.19.0 (1 constraints: 5311c5e0)
 

@@ -8,34 +8,15 @@ import org.gradle.api.internal.classpath.ModuleRegistry
 import org.gradle.api.internal.project.ProjectInternal
 
 dependencies {
+    annotationProcessor 'org.immutables:value'
+    compileOnly 'org.immutables:value::annotations'
     implementation gradleApi()
     implementation 'com.palantir.suppressible-error-prone:gradle-suppressible-error-prone'
     implementation 'net.ltgt.gradle:gradle-errorprone-plugin'
     implementation 'com.google.guava:guava'
 
-    testImplementation gradleTestKit()
-    testImplementation 'com.github.stefanbirkner:system-rules'
-    testImplementation 'com.netflix.nebula:nebula-test' // for better temp directory junit rule only
-    testImplementation 'commons-io:commons-io'
-    testImplementation 'junit:junit'
-    testImplementation 'org.assertj:assertj-core'
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine', {
-        because 'allows JUnit 3 and JUnit 4 tests to run'
-    }
-    testRuntimeOnly 'org.unbroken-dome.gradle-plugins:gradle-testsets-plugin'
+    testImplementation 'com.palantir.gradle.plugintesting:gradle-plugin-testing-junit'
     gradlePluginForTesting 'org.unbroken-dome.gradle-plugins:gradle-testsets-plugin'
-
-    // necessary because of https://github.com/gradle/gradle/issues/16774
-    def toolingApiBuildersJar = (project as ProjectInternal).services.get(ModuleRegistry.class)
-            .getModule("gradle-tooling-api-builders")
-            .classpath
-            .asFiles
-            .first()
-    testRuntimeOnly(files(toolingApiBuildersJar))
-
-    annotationProcessor 'org.immutables:value'
-    compileOnly 'org.immutables:value::annotations'
 }
 
 // Baseline errorprone needs to give jars to the compilation process to enable testing, so we publish to maven
@@ -83,9 +64,5 @@ gradlePlugin {
             description = 'Configures NullAway for Palantir use.'
         }
     }
-}
-
-dependencies {
-    testImplementation 'com.palantir.gradle.plugintesting:gradle-plugin-testing-junit'
 }
 
