@@ -328,8 +328,9 @@ public class StrictUnusedVariableTest {
                         "Test.java",
                         "class Test {",
                         "  public static void a(@SuppressWarnings(\"StrictUnusedVariable\") int val) {}",
-                        "  public static void b(@SuppressWarnings(\"unused\") int val) {}",
-                        "  public static void c(int _val) {}",
+                        "  public static void b(@SuppressWarnings(\"UnusedVariable\") int val) {}",
+                        "  public static void c(@SuppressWarnings(\"unused\") int val) {}",
+                        "  public static void d(int _val) {}",
                         "}")
                 .expectUnchanged()
                 .doTest(TestMode.TEXT_MATCH);
@@ -343,9 +344,11 @@ public class StrictUnusedVariableTest {
                         "class Test {",
                         "  @SuppressWarnings(\"StrictUnusedVariable\")",
                         "  public static void a(int val) {}",
-                        "  @SuppressWarnings(\"unused\")",
+                        "  @SuppressWarnings(\"UnusedVariable\")",
                         "  public static void b(int val) {}",
-                        "  public static void c(int _val) {}",
+                        "  @SuppressWarnings(\"unused\")",
+                        "  public static void c(int val) {}",
+                        "  public static void d(int _val) {}",
                         "}")
                 .expectUnchanged()
                 .doTest(TestMode.TEXT_MATCH);
@@ -361,8 +364,12 @@ public class StrictUnusedVariableTest {
                         "  class Test1 {",
                         "    public static void a(int val) {}",
                         "  }",
-                        "  @SuppressWarnings(\"unused\")",
+                        "  @SuppressWarnings(\"UnusedVariable\")",
                         "  class Test2 {",
+                        "    public static void a(int val) {}",
+                        "  }",
+                        "  @SuppressWarnings(\"unused\")",
+                        "  class Test3 {",
                         "    public static void a(int val) {}",
                         "  }",
                         "}")
