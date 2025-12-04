@@ -18,11 +18,11 @@ com.diffplug.spotless:spotless-plugin-gradle:7.2.1 (1 constraints: 0c051536)
 
 com.fasterxml.jackson.core:jackson-annotations:2.20 (11 constraints: b1b70673)
 
-com.fasterxml.jackson.core:jackson-core:2.20.0 (6 constraints: 797eb797)
+com.fasterxml.jackson.core:jackson-core:2.20.1 (6 constraints: 7e7e259b)
 
-com.fasterxml.jackson.core:jackson-databind:2.20.0 (12 constraints: 75f8a2a0)
+com.fasterxml.jackson.core:jackson-databind:2.20.1 (12 constraints: 79f820a9)
 
-com.fasterxml.jackson.datatype:jackson-datatype-guava:2.20.0 (2 constraints: 73280293)
+com.fasterxml.jackson.datatype:jackson-datatype-guava:2.20.1 (2 constraints: 73280293)
 
 com.github.ben-manes.caffeine:caffeine:3.2.2 (2 constraints: eb175357)
 
@@ -202,11 +202,11 @@ org.tukaani:xz:1.9 (1 constraints: 6b09e995)
 
 cglib:cglib-nodep:3.2.2 (1 constraints: 490ded24)
 
-com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.0 (1 constraints: ea130970)
+com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.20.1 (1 constraints: ea130970)
 
-com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.20.0 (1 constraints: ea130970)
+com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.20.1 (1 constraints: ea130970)
 
-com.fasterxml.jackson.module:jackson-module-afterburner:2.20.0 (1 constraints: 3605333b)
+com.fasterxml.jackson.module:jackson-module-afterburner:2.20.1 (1 constraints: 3705343b)
 
 com.github.stefanbirkner:system-rules:1.19.0 (1 constraints: 3d05443b)
 
