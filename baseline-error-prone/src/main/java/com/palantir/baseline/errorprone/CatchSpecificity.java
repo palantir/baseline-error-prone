@@ -111,6 +111,7 @@ public final class CatchSpecificity extends BugChecker implements BugChecker.Try
                         || TestCheckUtils.isTestCode(state)) {
                     return Description.NO_MATCH;
                 }
+                @SuppressWarnings("for-rollout:PreferSafeLoggingPreconditions")
                 List<Type> replacements = deduplicateCatchTypes(
                         ImmutableList.<Type>builder()
                                 .addAll(thrown)
