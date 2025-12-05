@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2025 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.palantir.baseline;
+package com.palantir.gradle.baselineerrorprone;
 
 import static com.palantir.gradle.testing.assertion.GradlePluginTestAssertions.assertThat;
 
 import com.palantir.gradle.testing.execution.GradleInvoker;
 import com.palantir.gradle.testing.execution.InvocationResult;
 import com.palantir.gradle.testing.files.gradle.GradleFile;
+import com.palantir.gradle.testing.junit.DisabledConfigurationCache;
 import com.palantir.gradle.testing.junit.GradlePluginTests;
 import com.palantir.gradle.testing.project.RootProject;
 import com.palantir.gradle.testing.project.SubProject;
@@ -32,6 +33,7 @@ import org.junit.jupiter.params.provider.EnumSource;
  * This test depends on ./gradlew :baseline-error-prone:publishToMavenLocal
  */
 @GradlePluginTests
+@DisabledConfigurationCache
 class BaselineErrorProneIntegrationTest {
 
     // ***DELINEATOR FOR REVIEW: standardBuildFile

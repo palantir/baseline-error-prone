@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.baseline;
+package com.palantir.gradle.baselineerrorprone;
 
 import com.palantir.gradle.suppressibleerrorprone.ConditionalPatchCheck;
 import com.palantir.gradle.suppressibleerrorprone.IfModuleIsUsed;
@@ -51,7 +51,7 @@ public final class BaselineErrorProne implements Plugin<Project> {
                 .or(() -> Optional.ofNullable(
                         BaselineErrorProne.class.getPackage().getImplementationVersion()))
                 .orElseThrow(() -> new RuntimeException(
-                        "com.palantir.baseline.BaselineErrorProne implementation version not found"));
+                        "com.palantir.gradle.baselineerrorprone.BaselineErrorProne implementation version not found"));
 
         project.getDependencies()
                 .add(
@@ -296,7 +296,7 @@ public final class BaselineErrorProne implements Plugin<Project> {
         }
     }
 
-    private static class DisableXlintRemoval implements CommandLineArgumentProvider {
+    private static final class DisableXlintRemoval implements CommandLineArgumentProvider {
 
         public static final String FLAG = "-Xlint:-removal";
 

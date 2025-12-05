@@ -163,6 +163,7 @@ public final class ReadReturnValueIgnored extends AbstractReturnValueIgnored {
         return fix.build();
     }
 
+    @SuppressWarnings("for-rollout:PreferSafeLoggingPreconditions")
     private static <T> T lastItem(List<T> items) {
         Preconditions.checkState(!items.isEmpty(), "List must not be empty");
         return items.get(items.size() - 1);

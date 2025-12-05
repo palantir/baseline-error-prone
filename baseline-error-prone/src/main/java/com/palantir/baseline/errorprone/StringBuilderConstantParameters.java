@@ -162,6 +162,7 @@ public final class StringBuilderConstantParameters extends BugChecker
             return defaultAction(node, state);
         }
 
+        @SuppressWarnings("for-rollout:PreferSafeLoggingPreconditions")
         @Override
         public Optional<List<ExpressionTree>> visitMethodInvocation(MethodInvocationTree node, VisitorState state) {
             Optional<List<ExpressionTree>> result = node.getMethodSelect().accept(this, state);

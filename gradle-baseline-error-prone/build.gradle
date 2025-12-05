@@ -53,15 +53,16 @@ gradlePlugin {
         baselineErrorPronePlugin {
             id = 'com.palantir.baseline-error-prone'
             displayName = 'Palantir Baseline Error Prone Plugin'
-            implementationClass = 'com.palantir.baseline.BaselineErrorProne'
+            implementationClass = 'com.palantir.gradle.baselineerrorprone.BaselineErrorProne'
             description = 'Baseline Java is a collection of Gradle plugins for configuring code quality tools in builds.'
             tags.set(['java', 'checkstyle', 'code quality'])
         }
         baselineNullAwayPlugin {
             id = 'com.palantir.baseline-null-away'
             displayName = 'Palantir Baseline NullAway Plugin'
-            implementationClass = 'com.palantir.baseline.BaselineNullAway'
+            implementationClass = 'com.palantir.gradle.baselineerrorprone.BaselineNullAway'
             description = 'Configures NullAway for Palantir use.'
+            tags.set(['java', 'checkstyle', 'code quality'])
         }
     }
 }

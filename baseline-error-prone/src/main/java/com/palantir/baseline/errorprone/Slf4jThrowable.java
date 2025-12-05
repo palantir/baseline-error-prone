@@ -86,6 +86,7 @@ public final class Slf4jThrowable extends BugChecker implements MethodInvocation
                 .build();
     }
 
+    @SuppressWarnings("for-rollout:PreferSafeLoggableExceptions")
     private static int getFirstThrowableArgumentIndex(List<? extends ExpressionTree> arguments, VisitorState state) {
         for (int i = 0; i < arguments.size(); i++) {
             ExpressionTree argument = arguments.get(i);
