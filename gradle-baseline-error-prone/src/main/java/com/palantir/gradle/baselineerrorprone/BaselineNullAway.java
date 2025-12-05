@@ -46,12 +46,11 @@ public final class BaselineNullAway implements Plugin<Project> {
     }
 
     private void applyToProject(Project project) {
-        String version = Optional.ofNullable(BaselineNullAway.class.getPackage().getImplementationVersion())
-                .orElseGet(() -> {
-                    log.warn("BaselineNullAway is using 'latest.release' - "
-                            + "beware this compromises build reproducibility");
-                    return "latest.release";
-                });
+        String version = Optional.ofNullable((String) project.findProperty("baselineErrorProneVersion"))
+                .or(() ->
+                        Optional.ofNullable(BaselineNullAway.class.getPackage().getImplementationVersion()))
+                .orElseThrow(() -> new RuntimeException(
+                        "%s implementation version not found".formatted(BaselineNullAway.class.getCanonicalName())));
         project.getConfigurations()
                 .matching(new Spec<Configuration>() {
                     @Override
