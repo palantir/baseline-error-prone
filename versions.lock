@@ -96,13 +96,13 @@ com.palantir.conjure.java.api:test-utils:2.65.0 (1 constraints: 3f05523b)
 
 com.palantir.conjure.java.runtime:conjure-java-annotations:8.27.0 (1 constraints: 43056c3b)
 
-com.palantir.gradle.plugintesting:configuration-cache-spec:0.41.0 (1 constraints: 3705323b)
+com.palantir.gradle.plugintesting:configuration-cache-spec:0.43.0 (1 constraints: 3905383b)
 
-com.palantir.gradle.plugintesting:discover-tests-cli:0.41.0 (1 constraints: 3705323b)
+com.palantir.gradle.plugintesting:discover-tests-cli:0.43.0 (1 constraints: 3905383b)
 
-com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.41.0 (1 constraints: 3705323b)
+com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.43.0 (1 constraints: 9e070e7e)
 
-com.palantir.gradle.plugintesting:plugin-testing-core:0.41.0 (1 constraints: 3705323b)
+com.palantir.gradle.plugintesting:plugin-testing-core:0.43.0 (1 constraints: 3905383b)
 
 com.palantir.ri:resource-identifier:2.11.0 (2 constraints: 511589d9)
 
