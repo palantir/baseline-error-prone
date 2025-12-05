@@ -62,7 +62,6 @@ public final class BaselineNullAway implements Plugin<Project> {
                 .configureEach(new Action<Configuration>() {
                     @Override
                     public void execute(Configuration _files) {
-                        System.err.println("nullaway version: " + version);
                         project.getDependencies()
                                 .add("errorprone", "com.palantir.baseline-error-prone:baseline-null-away:" + version);
                     }
