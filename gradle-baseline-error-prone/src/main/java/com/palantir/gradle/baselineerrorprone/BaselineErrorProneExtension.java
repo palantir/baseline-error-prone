@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2025 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.baseline;
+package com.palantir.gradle.baselineerrorprone;
 
 import com.palantir.gradle.suppressibleerrorprone.SuppressibleErrorProneExtension;
 import java.util.Set;
