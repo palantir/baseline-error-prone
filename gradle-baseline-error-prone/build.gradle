@@ -62,6 +62,7 @@ gradlePlugin {
             displayName = 'Palantir Baseline NullAway Plugin'
             implementationClass = 'com.palantir.baseline.BaselineNullAway'
             description = 'Configures NullAway for Palantir use.'
+            tags.set(['java', 'checkstyle', 'code quality'])
         }
     }
 }
