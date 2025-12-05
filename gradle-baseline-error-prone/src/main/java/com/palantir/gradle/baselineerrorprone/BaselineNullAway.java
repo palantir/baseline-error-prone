@@ -46,12 +46,11 @@ public final class BaselineNullAway implements Plugin<Project> {
     }
 
     private void applyToProject(Project project) {
-        String version = Optional.ofNullable(BaselineNullAway.class.getPackage().getImplementationVersion())
-                .orElseGet(() -> {
-                    log.warn("BaselineNullAway is using 'latest.release' - "
-                            + "beware this compromises build reproducibility");
-                    return "latest.release";
-                });
+        String version = Optional.ofNullable((String) project.findProperty("baselineErrorProneVersion"))
+                .or(() ->
+                        Optional.ofNullable(BaselineNullAway.class.getPackage().getImplementationVersion()))
+                .orElseThrow(() -> new RuntimeException(
+                        "%s implementation version not found".formatted(BaselineNullAway.class.getCanonicalName())));
         project.getConfigurations()
                 .matching(new Spec<Configuration>() {
                     @Override
@@ -70,6 +69,9 @@ public final class BaselineNullAway implements Plugin<Project> {
             @Override
             public void execute(ErrorProneOptions options) {
                 options.option("NullAway:AnnotatedPackages", String.join(",", DEFAULT_ANNOTATED_PACKAGES));
+                // 2025-12-04: Disabled to avoid excessive logs
+                // See https://github.com/uber/NullAway/issues/1363
+                options.disable("RequireExplicitNullMarking");
                 // Relax some checks for test code
                 if (options.getCompilingTestOnlyCode().get()) {
                     // NullAway has some poor interactions with mockito and
