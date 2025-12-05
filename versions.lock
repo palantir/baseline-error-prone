@@ -26,7 +26,7 @@ com.google.googlejavaformat:google-java-format:1.27.0 (2 constraints: b6258eff)
 
 com.google.guava:failureaccess:1.0.3 (1 constraints: 160ae3b4)
 
-com.google.guava:guava:33.5.0-jre (15 constraints: c310089e)
+com.google.guava:guava:33.5.0-jre (15 constraints: c4100f9e)
 
 com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava (1 constraints: bd17c918)
 
@@ -38,7 +38,7 @@ com.palantir.gradle.utils:environment-variables:0.21.0 (1 constraints: 291d3bd8)
 
 com.palantir.suppressible-error-prone:gradle-suppressible-error-prone:2.26.0 (1 constraints: 3c05453b)
 
-com.uber.nullaway:nullaway:0.12.12 (1 constraints: 68059240)
+com.uber.nullaway:nullaway:0.12.14 (1 constraints: 6a059440)
 
 io.github.eisop:dataflow-errorprone:3.41.0-eisop1 (3 constraints: 3e40ddde)
 
