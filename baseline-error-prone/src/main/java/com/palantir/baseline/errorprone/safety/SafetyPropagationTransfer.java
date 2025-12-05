@@ -488,6 +488,7 @@ public final class SafetyPropagationTransfer implements ForwardTransferFunction<
         return result.build();
     }
 
+    @SuppressWarnings("for-rollout:PreferSafeLoggingPreconditions")
     public ClearVisitorState setVisitorState(VisitorState value) {
         this.state = Objects.requireNonNull(value, "VisitorState");
         traversed.clear();
@@ -565,16 +566,19 @@ public final class SafetyPropagationTransfer implements ForwardTransferFunction<
     private static final class ReadableUpdates implements Updates {
         private final Map<AccessPath, Safety> values = new HashMap<>();
 
+        @SuppressWarnings("for-rollout:PreferSafeLoggingPreconditions")
         @Override
         public void set(LocalVariableNode node, Safety value) {
             values.put(AccessPath.fromLocalVariable(node), Objects.requireNonNull(value));
         }
 
+        @SuppressWarnings("for-rollout:PreferSafeLoggingPreconditions")
         @Override
         public void set(VariableDeclarationNode node, Safety value) {
             values.put(AccessPath.fromVariableDecl(node), Objects.requireNonNull(value));
         }
 
+        @SuppressWarnings("for-rollout:PreferSafeLoggingPreconditions")
         @Override
         public void set(FieldAccessNode node, Safety value) {
             AccessPath path = AccessPath.fromFieldAccess(node);
@@ -583,6 +587,7 @@ public final class SafetyPropagationTransfer implements ForwardTransferFunction<
             }
         }
 
+        @SuppressWarnings("for-rollout:PreferSafeLoggingPreconditions")
         @Override
         public void set(AccessPath path, Safety value) {
             values.put(Objects.requireNonNull(path), Objects.requireNonNull(value));
