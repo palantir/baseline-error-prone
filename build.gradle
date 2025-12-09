@@ -59,5 +59,9 @@ jdks {
     daemonTarget = 21
 }
 
+gradleTestUtils {
+    gradleVersions = ['8.14.3']
+}
+
 
 
