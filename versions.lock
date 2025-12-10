@@ -70,9 +70,9 @@ cglib:cglib-nodep:3.2.2 (1 constraints: 490ded24)
 
 com.fasterxml.jackson.core:jackson-annotations:2.20 (5 constraints: f443b77f)
 
-com.fasterxml.jackson.core:jackson-core:2.20.1 (3 constraints: 1d3aad72)
+com.fasterxml.jackson.core:jackson-core:2.20.1 (3 constraints: 1e3aae72)
 
-com.fasterxml.jackson.core:jackson-databind:2.20.1 (4 constraints: 6145b30f)
+com.fasterxml.jackson.core:jackson-databind:2.20.1 (4 constraints: 62450b10)
 
 com.fasterxml.jackson.module:jackson-module-afterburner:2.20.1 (1 constraints: 3705343b)
 
@@ -88,9 +88,9 @@ com.google.truth:truth:1.4.0 (2 constraints: 72265a6a)
 
 com.netflix.nebula:nebula-test:10.6.2 (2 constraints: d61de72d)
 
-com.palantir.conjure.java:conjure-lib:8.65.0 (1 constraints: 4505763b)
+com.palantir.conjure.java:conjure-lib:8.66.0 (1 constraints: 4605793b)
 
-com.palantir.conjure.java.api:errors:2.67.0 (2 constraints: 7721b2b1)
+com.palantir.conjure.java.api:errors:2.67.0 (2 constraints: 79211cb2)
 
 com.palantir.conjure.java.api:test-utils:2.67.0 (1 constraints: 4105583b)
 
