@@ -474,6 +474,31 @@ public class DeprecatedApiUsageTest {
     }
 
     @Test
+    public void error_prone_check_allows_deprecations_within_deprecated_for_removal_methods() {
+        helper().addSourceLines(
+                        "Helper.java",
+                        // language=Java
+                        """
+                        class Helper {
+                          @Deprecated
+                          public void deprecatedMethod() {}
+                        }
+                        """)
+                .addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        class Test {
+                          @Deprecated(forRemoval = true)
+                          public void fun() {
+                            new Helper().deprecatedMethod();
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
     public void compiler_allows_deprecations_within_deprecated_classes() {
         // Using a raw compilation helper here to verify the compiler behavior, rather than the error-prone check
         CompilationTestHelper.newInstance(ScannerSupplier.fromBugCheckerClasses(), getClass())
