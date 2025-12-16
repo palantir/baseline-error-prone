@@ -4,9 +4,6 @@ apply plugin: 'com.palantir.external-publish-jar'
 apply plugin: 'com.palantir.external-publish-gradle-plugin'
 apply plugin: 'com.palantir.gradle-plugin-testing'
 
-import org.gradle.api.internal.classpath.ModuleRegistry
-import org.gradle.api.internal.project.ProjectInternal
-
 dependencies {
     annotationProcessor 'org.immutables:value'
     compileOnly 'org.immutables:value::annotations'
@@ -46,10 +43,17 @@ test {
 }
 
 gradlePlugin {
-    website = 'https://github.com/palantir/gradle-baseline'
-    vcsUrl = 'https://github.com/palantir/gradle-baseline'
+    website = 'https://github.com/palantir/baseline-error-prone'
+    vcsUrl = 'https://github.com/palantir/baseline-error-prone'
 
     plugins {
+        baselineErrorProneRootPlugin {
+            id = 'com.palantir.baseline-error-prone-root'
+            displayName = 'Palantir Baseline Error Prone Root Plugin'
+            implementationClass = 'com.palantir.gradle.baselineerrorprone.BaselineErrorProneRoot'
+            description = 'Applies `com.palantir.baseline-error-prone` to all projects'
+            tags.set(['java', 'checkstyle', 'code quality'])
+        }
         baselineErrorPronePlugin {
             id = 'com.palantir.baseline-error-prone'
             displayName = 'Palantir Baseline Error Prone Plugin'
