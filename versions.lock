@@ -46,7 +46,7 @@ io.github.java-diff-utils:java-diff-utils:4.12 (1 constraints: b412c908)
 
 javax.inject:javax.inject:1 (2 constraints: 51221d52)
 
-net.ltgt.gradle:gradle-errorprone-plugin:4.3.0 (2 constraints: 0522bb79)
+net.ltgt.gradle:gradle-errorprone-plugin:4.4.0 (2 constraints: 06220c7a)
 
 one.util:streamex:0.8.4 (2 constraints: 0f223f7b)
 
@@ -94,7 +94,7 @@ com.palantir.conjure.java.api:errors:2.68.0 (2 constraints: 7a211fb2)
 
 com.palantir.conjure.java.api:test-utils:2.68.0 (1 constraints: 42055b3b)
 
-com.palantir.conjure.java.runtime:conjure-java-annotations:8.29.0 (1 constraints: 4505723b)
+com.palantir.conjure.java.runtime:conjure-java-annotations:8.30.0 (1 constraints: 3d055b3b)
 
 com.palantir.gradle.plugintesting:configuration-cache-spec:0.48.0 (1 constraints: 3e05473b)
 
