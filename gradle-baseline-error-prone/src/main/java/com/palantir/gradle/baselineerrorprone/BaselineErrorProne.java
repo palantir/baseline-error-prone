@@ -101,6 +101,7 @@ public final class BaselineErrorProne implements Plugin<Project> {
 
     @SuppressWarnings({"UnstableApiUsage", "checkstyle:MethodLength"})
     private static void configureErrorProneOptions(ErrorProneOptions errorProneOptions) {
+        errorProneOptions.getIgnoreUnknownCheckNames().set(true);
 
         errorProneOptions.disable(
                 "AutoCloseableMustBeClosed",
