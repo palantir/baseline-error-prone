@@ -7,14 +7,14 @@ com.palantir.safe-logging:* = 3.10.0
 com.palantir.suppressible-error-prone:* = 2.26.0
 commons-io:* = 2.21.0
 commons-lang:* = 2.6
-net.ltgt.gradle:gradle-errorprone-plugin = 4.3.0
+net.ltgt.gradle:gradle-errorprone-plugin = 4.4.0
 javax.ws.rs:javax.ws.rs-api = 2.1.1
 one.util:streamex = 0.8.4
 org.jooq:jooq = 3.20.10
 org.slf4j:* = 2.0.17
 org.immutables:* = 2.12.1
 com.google.code.findbugs:jsr305 = 3.0.2
-com.google.errorprone:error_prone_* = 2.41.0
+com.google.errorprone:error_prone_* = 2.46.0
 com.palantir.gradle.utils:* = 0.21.0
 com.uber.nullaway:nullaway = 0.12.15
 
