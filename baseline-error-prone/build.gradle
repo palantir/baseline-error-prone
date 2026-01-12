@@ -1,11 +1,6 @@
 apply plugin: 'java-library'
 apply plugin: 'com.palantir.external-publish-jar'
 
-javaVersion {
-    target = 17
-    runtime = 21
-}
-
 dependencies {
     implementation 'com.google.code.findbugs:jsr305'
     implementation 'com.google.errorprone:error_prone_core'
