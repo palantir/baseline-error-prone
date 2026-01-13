@@ -62,7 +62,7 @@ public final class BadAssert extends BugChecker implements BugChecker.AssertTree
             fix.replace(
                     tree,
                     String.format(
-                            "%s.checkState(%s, %s)",
+                            "%s.checkState(%s, %s);",
                             SuggestedFixes.qualifyType(state, fix, LOGSAFE_PRECONDITIONS),
                             state.getSourceForNode(condition),
                             state.getSourceForNode(detail)));
