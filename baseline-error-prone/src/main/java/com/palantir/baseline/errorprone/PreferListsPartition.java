@@ -29,8 +29,20 @@ import com.google.errorprone.matchers.method.MethodMatchers;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
+import java.io.Serial;
 import java.util.List;
 
+/**
+ * Error Prone check that suggests migrating from {@code com.google.common.collect.Iterables.partition}
+ * to {@code com.google.common.collect.Lists.partition} or {@code com.palantir.common.collect.IterableUtils.partition}.
+ *
+ * <p>The Palantir implementation is more efficient as it:
+ * <ul>
+ *   <li>Avoids excess allocations by delegating to {@code Lists.partition} where possible</li>
+ *   <li>For small collections that don't need partitioning, avoids pre-allocating array of full partition size</li>
+ *   <li>Handles {@code ImmutableCollection} efficiently via {@code asList()}</li>
+ * </ul>
+ */
 @AutoService(BugChecker.class)
 @BugPattern(
         link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
@@ -41,9 +53,8 @@ import java.util.List;
                 + "cf. https://github.com/palantir/gradle-baseline/issues/621")
 public final class PreferListsPartition extends BugChecker implements BugChecker.MethodInvocationTreeMatcher {
 
+    @Serial
     private static final long serialVersionUID = 1L;
-
-    private static final String ERROR_MESSAGE = "Prefer Lists.partition";
 
     private static final Matcher<ExpressionTree> ITERABLES_PARTITION_MATCHER = MethodMatchers.staticMethod()
             .onClass("com.google.common.collect.Iterables")
@@ -60,18 +71,24 @@ public final class PreferListsPartition extends BugChecker implements BugChecker
                 return Description.NO_MATCH;
             }
 
-            if (LIST_MATCHER.matches(args.get(0), state)) {
+            if (LIST_MATCHER.matches(args.getFirst(), state)) {
                 // Fail on any 'Iterables.partition(List, int) invocation
-                SuggestedFix.Builder fix = SuggestedFix.builder();
-                String qualifiedType = SuggestedFixes.qualifyType(state, fix, "com.google.common.collect.Lists");
-                String method = qualifiedType + ".partition";
-                return buildDescription(tree)
-                        .setMessage(ERROR_MESSAGE)
-                        .addFix(fix.replace(tree.getMethodSelect(), method).build())
-                        .build();
+                return fix(tree, state, "com.google.common.collect.Lists");
             }
+            return fix(tree, state, "com.palantir.common.collect.IterableUtils");
         }
 
         return Description.NO_MATCH;
+    }
+
+    private Description fix(MethodInvocationTree tree, VisitorState state, String type) {
+        SuggestedFix.Builder fix = SuggestedFix.builder();
+        String qualifiedType = SuggestedFixes.qualifyType(state, fix, type);
+        String method = qualifiedType + ".partition";
+        fix.replace(tree.getMethodSelect(), method);
+        return buildDescription(tree)
+                .setMessage("Prefer " + type + ".partition")
+                .addFix(fix.build())
+                .build();
     }
 }
