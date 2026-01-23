@@ -47,7 +47,7 @@ public final class ArgContainingArgs extends BugChecker implements BugChecker.Me
     private static final String ARG_CLASS = "com.palantir.logsafe.Arg";
     private static final String COLLECTION_CLASS = "java.util.Collection";
 
-    private static final Matcher<ExpressionTree> SAFEARG_FACTORY_METHOD = MethodMatchers.staticMethod()
+    private static final Matcher<ExpressionTree> ARG_FACTORY_METHOD = MethodMatchers.staticMethod()
             .onClassAny("com.palantir.logsafe.SafeArg", "com.palantir.logsafe.UnsafeArg")
             .named("of")
             .withParameters(String.class.getName(), Object.class.getName());
@@ -63,26 +63,24 @@ public final class ArgContainingArgs extends BugChecker implements BugChecker.Me
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
-        if (!SAFEARG_FACTORY_METHOD.matches(tree, state)) {
+        if (!ARG_FACTORY_METHOD.matches(tree, state)) {
             return Description.NO_MATCH;
         }
 
         List<? extends ExpressionTree> args = tree.getArguments();
         ExpressionTree valueArgument = args.get(1);
 
-        // Check if the value is an Arg<?> directly
         if (ARG_MATCHER.matches(valueArgument, state)) {
             return buildDescription(tree)
-                    .setMessage("Do not wrap an Arg inside a SafeArg. "
+                    .setMessage("Do not wrap an Arg inside a SafeArg/UnsafeArg. "
                             + "Args should be passed directly to logging methods.")
                     .build();
         }
 
-        // Check if the value is a Collection<? extends Arg<?>>
         if (COLLECTION_MATCHER.matches(valueArgument, state)) {
             if (isCollectionOfArgs(valueArgument, state)) {
                 return buildDescription(tree)
-                        .setMessage("Do not wrap a Collection of Args inside a SafeArg. "
+                        .setMessage("Do not wrap a Collection of Args inside a SafeArg/UnsafeArg. "
                                 + "Args should be passed directly to logging methods.")
                         .build();
             }
