@@ -59,7 +59,7 @@ public final class PreferListsPartitionTests {
                         "import com.google.common.collect.Iterables;",
                         "class Test {",
                         "  void test(Iterable<String> items) {",
-                        "    // BUG: Diagnostic contains: Prefer com.palantir.common.collect.IterableUtils.partition",
+                        "    // BUG: Diagnostic contains: Prefer com.palantir.common.streams.MoreIterables.partition",
                         "    Iterables.partition(items, 10);",
                         "  }",
                         "}")
@@ -71,7 +71,7 @@ public final class PreferListsPartitionTests {
                         "import static com.google.common.collect.Iterables.partition;",
                         "class Test {",
                         "  void test(Iterable<String> items) {",
-                        "    // BUG: Diagnostic contains: Prefer com.palantir.common.collect.IterableUtils.partition",
+                        "    // BUG: Diagnostic contains: Prefer com.palantir.common.streams.MoreIterables.partition",
                         "    partition(items, 10);",
                         "  }",
                         "}")
@@ -95,7 +95,7 @@ public final class PreferListsPartitionTests {
     }
 
     @Test
-    public void should_use_IterableUtils_partition_for_Iterable() {
+    public void should_use_MoreIterables_partition_for_Iterable() {
         RefactoringValidator.of(PreferListsPartition.class, getClass())
                 .addInputLines(
                         "Test.java",
@@ -109,18 +109,18 @@ public final class PreferListsPartitionTests {
                 .addOutputLines(
                         "Test.java",
                         "import com.google.common.collect.Iterables;",
-                        "import com.palantir.common.collect.IterableUtils;",
+                        "import com.palantir.common.streams.MoreIterables;",
                         "import java.util.List;",
                         "class Test {",
                         "  Iterable<?> f(Iterable<String> iterable) {",
-                        "    return IterableUtils.partition(iterable, 10);",
+                        "    return MoreIterables.partition(iterable, 10);",
                         "  }",
                         "}")
                 .doTest();
     }
 
     @Test
-    public void should_use_IterableUtils_partition_for_Set() {
+    public void should_use_MoreIterables_partition_for_Set() {
         RefactoringValidator.of(PreferListsPartition.class, getClass())
                 .addInputLines(
                         "Test.java",
@@ -134,11 +134,11 @@ public final class PreferListsPartitionTests {
                 .addOutputLines(
                         "Test.java",
                         "import com.google.common.collect.Iterables;",
-                        "import com.palantir.common.collect.IterableUtils;",
+                        "import com.palantir.common.streams.MoreIterables;",
                         "import java.util.Set;",
                         "class Test {",
                         "  Iterable<?> f(Set<?> set) {",
-                        "    return IterableUtils.partition(set, 10);",
+                        "    return MoreIterables.partition(set, 10);",
                         "  }",
                         "}")
                 .doTest();
@@ -170,15 +170,15 @@ public final class PreferListsPartitionTests {
     }
 
     @Test
-    void testNoMatchOnIterableUtilsPartition() {
+    void testNoMatchOnMoreIterablesPartition() {
         CompilationTestHelper.newInstance(PreferListsPartition.class, getClass())
                 .addSourceLines(
                         "Test.java",
-                        "import com.palantir.common.collect.IterableUtils;",
+                        "import com.palantir.common.streams.MoreIterables;",
                         "import java.util.List;",
                         "class Test {",
                         "  Iterable<? extends List<? extends String>> test(List<String> items) {",
-                        "    return IterableUtils.partition(items, 10);",
+                        "    return MoreIterables.partition(items, 10);",
                         "  }",
                         "}")
                 .doTest();

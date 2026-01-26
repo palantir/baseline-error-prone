@@ -48,9 +48,11 @@ import java.util.List;
         link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = SeverityLevel.WARNING,
-        summary = "Prefer Guava's Lists.partition(List, int) instead of Iterables.partition(Iterable, int) when "
-                + "first argument's declared type is a list for performance reasons, "
-                + "cf. https://github.com/palantir/gradle-baseline/issues/621")
+        summary = "Prefer Guava's Lists.partition(List, int) instead of Iterables.partition(Iterable, int) when the "
+                + "first argument's declared type is a List for performance reasons, or "
+                + "com.palantir.common.streams.MoreIterables.partition(List, int) when the first argument's declared "
+                + "type is an Iterable cf. https://github.com/palantir/gradle-baseline/issues/621 "
+                + " and https://github.com/palantir/baseline-error-prone/pull/68")
 public final class PreferListsPartition extends BugChecker implements BugChecker.MethodInvocationTreeMatcher {
 
     @Serial
@@ -75,7 +77,7 @@ public final class PreferListsPartition extends BugChecker implements BugChecker
                 // Fail on any 'Iterables.partition(List, int) invocation
                 return fix(tree, state, "com.google.common.collect.Lists");
             }
-            return fix(tree, state, "com.palantir.common.collect.IterableUtils");
+            return fix(tree, state, "com.palantir.common.streams.MoreIterables");
         }
 
         return Description.NO_MATCH;

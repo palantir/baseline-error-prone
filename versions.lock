@@ -16,7 +16,7 @@ com.google.code.findbugs:jsr305:3.0.2 (2 constraints: 9e14e59e)
 
 com.google.errorprone:error_prone_annotation:2.44.0 (3 constraints: ca38f3ee)
 
-com.google.errorprone:error_prone_annotations:2.44.0 (13 constraints: d0cc73e4)
+com.google.errorprone:error_prone_annotations:2.44.0 (14 constraints: 56d98724)
 
 com.google.errorprone:error_prone_check_api:2.44.0 (2 constraints: b62598ff)
 
@@ -26,7 +26,7 @@ com.google.googlejavaformat:google-java-format:1.27.0 (2 constraints: b6258eff)
 
 com.google.guava:failureaccess:1.0.3 (1 constraints: 160ae3b4)
 
-com.google.guava:guava:33.5.0-jre (15 constraints: 3811d356)
+com.google.guava:guava:33.5.0-jre (16 constraints: 301f2f40)
 
 com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava (1 constraints: bd17c918)
 
@@ -56,7 +56,7 @@ org.checkerframework:dataflow-nullaway:3.53.0 (2 constraints: 7111abf2)
 
 org.immutables:value:2.12.1 (2 constraints: 0015bec1)
 
-org.jspecify:jspecify:1.0.0 (17 constraints: cc1585d6)
+org.jspecify:jspecify:1.0.0 (18 constraints: 1c2207fc)
 
 org.ow2.asm:asm:9.9 (2 constraints: b4265221)
 
@@ -85,6 +85,8 @@ com.google.testing.compile:compile-testing:0.23.0 (1 constraints: 8b149b75)
 com.google.truth:truth:1.4.5 (2 constraints: 7726656a)
 
 com.netflix.nebula:nebula-test:10.6.2 (2 constraints: d61de72d)
+
+com.palantir.common:streams:2.6.0 (1 constraints: 0a050736)
 
 com.palantir.conjure.java:conjure-lib:8.69.0 (1 constraints: 4905823b)
 
