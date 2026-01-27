@@ -45,7 +45,7 @@ public final class ArgContainingArgs extends BugChecker implements BugChecker.Me
     private static final long serialVersionUID = 1L;
 
     private static final String ARG_CLASS = "com.palantir.logsafe.Arg";
-    private static final String COLLECTION_CLASS = "java.util.Collection";
+    private static final String ITERABLE_CLASS = "java.lang.Iterable";
 
     private static final Matcher<ExpressionTree> ARG_FACTORY_METHOD = MethodMatchers.staticMethod()
             .onClassAny("com.palantir.logsafe.SafeArg", "com.palantir.logsafe.UnsafeArg")
@@ -53,13 +53,11 @@ public final class ArgContainingArgs extends BugChecker implements BugChecker.Me
             .withParameters(String.class.getName(), Object.class.getName());
 
     private static final Matcher<ExpressionTree> ARG_MATCHER = MoreMatchers.isSubtypeOf(ARG_CLASS);
+    private static final Matcher<ExpressionTree> ITERABLE_MATCHER = MoreMatchers.isSubtypeOf(Iterable.class);
+    private static final Supplier<Type> ITERABLE_TYPE =
+            VisitorState.memoize(state -> state.getTypeFromString(ITERABLE_CLASS));
 
-    private static final Matcher<ExpressionTree> COLLECTION_MATCHER = MoreMatchers.isSubtypeOf(COLLECTION_CLASS);
-
-    private static final Supplier<Type> JAVA_UTIL_COLLECTION =
-            VisitorState.memoize(state -> state.getTypeFromString(COLLECTION_CLASS));
-
-    private static final Supplier<Type> LOGSAFE_ARG = VisitorState.memoize(state -> state.getTypeFromString(ARG_CLASS));
+    private static final Supplier<Type> ARG_TYPE = VisitorState.memoize(state -> state.getTypeFromString(ARG_CLASS));
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
@@ -77,10 +75,10 @@ public final class ArgContainingArgs extends BugChecker implements BugChecker.Me
                     .build();
         }
 
-        if (COLLECTION_MATCHER.matches(valueArgument, state)) {
-            if (isCollectionOfArgs(valueArgument, state)) {
+        if (ITERABLE_MATCHER.matches(valueArgument, state)) {
+            if (isIterableOfArgs(valueArgument, state)) {
                 return buildDescription(tree)
-                        .setMessage("Do not wrap a Collection of Args inside a SafeArg/UnsafeArg. "
+                        .setMessage("Do not wrap a Collection/Iterable of Args inside a SafeArg/UnsafeArg. "
                                 + "Args should be passed directly to logging methods.")
                         .build();
             }
@@ -89,10 +87,10 @@ public final class ArgContainingArgs extends BugChecker implements BugChecker.Me
         return Description.NO_MATCH;
     }
 
-    private static boolean isCollectionOfArgs(ExpressionTree expressionTree, VisitorState state) {
-        Type collectionType = JAVA_UTIL_COLLECTION.get(state);
-        Type argType = LOGSAFE_ARG.get(state);
-        if (collectionType == null || argType == null) {
+    private static boolean isIterableOfArgs(ExpressionTree expressionTree, VisitorState state) {
+        Type iterableType = ITERABLE_TYPE.get(state);
+        Type argType = ARG_TYPE.get(state);
+        if (iterableType == null || argType == null) {
             return false;
         }
 
@@ -101,15 +99,15 @@ public final class ArgContainingArgs extends BugChecker implements BugChecker.Me
             return false;
         }
 
-        // Get the Collection<?> type with the actual type argument
-        Symbol collectionSymbol = collectionType.tsym;
-        Type asCollection = state.getTypes().asSuper(expressionType, collectionSymbol);
-        if (asCollection == null || asCollection.getTypeArguments().isEmpty()) {
+        // Get the Iterable<?> type with the actual type argument
+        Symbol iterableSymbol = iterableType.tsym;
+        Type asIterable = state.getTypes().asSuper(expressionType, iterableSymbol);
+        if (asIterable == null || asIterable.getTypeArguments().isEmpty()) {
             return false;
         }
 
         // Check if the type argument is a subtype of Arg<?>
-        Type typeArgument = asCollection.getTypeArguments().get(0);
+        Type typeArgument = asIterable.getTypeArguments().get(0);
         return ASTHelpers.isSubtype(
                 state.getTypes().erasure(typeArgument), state.getTypes().erasure(argType), state);
     }

@@ -30,7 +30,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void fails_when_safearg_wraps_safearg() {
+    public void bansSafeArgOfSafeArg() {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
@@ -45,7 +45,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void fails_when_safearg_wraps_unsafearg() {
+    public void bansSafeArgOfUnsafeArg() {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
@@ -61,7 +61,23 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void fails_when_safearg_wraps_arg_variable() {
+    public void bansUnsafeArgOfUnsafeArg() {
+        compilationHelper
+                .addSourceLines(
+                        "Bean.java",
+                        "import com.palantir.logsafe.SafeArg;",
+                        "import com.palantir.logsafe.UnsafeArg;",
+                        "class Bean {",
+                        "  public UnsafeArg<?> foo() {",
+                        "    // BUG: Diagnostic contains: Do not wrap an Arg inside a SafeArg",
+                        "    return UnsafeArg.of(\"outer\", UnsafeArg.of(\"inner\", \"value\"));",
+                        "  }",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    public void bansSafeArgOfArgVariable() {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
@@ -77,7 +93,26 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void fails_when_safearg_wraps_list_of_args() {
+    public void bansSafeArgOfArgMethodReturnValue() {
+        compilationHelper
+                .addSourceLines(
+                        "Bean.java",
+                        "import com.palantir.logsafe.Arg;",
+                        "import com.palantir.logsafe.SafeArg;",
+                        "class Bean {",
+                        "  public SafeArg<?> foo() {",
+                        "    // BUG: Diagnostic contains: Do not wrap an Arg inside a SafeArg",
+                        "    return SafeArg.of(\"outer\", wrapWithArg(\"test\"));",
+                        "  }",
+                        "  private Arg<String> wrapWithArg(String value) {",
+                        "    return SafeArg.of(\"value\", value);",
+                        "  }",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    public void bansSafeArgWrappingListOfSafeArgs() {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
@@ -85,7 +120,7 @@ public final class ArgContainingArgsTest {
                         "import java.util.List;",
                         "class Bean {",
                         "  public SafeArg<?> foo(List<SafeArg<?>> args) {",
-                        "    // BUG: Diagnostic contains: Do not wrap a Collection of Args inside a SafeArg",
+                        "    // BUG: Diagnostic contains: Do not wrap a Collection/Iterable of Args inside a SafeArg",
                         "    return SafeArg.of(\"outer\", args);",
                         "  }",
                         "}")
@@ -93,16 +128,15 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void fails_when_safearg_wraps_collection_of_args() {
+    public void bansSafeArgWrappingIterableOfArgs() {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
                         "import com.palantir.logsafe.Arg;",
                         "import com.palantir.logsafe.SafeArg;",
-                        "import java.util.Collection;",
                         "class Bean {",
-                        "  public SafeArg<?> foo(Collection<Arg<?>> args) {",
-                        "    // BUG: Diagnostic contains: Do not wrap a Collection of Args inside a SafeArg",
+                        "  public SafeArg<?> foo(Iterable<Arg<?>> args) {",
+                        "    // BUG: Diagnostic contains: Do not wrap a Collection/Iterable of Args inside a SafeArg",
                         "    return SafeArg.of(\"outer\", args);",
                         "  }",
                         "}")
@@ -110,23 +144,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void fails_when_safearg_wraps_set_of_args() {
-        compilationHelper
-                .addSourceLines(
-                        "Bean.java",
-                        "import com.palantir.logsafe.SafeArg;",
-                        "import java.util.Set;",
-                        "class Bean {",
-                        "  public SafeArg<?> foo(Set<SafeArg<String>> args) {",
-                        "    // BUG: Diagnostic contains: Do not wrap a Collection of Args inside a SafeArg",
-                        "    return SafeArg.of(\"outer\", args);",
-                        "  }",
-                        "}")
-                .doTest();
-    }
-
-    @Test
-    public void allows_safearg_with_string_value() {
+    public void allowsSafeArgOfString() {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
@@ -140,21 +158,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void allows_safearg_with_integer_value() {
-        compilationHelper
-                .addSourceLines(
-                        "Bean.java",
-                        "import com.palantir.logsafe.SafeArg;",
-                        "class Bean {",
-                        "  public SafeArg<?> foo() {",
-                        "    return SafeArg.of(\"count\", 42);",
-                        "  }",
-                        "}")
-                .doTest();
-    }
-
-    @Test
-    public void allows_safearg_with_null_value() {
+    public void allowsSafeArgOfNullLiteral() {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
@@ -168,7 +172,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void allows_safearg_with_object_value() {
+    public void allowsSafeArgOfObject() {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
@@ -182,7 +186,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void allows_safearg_with_list_of_strings() {
+    public void allowsSafeArgOfListOfStrings() {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
@@ -190,21 +194,6 @@ public final class ArgContainingArgsTest {
                         "import java.util.List;",
                         "class Bean {",
                         "  public SafeArg<?> foo(List<String> items) {",
-                        "    return SafeArg.of(\"items\", items);",
-                        "  }",
-                        "}")
-                .doTest();
-    }
-
-    @Test
-    public void allows_safearg_with_collection_of_integers() {
-        compilationHelper
-                .addSourceLines(
-                        "Bean.java",
-                        "import com.palantir.logsafe.SafeArg;",
-                        "import java.util.Collection;",
-                        "class Bean {",
-                        "  public SafeArg<?> foo(Collection<Integer> items) {",
                         "    return SafeArg.of(\"items\", items);",
                         "  }",
                         "}")
