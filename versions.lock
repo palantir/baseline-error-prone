@@ -38,7 +38,7 @@ com.palantir.gradle.utils:environment-variables:0.21.0 (1 constraints: 291d3bd8)
 
 com.palantir.suppressible-error-prone:gradle-suppressible-error-prone:2.26.0 (1 constraints: 3c05453b)
 
-com.uber.nullaway:nullaway:0.13.0 (1 constraints: 36052c3b)
+com.uber.nullaway:nullaway:0.13.1 (1 constraints: 37052d3b)
 
 io.github.eisop:dataflow-errorprone:3.41.0-eisop1 (3 constraints: 3e40ddde)
 
