@@ -104,23 +104,23 @@ com.palantir.gradle.plugintesting:plugin-testing-core:0.51.0 (1 constraints: 380
 
 com.palantir.ri:resource-identifier:2.12.0 (2 constraints: 5315bed9)
 
-com.palantir.safe-logging:logger:3.11.0 (3 constraints: 9521e4bd)
+com.palantir.safe-logging:logger:3.11.0 (3 constraints: 9621e7bd)
 
 com.palantir.safe-logging:logger-slf4j:3.11.0 (1 constraints: 300e8a50)
 
 com.palantir.safe-logging:logger-spi:3.11.0 (2 constraints: 6f1e0ab0)
 
-com.palantir.safe-logging:preconditions:3.11.0 (8 constraints: ca757278)
+com.palantir.safe-logging:preconditions:3.11.0 (8 constraints: cc75a778)
 
 com.palantir.safe-logging:preconditions-assertj:3.11.0 (1 constraints: 3705383b)
 
-com.palantir.safe-logging:safe-logging:3.11.0 (9 constraints: 7388d23a)
+com.palantir.safe-logging:safe-logging:3.11.0 (9 constraints: 7488d53a)
 
 com.palantir.tokens:auth-tokens:3.21.0 (2 constraints: 5515fbd9)
 
-com.palantir.tritium:tritium-ids:0.123.0 (1 constraints: f80f88a6)
+com.palantir.tritium:tritium-ids:0.124.0 (1 constraints: f80f88a6)
 
-com.palantir.tritium:tritium-registry:0.123.0 (1 constraints: 68059940)
+com.palantir.tritium:tritium-registry:0.124.0 (1 constraints: 69059c40)
 
 commons-io:commons-io:2.21.0 (2 constraints: 111f5a8c)
 
@@ -128,7 +128,7 @@ commons-lang:commons-lang:2.6 (1 constraints: ac04232c)
 
 info.picocli:picocli:4.7.7 (1 constraints: 2816dcdd)
 
-io.dropwizard.metrics:metrics-core:4.2.37 (1 constraints: ca1057b6)
+io.dropwizard.metrics:metrics-core:4.2.38 (1 constraints: cb1058b6)
 
 io.r2dbc:r2dbc-spi:1.0.0.RELEASE (1 constraints: ea08e898)
 
