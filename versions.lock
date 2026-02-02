@@ -34,7 +34,7 @@ com.google.j2objc:j2objc-annotations:3.1 (1 constraints: b809f1a0)
 
 com.google.protobuf:protobuf-java:3.25.5 (1 constraints: 2c1160c9)
 
-com.palantir.gradle.utils:environment-variables:0.21.0 (1 constraints: 291d3bd8)
+com.palantir.gradle.utils:environment-variables:0.22.0 (1 constraints: 291d3bd8)
 
 com.palantir.suppressible-error-prone:gradle-suppressible-error-prone:2.28.0 (1 constraints: 3e054b3b)
 
