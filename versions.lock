@@ -68,13 +68,13 @@ org.pcollections:pcollections:4.0.1 (1 constraints: f21028b8)
 
 cglib:cglib-nodep:3.2.2 (1 constraints: 490ded24)
 
-com.fasterxml.jackson.core:jackson-annotations:2.20 (5 constraints: 8e43ba03)
+com.fasterxml.jackson.core:jackson-annotations:2.21 (5 constraints: 9043ed04)
 
-com.fasterxml.jackson.core:jackson-core:2.20.1 (3 constraints: 1e3aae72)
+com.fasterxml.jackson.core:jackson-core:2.21.0 (3 constraints: 1e3ab272)
 
-com.fasterxml.jackson.core:jackson-databind:2.20.1 (4 constraints: 64453610)
+com.fasterxml.jackson.core:jackson-databind:2.21.0 (4 constraints: 64453810)
 
-com.fasterxml.jackson.module:jackson-module-afterburner:2.20.1 (1 constraints: 3705343b)
+com.fasterxml.jackson.module:jackson-module-afterburner:2.21.0 (1 constraints: 3705363b)
 
 com.google.errorprone:error_prone_test_helpers:2.44.0 (1 constraints: 3c05473b)
 
