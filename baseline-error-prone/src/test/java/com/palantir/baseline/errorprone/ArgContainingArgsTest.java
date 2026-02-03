@@ -31,7 +31,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void bansSafeArgOfSafeArg() {
+    public void bans_safe_arg_of_safe_arg() {
         runTest("""
             import com.palantir.logsafe.SafeArg;
             class Bean {
@@ -44,7 +44,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void bansSafeArgOfUnsafeArg() {
+    public void bans_safe_arg_of_unsafe_arg() {
         runTest("""
             import com.palantir.logsafe.SafeArg;
             import com.palantir.logsafe.UnsafeArg;
@@ -58,7 +58,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void bansUnsafeArgOfUnsafeArg() {
+    public void bans_unsafe_arg_of_unsafe_arg() {
         runTest("""
             import com.palantir.logsafe.SafeArg;
             import com.palantir.logsafe.UnsafeArg;
@@ -72,7 +72,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void bansSafeArgOfArgVariable() {
+    public void bans_safe_arg_of_arg_variable() {
         runTest("""
             import com.palantir.logsafe.Arg;
             import com.palantir.logsafe.SafeArg;
@@ -86,7 +86,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void bansSafeArgOfArgMethodReturnValue() {
+    public void bans_safe_arg_of_arg_method_return_value() {
         runTest("""
             import com.palantir.logsafe.Arg;
             import com.palantir.logsafe.SafeArg;
@@ -103,7 +103,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void bansSafeArgWrappingListOfSafeArgs() {
+    public void bans_safe_arg_wrapping_list_of_safe_args() {
         runTest("""
             import com.palantir.logsafe.SafeArg;
             import java.util.List;
@@ -117,7 +117,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void bansSafeArgWrappingIterableOfArgs() {
+    public void bans_safe_arg_wrapping_iterable_of_args() {
         runTest("""
             import com.palantir.logsafe.Arg;
             import com.palantir.logsafe.SafeArg;
@@ -131,7 +131,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void allowsSafeArgOfString() {
+    public void allows_safe_arg_of_string() {
         runTest("""
             import com.palantir.logsafe.SafeArg;
             class Bean {
@@ -143,7 +143,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void allowsSafeArgOfNullLiteral() {
+    public void allows_safe_arg_of_null_literal() {
         runTest("""
             import com.palantir.logsafe.SafeArg;
             class Bean {
@@ -155,7 +155,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void allowsSafeArgOfObject() {
+    public void allows_safe_arg_of_object() {
         runTest("""
             import com.palantir.logsafe.SafeArg;
             class Bean {
@@ -167,7 +167,7 @@ public final class ArgContainingArgsTest {
     }
 
     @Test
-    public void allowsSafeArgOfListOfStrings() {
+    public void allows_safe_arg_of_list_of_strings() {
         runTest("""
             import com.palantir.logsafe.SafeArg;
             import java.util.List;
