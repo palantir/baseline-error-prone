@@ -42,22 +42,17 @@ import java.util.List;
                 + "Args should be passed directly to logging methods, not wrapped in another Arg.")
 public final class ArgContainingArgs extends BugChecker implements BugChecker.MethodInvocationTreeMatcher {
 
-    private static final long serialVersionUID = 1L;
-
-    private static final String ARG_CLASS = "com.palantir.logsafe.Arg";
-    private static final String ITERABLE_CLASS = "java.lang.Iterable";
-
     private static final Matcher<ExpressionTree> ARG_FACTORY_METHOD = MethodMatchers.staticMethod()
             .onClassAny("com.palantir.logsafe.SafeArg", "com.palantir.logsafe.UnsafeArg")
             .named("of")
             .withParameters(String.class.getName(), Object.class.getName());
-
-    private static final Matcher<ExpressionTree> ARG_MATCHER = MoreMatchers.isSubtypeOf(ARG_CLASS);
+    private static final Matcher<ExpressionTree> ARG_MATCHER = MoreMatchers.isSubtypeOf("com.palantir.logsafe.Arg");
     private static final Matcher<ExpressionTree> ITERABLE_MATCHER = MoreMatchers.isSubtypeOf(Iterable.class);
-    private static final Supplier<Type> ITERABLE_TYPE =
-            VisitorState.memoize(state -> state.getTypeFromString(ITERABLE_CLASS));
 
-    private static final Supplier<Type> ARG_TYPE = VisitorState.memoize(state -> state.getTypeFromString(ARG_CLASS));
+    private static final Supplier<Type> ITERABLE_TYPE =
+            VisitorState.memoize(state -> state.getTypeFromString("java.lang.Iterable"));
+    private static final Supplier<Type> ARG_TYPE =
+            VisitorState.memoize(state -> state.getTypeFromString("com.palantir.logsafe.Arg"));
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
