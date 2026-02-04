@@ -68,11 +68,11 @@ org.pcollections:pcollections:4.0.1 (1 constraints: f21028b8)
 
 cglib:cglib-nodep:3.2.2 (1 constraints: 490ded24)
 
-com.fasterxml.jackson.core:jackson-annotations:2.21 (5 constraints: 9043ed04)
+com.fasterxml.jackson.core:jackson-annotations:2.21 (5 constraints: 92431605)
 
 com.fasterxml.jackson.core:jackson-core:2.21.0 (3 constraints: 1e3ab272)
 
-com.fasterxml.jackson.core:jackson-databind:2.21.0 (4 constraints: 64453810)
+com.fasterxml.jackson.core:jackson-databind:2.21.0 (4 constraints: 64453c10)
 
 com.fasterxml.jackson.module:jackson-module-afterburner:2.21.0 (1 constraints: 3705363b)
 
@@ -88,9 +88,9 @@ com.netflix.nebula:nebula-test:10.6.2 (2 constraints: d61de72d)
 
 com.palantir.conjure.java:conjure-lib:8.69.0 (1 constraints: 4905823b)
 
-com.palantir.conjure.java.api:errors:2.68.0 (2 constraints: 7b2154b2)
+com.palantir.conjure.java.api:errors:2.69.0 (2 constraints: 7c2157b2)
 
-com.palantir.conjure.java.api:test-utils:2.68.0 (1 constraints: 42055b3b)
+com.palantir.conjure.java.api:test-utils:2.69.0 (1 constraints: 43055e3b)
 
 com.palantir.conjure.java.runtime:conjure-java-annotations:8.30.0 (1 constraints: 3d055b3b)
 
@@ -102,23 +102,23 @@ com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.53.0 (1 constrai
 
 com.palantir.gradle.plugintesting:plugin-testing-core:0.53.0 (1 constraints: 3a053c3b)
 
-com.palantir.ri:resource-identifier:2.12.0 (2 constraints: 5315bed9)
+com.palantir.ri:resource-identifier:2.13.0 (2 constraints: 5415f0d9)
 
-com.palantir.safe-logging:logger:3.11.0 (3 constraints: 9621e7bd)
+com.palantir.safe-logging:logger:3.11.0 (3 constraints: bf21c7d7)
 
 com.palantir.safe-logging:logger-slf4j:3.11.0 (1 constraints: 300e8a50)
 
 com.palantir.safe-logging:logger-spi:3.11.0 (2 constraints: 6f1e0ab0)
 
-com.palantir.safe-logging:preconditions:3.11.0 (8 constraints: cc75a778)
+com.palantir.safe-logging:preconditions:3.11.0 (8 constraints: 4776207a)
 
 com.palantir.safe-logging:preconditions-assertj:3.11.0 (1 constraints: 3705383b)
 
-com.palantir.safe-logging:safe-logging:3.11.0 (9 constraints: 7488d53a)
+com.palantir.safe-logging:safe-logging:3.11.0 (9 constraints: c688ace8)
 
-com.palantir.tokens:auth-tokens:3.21.0 (2 constraints: 5515fbd9)
+com.palantir.tokens:auth-tokens:3.22.0 (2 constraints: 56152dda)
 
-com.palantir.tritium:tritium-ids:0.124.0 (1 constraints: f80f88a6)
+com.palantir.tritium:tritium-ids:0.124.0 (1 constraints: fa0f8ea6)
 
 com.palantir.tritium:tritium-registry:0.124.0 (1 constraints: 69059c40)
 
@@ -142,7 +142,7 @@ org.apache.commons:commons-lang3:3.20.0 (1 constraints: 3705393b)
 
 org.apiguardian:apiguardian-api:1.1.2 (7 constraints: 677be455)
 
-org.assertj:assertj-core:3.27.7 (4 constraints: dd44d18b)
+org.assertj:assertj-core:3.27.7 (4 constraints: de44528c)
 
 org.codehaus.groovy:groovy:3.0.24 (3 constraints: 133429dd)
 
