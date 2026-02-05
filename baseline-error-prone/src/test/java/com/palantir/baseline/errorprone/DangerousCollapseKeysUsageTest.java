@@ -33,26 +33,28 @@ class DangerousCollapseKeysUsageTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.List;",
-                        "import java.util.Map;",
-                        "import java.util.Set;",
-                        "import java.util.stream.Collectors;",
-                        "import one.util.streamex.EntryStream;",
-                        "import org.apache.commons.lang3.tuple.Pair;",
-                        "class Test {",
-                        "   public static final void main(String[] args) {",
-                        "       List<Pair<Integer, Integer>> nodesAndPriorities = List.of(",
-                        "                Pair.of(1, 5),",
-                        "                Pair.of(1, 3),",
-                        "                Pair.of(4, 2),",
-                        "                Pair.of(1, 9));",
-                        "        Map<Integer, Set<Integer>> nodesByPriority = EntryStream.of(nodesAndPriorities)",
-                        "                .mapValues(Pair::getRight)",
-                        "               // BUG: Diagnostic contains: collapseKeys API of EntryStream must be avoided",
-                        "                .collapseKeys(Collectors.toSet())",
-                        "                .toMap();",
-                        "   }",
-                        "}")
+                        """
+                        import java.util.List;
+                        import java.util.Map;
+                        import java.util.Set;
+                        import java.util.stream.Collectors;
+                        import one.util.streamex.EntryStream;
+                        import org.apache.commons.lang3.tuple.Pair;
+                        class Test {
+                           public static final void main(String[] args) {
+                               List<Pair<Integer, Integer>> nodesAndPriorities = List.of(
+                                        Pair.of(1, 5),
+                                        Pair.of(1, 3),
+                                        Pair.of(4, 2),
+                                        Pair.of(1, 9));
+                                Map<Integer, Set<Integer>> nodesByPriority = EntryStream.of(nodesAndPriorities)
+                                        .mapValues(Pair::getRight)
+                                       // BUG: Diagnostic contains: collapseKeys API of EntryStream must be avoided
+                                        .collapseKeys(Collectors.toSet())
+                                        .toMap();
+                           }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -61,25 +63,27 @@ class DangerousCollapseKeysUsageTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.List;",
-                        "import java.util.Map;",
-                        "import java.util.stream.Collectors;",
-                        "import one.util.streamex.EntryStream;",
-                        "import org.apache.commons.lang3.tuple.Pair;",
-                        "class Test {",
-                        "   public static final void main(String[] args) {",
-                        "       List<Pair<Integer, Integer>> nodesAndPriorities = List.of(",
-                        "                Pair.of(1, 5),",
-                        "                Pair.of(1, 3),",
-                        "                Pair.of(4, 2),",
-                        "                Pair.of(1, 9));",
-                        "        Map<Integer, List<Integer>> nodesByPriority = EntryStream.of(nodesAndPriorities)",
-                        "                .mapValues(Pair::getRight)",
-                        "               // BUG: Diagnostic contains: collapseKeys API of EntryStream must be avoided",
-                        "                .collapseKeys()",
-                        "                .toMap();",
-                        "   }",
-                        "}")
+                        """
+                        import java.util.List;
+                        import java.util.Map;
+                        import java.util.stream.Collectors;
+                        import one.util.streamex.EntryStream;
+                        import org.apache.commons.lang3.tuple.Pair;
+                        class Test {
+                           public static final void main(String[] args) {
+                               List<Pair<Integer, Integer>> nodesAndPriorities = List.of(
+                                        Pair.of(1, 5),
+                                        Pair.of(1, 3),
+                                        Pair.of(4, 2),
+                                        Pair.of(1, 9));
+                                Map<Integer, List<Integer>> nodesByPriority = EntryStream.of(nodesAndPriorities)
+                                        .mapValues(Pair::getRight)
+                                       // BUG: Diagnostic contains: collapseKeys API of EntryStream must be avoided
+                                        .collapseKeys()
+                                        .toMap();
+                           }
+                        }
+                        """)
                 .doTest();
     }
 }

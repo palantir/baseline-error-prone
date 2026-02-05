@@ -29,13 +29,15 @@ class DangerousJavaDeserializationTest {
     void disallowDeserialization() {
         helper().addSourceLines(
                         "Test.java",
-                        "import java.io.ObjectInputStream;",
-                        "class Test {",
-                        "   Object f(ObjectInputStream ois) throws Exception {",
-                        "       // BUG: Diagnostic contains: serialization features for security reasons",
-                        "       return ois.readObject();",
-                        "   }",
-                        "}")
+                        """
+                        import java.io.ObjectInputStream;
+                        class Test {
+                           Object f(ObjectInputStream ois) throws Exception {
+                               // BUG: Diagnostic contains: serialization features for security reasons
+                               return ois.readObject();
+                           }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -43,12 +45,14 @@ class DangerousJavaDeserializationTest {
     void allowsReadObject() {
         helper().addSourceLines(
                         "Test.java",
-                        "import java.io.*;",
-                        "class Test implements Serializable {",
-                        "   private synchronized void readObject(ObjectInputStream ois) throws Exception {",
-                        "       ois.readObject();",
-                        "   }",
-                        "}")
+                        """
+                        import java.io.*;
+                        class Test implements Serializable {
+                           private synchronized void readObject(ObjectInputStream ois) throws Exception {
+                               ois.readObject();
+                           }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -56,13 +60,15 @@ class DangerousJavaDeserializationTest {
     void testCommonsLang() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.apache.commons.lang.SerializationUtils;",
-                        "class Test {",
-                        "   void f(byte[] data) {",
-                        "       // BUG: Diagnostic contains: serialization features for security reasons",
-                        "       SerializationUtils.deserialize(data);",
-                        "   }",
-                        "}")
+                        """
+                        import org.apache.commons.lang.SerializationUtils;
+                        class Test {
+                           void f(byte[] data) {
+                               // BUG: Diagnostic contains: serialization features for security reasons
+                               SerializationUtils.deserialize(data);
+                           }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -70,13 +76,15 @@ class DangerousJavaDeserializationTest {
     void testCommonsLang3() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.apache.commons.lang3.SerializationUtils;",
-                        "class Test {",
-                        "   void f(byte[] data) {",
-                        "       // BUG: Diagnostic contains: serialization features for security reasons",
-                        "       SerializationUtils.deserialize(data);",
-                        "   }",
-                        "}")
+                        """
+                        import org.apache.commons.lang3.SerializationUtils;
+                        class Test {
+                           void f(byte[] data) {
+                               // BUG: Diagnostic contains: serialization features for security reasons
+                               SerializationUtils.deserialize(data);
+                           }
+                        }
+                        """)
                 .doTest();
     }
 }

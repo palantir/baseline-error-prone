@@ -34,11 +34,13 @@ public final class DangerousRecordArrayFieldTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private record MyRecord(String name, List<Integer> payload) {}",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private record MyRecord(String name, List<Integer> payload) {}
+                        }
+                        """)
                 .doTest();
     }
 
@@ -47,12 +49,14 @@ public final class DangerousRecordArrayFieldTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    // BUG: Diagnostic contains: Record type has an array field and",
-                        "    private record MyRecord(String name, byte[] payload) {}",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            // BUG: Diagnostic contains: Record type has an array field and
+                            private record MyRecord(String name, byte[] payload) {}
+                        }
+                        """)
                 .doTest();
     }
 
@@ -61,14 +65,16 @@ public final class DangerousRecordArrayFieldTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    // BUG: Diagnostic contains: Record type has an array field and",
-                        "    private record MyRecord(String name, byte[] payload) {",
-                        "        public boolean equals(Object other) { return false; }",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            // BUG: Diagnostic contains: Record type has an array field and
+                            private record MyRecord(String name, byte[] payload) {
+                                public boolean equals(Object other) { return false; }
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -77,14 +83,16 @@ public final class DangerousRecordArrayFieldTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    // BUG: Diagnostic contains: Record type has an array field and",
-                        "    private record MyRecord(String name, byte[] payload) {",
-                        "        public int hashCode() { return 0; }",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            // BUG: Diagnostic contains: Record type has an array field and
+                            private record MyRecord(String name, byte[] payload) {
+                                public int hashCode() { return 0; }
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -93,14 +101,16 @@ public final class DangerousRecordArrayFieldTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private record MyRecord(String name, byte[] payload) {",
-                        "        public boolean equals(Object other) { return false; }",
-                        "        public int hashCode() { return 0; }",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private record MyRecord(String name, byte[] payload) {
+                                public boolean equals(Object other) { return false; }
+                                public int hashCode() { return 0; }
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -109,14 +119,16 @@ public final class DangerousRecordArrayFieldTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private void myMethod() {",
-                        "       // BUG: Diagnostic contains: Record type has an array field and",
-                        "       record MyRecord(String name, byte[] payload) {}",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private void myMethod() {
+                               // BUG: Diagnostic contains: Record type has an array field and
+                               record MyRecord(String name, byte[] payload) {}
+                            }
+                        }
+                        """)
                 .doTest();
     }
 }

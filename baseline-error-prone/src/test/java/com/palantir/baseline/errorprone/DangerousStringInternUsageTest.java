@@ -34,12 +34,14 @@ public class DangerousStringInternUsageTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "class Test {",
-                        "   String f() {",
-                        "       // BUG: Diagnostic contains: Should not use String.intern().",
-                        "       return getClass().getName().intern();",
-                        "   }",
-                        "}")
+                        """
+                        class Test {
+                           String f() {
+                               // BUG: Diagnostic contains: Should not use String.intern().
+                               return getClass().getName().intern();
+                           }
+                        }
+                        """)
                 .doTest();
     }
 }

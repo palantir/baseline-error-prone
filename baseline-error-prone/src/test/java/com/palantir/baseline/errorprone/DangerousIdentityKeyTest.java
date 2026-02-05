@@ -34,14 +34,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        // BUG: Diagnostic contains: does not override equals",
-                        "        return new HashMap<Pattern, String>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                // BUG: Diagnostic contains: does not override equals
+                                return new HashMap<Pattern, String>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -50,14 +52,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        // BUG: Diagnostic contains: does not override equals",
-                        "        return new HashSet<Pattern>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                // BUG: Diagnostic contains: does not override equals
+                                return new HashSet<Pattern>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -66,13 +70,15 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        return new IdentityHashMap<Pattern, String>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                return new IdentityHashMap<Pattern, String>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -81,12 +87,14 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        return new HashSet<String>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        class Test {
+                            private Object test() {
+                                return new HashSet<String>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -95,13 +103,15 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "class Test {",
-                        "    static class Impl {}",
-                        "    private Object test() {",
-                        "        return new HashSet<Impl>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        class Test {
+                            static class Impl {}
+                            private Object test() {
+                                return new HashSet<Impl>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -110,15 +120,17 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "class Test {",
-                        "    enum Impl {",
-                        "        INSTANCE",
-                        "    }",
-                        "    private Object test() {",
-                        "        return new HashSet<Impl>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        class Test {
+                            enum Impl {
+                                INSTANCE
+                            }
+                            private Object test() {
+                                return new HashSet<Impl>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -127,12 +139,14 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        return new HashSet<Class<String>>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        class Test {
+                            private Object test() {
+                                return new HashSet<Class<String>>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -141,18 +155,20 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "class Test {",
-                        "    static final class Impl {",
-                        "        @Override public boolean equals(Object o) {",
-                        "            return true;",
-                        "        }",
-                        "    }",
-                        "    private Object test() {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return new HashSet<Impl>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        class Test {
+                            static final class Impl {
+                                @Override public boolean equals(Object o) {
+                                    return true;
+                                }
+                            }
+                            private Object test() {
+                                // BUG: Diagnostic contains: does not override
+                                return new HashSet<Impl>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -161,18 +177,20 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "class Test {",
-                        "    static final class Impl {",
-                        "        @Override public int hashCode() {",
-                        "            return 1;",
-                        "        }",
-                        "    }",
-                        "    private Object test() {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return new HashSet<Impl>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        class Test {
+                            static final class Impl {
+                                @Override public int hashCode() {
+                                    return 1;
+                                }
+                            }
+                            private Object test() {
+                                // BUG: Diagnostic contains: does not override
+                                return new HashSet<Impl>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -181,12 +199,14 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        return new HashSet<Object>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        class Test {
+                            private Object test() {
+                                return new HashSet<Object>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -195,12 +215,14 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        return new HashSet();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        class Test {
+                            private Object test() {
+                                return new HashSet();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -209,12 +231,14 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "class Test {",
-                        "    private HashSet<?> test() {",
-                        "        return new HashSet<>();",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        class Test {
+                            private HashSet<?> test() {
+                                return new HashSet<>();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -223,16 +247,18 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "import java.util.stream.*;",
-                        "class Test {",
-                        "    private Map<Pattern, String> test() {",
-                        "        return Stream.of(\".\").collect(",
-                        "                // BUG: Diagnostic contains: does not override",
-                        "                Collectors.toMap(Pattern::compile, s -> s));",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        import java.util.stream.*;
+                        class Test {
+                            private Map<Pattern, String> test() {
+                                return Stream.of(".").collect(
+                                        // BUG: Diagnostic contains: does not override
+                                        Collectors.toMap(Pattern::compile, s -> s));
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -241,16 +267,18 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "import java.util.stream.*;",
-                        "class Test {",
-                        "    private Map<Pattern, String> test() {",
-                        "        return Stream.of(\".\").collect(",
-                        "                // BUG: Diagnostic contains: does not override",
-                        "                Collectors.toUnmodifiableMap(Pattern::compile, s -> s));",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        import java.util.stream.*;
+                        class Test {
+                            private Map<Pattern, String> test() {
+                                return Stream.of(".").collect(
+                                        // BUG: Diagnostic contains: does not override
+                                        Collectors.toUnmodifiableMap(Pattern::compile, s -> s));
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -259,15 +287,17 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "import java.util.stream.*;",
-                        "class Test {",
-                        "    private Map<String, Pattern> test() {",
-                        "        return Stream.of(\".\").collect(",
-                        "                Collectors.toMap(s -> s, Pattern::compile));",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        import java.util.stream.*;
+                        class Test {
+                            private Map<String, Pattern> test() {
+                                return Stream.of(".").collect(
+                                        Collectors.toMap(s -> s, Pattern::compile));
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -276,17 +306,19 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.collect.*;",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "import java.util.stream.*;",
-                        "class Test {",
-                        "    private Map<Pattern, String> test() {",
-                        "        return Stream.of(\".\").collect(",
-                        "                // BUG: Diagnostic contains: does not override",
-                        "                ImmutableMap.toImmutableMap(Pattern::compile, s -> s));",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.common.collect.*;
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        import java.util.stream.*;
+                        class Test {
+                            private Map<Pattern, String> test() {
+                                return Stream.of(".").collect(
+                                        // BUG: Diagnostic contains: does not override
+                                        ImmutableMap.toImmutableMap(Pattern::compile, s -> s));
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -295,16 +327,18 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.collect.*;",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "import java.util.stream.*;",
-                        "class Test {",
-                        "    private Map<String, Pattern> test() {",
-                        "        return Stream.of(\".\").collect(",
-                        "                ImmutableMap.toImmutableMap(s -> s, Pattern::compile));",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.common.collect.*;
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        import java.util.stream.*;
+                        class Test {
+                            private Map<String, Pattern> test() {
+                                return Stream.of(".").collect(
+                                        ImmutableMap.toImmutableMap(s -> s, Pattern::compile));
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -313,14 +347,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.cache.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return CacheBuilder.newBuilder().<Pattern, String>build();",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.common.cache.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                // BUG: Diagnostic contains: does not override
+                                return CacheBuilder.newBuilder().<Pattern, String>build();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -329,13 +365,15 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.cache.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        return CacheBuilder.newBuilder().<String, Pattern>build();",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.common.cache.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                return CacheBuilder.newBuilder().<String, Pattern>build();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -344,14 +382,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.github.benmanes.caffeine.cache.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return Caffeine.newBuilder().<Pattern, String>build();",
-                        "    }",
-                        "}")
+                        """
+                        import com.github.benmanes.caffeine.cache.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                // BUG: Diagnostic contains: does not override
+                                return Caffeine.newBuilder().<Pattern, String>build();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -360,13 +400,15 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.github.benmanes.caffeine.cache.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        return Caffeine.newBuilder().<String, Pattern>build();",
-                        "    }",
-                        "}")
+                        """
+                        import com.github.benmanes.caffeine.cache.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                return Caffeine.newBuilder().<String, Pattern>build();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -375,14 +417,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.collect.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return ImmutableMap.of(Pattern.compile(\".\"), \"str\");",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.common.collect.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                // BUG: Diagnostic contains: does not override
+                                return ImmutableMap.of(Pattern.compile("."), "str");
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -391,16 +435,18 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.collect.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        return ImmutableMap.<Pattern, String>builder()",
-                        "            .put(Pattern.compile(\".\"), \"str\")",
-                        "            // BUG: Diagnostic contains: does not override",
-                        "            .build();",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.common.collect.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                return ImmutableMap.<Pattern, String>builder()
+                                    .put(Pattern.compile("."), "str")
+                                    // BUG: Diagnostic contains: does not override
+                                    .build();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -409,14 +455,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.collect.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return ImmutableSet.of(Pattern.compile(\".\"));",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.common.collect.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                // BUG: Diagnostic contains: does not override
+                                return ImmutableSet.of(Pattern.compile("."));
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -425,14 +473,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.collect.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private ImmutableSet<Pattern> test() {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return ImmutableSet.<Pattern>builder().add(Pattern.compile(\".\")).build();",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.common.collect.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private ImmutableSet<Pattern> test() {
+                                // BUG: Diagnostic contains: does not override
+                                return ImmutableSet.<Pattern>builder().add(Pattern.compile(".")).build();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -441,14 +491,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return Map.of(Pattern.compile(\".\"), \"str\");",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                // BUG: Diagnostic contains: does not override
+                                return Map.of(Pattern.compile("."), "str");
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -457,14 +509,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test() {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return Set.of(Pattern.compile(\".\"));",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test() {
+                                // BUG: Diagnostic contains: does not override
+                                return Set.of(Pattern.compile("."));
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -473,14 +527,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import one.util.streamex.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test(StreamEx<Pattern> stream) {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return stream.toSet();",
-                        "    }",
-                        "}")
+                        """
+                        import one.util.streamex.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test(StreamEx<Pattern> stream) {
+                                // BUG: Diagnostic contains: does not override
+                                return stream.toSet();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -489,14 +545,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import one.util.streamex.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test(StreamEx<Pattern> stream) {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return stream.toImmutableSet();",
-                        "    }",
-                        "}")
+                        """
+                        import one.util.streamex.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test(StreamEx<Pattern> stream) {
+                                // BUG: Diagnostic contains: does not override
+                                return stream.toImmutableSet();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -505,14 +563,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import one.util.streamex.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test(EntryStream<Pattern, String> stream) {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return stream.toMap();",
-                        "    }",
-                        "}")
+                        """
+                        import one.util.streamex.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test(EntryStream<Pattern, String> stream) {
+                                // BUG: Diagnostic contains: does not override
+                                return stream.toMap();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -521,14 +581,16 @@ public final class DangerousIdentityKeyTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import one.util.streamex.*;",
-                        "import java.util.regex.Pattern;",
-                        "class Test {",
-                        "    private Object test(EntryStream<Pattern, String> stream) {",
-                        "        // BUG: Diagnostic contains: does not override",
-                        "        return stream.toImmutableMap();",
-                        "    }",
-                        "}")
+                        """
+                        import one.util.streamex.*;
+                        import java.util.regex.Pattern;
+                        class Test {
+                            private Object test(EntryStream<Pattern, String> stream) {
+                                // BUG: Diagnostic contains: does not override
+                                return stream.toImmutableMap();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 }
