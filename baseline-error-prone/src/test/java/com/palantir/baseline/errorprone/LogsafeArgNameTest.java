@@ -26,14 +26,16 @@ public final class LogsafeArgNameTest {
         getCompilationHelper()
                 .addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.SafeArg;",
-                        "class Test {",
-                        "  void f() {",
-                        "    // BUG: Diagnostic contains: must be marked as unsafe",
-                        "    SafeArg.of(\"foo\", 1);",
-                        "  }",
-                        "",
-                        "}")
+                        """
+                        import com.palantir.logsafe.SafeArg;
+                        class Test {
+                          void f() {
+                            // BUG: Diagnostic contains: must be marked as unsafe
+                            SafeArg.of("foo", 1);
+                          }
+
+                        }
+                        """)
                 .doTest();
     }
 
@@ -42,14 +44,16 @@ public final class LogsafeArgNameTest {
         getCompilationHelper()
                 .addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.SafeArg;",
-                        "class Test {",
-                        "  void f() {",
-                        "    // BUG: Diagnostic contains: must be marked as unsafe",
-                        "    SafeArg.of(\"Foo\", 1);",
-                        "  }",
-                        "",
-                        "}")
+                        """
+                        import com.palantir.logsafe.SafeArg;
+                        class Test {
+                          void f() {
+                            // BUG: Diagnostic contains: must be marked as unsafe
+                            SafeArg.of("Foo", 1);
+                          }
+
+                        }
+                        """)
                 .doTest();
     }
 
@@ -58,23 +62,27 @@ public final class LogsafeArgNameTest {
         getRefactoringHelper()
                 .addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.SafeArg;",
-                        "class Test {",
-                        "  void f() {",
-                        "    SafeArg.of(\"Foo\", 1);",
-                        "  }",
-                        "",
-                        "}")
+                        """
+                        import com.palantir.logsafe.SafeArg;
+                        class Test {
+                          void f() {
+                            SafeArg.of("Foo", 1);
+                          }
+
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.SafeArg;",
-                        "import com.palantir.logsafe.UnsafeArg;",
-                        "class Test {",
-                        "  void f() {",
-                        "    UnsafeArg.of(\"Foo\", 1);",
-                        "  }",
-                        "",
-                        "}")
+                        """
+                        import com.palantir.logsafe.SafeArg;
+                        import com.palantir.logsafe.UnsafeArg;
+                        class Test {
+                          void f() {
+                            UnsafeArg.of("Foo", 1);
+                          }
+
+                        }
+                        """)
                 .doTest();
     }
 
@@ -83,13 +91,15 @@ public final class LogsafeArgNameTest {
         getCompilationHelper()
                 .addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.SafeArg;",
-                        "class Test {",
-                        "  void f() {",
-                        "    SafeArg.of(\"baz\", 1);",
-                        "  }",
-                        "",
-                        "}")
+                        """
+                        import com.palantir.logsafe.SafeArg;
+                        class Test {
+                          void f() {
+                            SafeArg.of("baz", 1);
+                          }
+
+                        }
+                        """)
                 .doTest();
     }
 
@@ -98,15 +108,17 @@ public final class LogsafeArgNameTest {
         getCompilationHelper()
                 .addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.SafeArg;",
-                        "import java.lang.String;",
-                        "class Test {",
-                        "  static final String NAME = \"name\";",
-                        "  void f() {",
-                        "    SafeArg.of(NAME, 1);",
-                        "  }",
-                        "",
-                        "}")
+                        """
+                        import com.palantir.logsafe.SafeArg;
+                        import java.lang.String;
+                        class Test {
+                          static final String NAME = "name";
+                          void f() {
+                            SafeArg.of(NAME, 1);
+                          }
+
+                        }
+                        """)
                 .doTest();
     }
 

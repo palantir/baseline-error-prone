@@ -32,15 +32,17 @@ public final class JooqResultStreamLeakTest {
         testHelper
                 .addSourceLines(
                         "JooqStream.java",
-                        "import java.util.stream.Collectors;",
-                        "import java.util.stream.Stream;",
-                        "import org.jooq.Record;",
-                        "import org.jooq.SelectConditionStep;",
-                        "class Test {",
-                        "  SelectConditionStep<Record> f(SelectConditionStep<Record> select) {",
-                        "    return select.and(\"some_field <> 3\");",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.stream.Collectors;
+                        import java.util.stream.Stream;
+                        import org.jooq.Record;
+                        import org.jooq.SelectConditionStep;
+                        class Test {
+                          SelectConditionStep<Record> f(SelectConditionStep<Record> select) {
+                            return select.and("some_field <> 3");
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -49,26 +51,30 @@ public final class JooqResultStreamLeakTest {
         refactoringValidator
                 .addInputLines(
                         "in/JooqStream.java",
-                        "import java.util.stream.Stream;",
-                        "import org.jooq.Record;",
-                        "import org.jooq.ResultQuery;",
-                        "class Test {",
-                        "  void f(ResultQuery<Record> rq) {",
-                        "    rq.stream().map(r -> r.getValue(0));",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.stream.Stream;
+                        import org.jooq.Record;
+                        import org.jooq.ResultQuery;
+                        class Test {
+                          void f(ResultQuery<Record> rq) {
+                            rq.stream().map(r -> r.getValue(0));
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "out/JooqStream.java",
-                        "import java.util.stream.Stream;",
-                        "import org.jooq.Record;",
-                        "import org.jooq.ResultQuery;",
-                        "class Test {",
-                        "  void f(ResultQuery<Record> rq) {",
-                        "    try (Stream<Record> stream = rq.stream()) {",
-                        "      stream.map(r -> r.getValue(0));",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.stream.Stream;
+                        import org.jooq.Record;
+                        import org.jooq.ResultQuery;
+                        class Test {
+                          void f(ResultQuery<Record> rq) {
+                            try (Stream<Record> stream = rq.stream()) {
+                              stream.map(r -> r.getValue(0));
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -77,29 +83,33 @@ public final class JooqResultStreamLeakTest {
         refactoringValidator
                 .addInputLines(
                         "in/JooqStream.java",
-                        "import java.util.stream.Collectors;",
-                        "import java.util.stream.Stream;",
-                        "import org.jooq.Record;",
-                        "import org.jooq.ResultQuery;",
-                        "class Test {",
-                        "  void f(ResultQuery<Record> rq) {",
-                        "    String res = rq.stream().map(r -> r.toString()).collect(Collectors.joining(\", \"));",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.stream.Collectors;
+                        import java.util.stream.Stream;
+                        import org.jooq.Record;
+                        import org.jooq.ResultQuery;
+                        class Test {
+                          void f(ResultQuery<Record> rq) {
+                            String res = rq.stream().map(r -> r.toString()).collect(Collectors.joining(", "));
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "out/JooqStream.java",
-                        "import java.util.stream.Collectors;",
-                        "import java.util.stream.Stream;",
-                        "import org.jooq.Record;",
-                        "import org.jooq.ResultQuery;",
-                        "class Test {",
-                        "  void f(ResultQuery<Record> rq) {",
-                        "    String res;",
-                        "    try (Stream<Record> stream = rq.stream()) {",
-                        "      res = stream.map(r -> r.toString()).collect(Collectors.joining(\", \"));",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.stream.Collectors;
+                        import java.util.stream.Stream;
+                        import org.jooq.Record;
+                        import org.jooq.ResultQuery;
+                        class Test {
+                          void f(ResultQuery<Record> rq) {
+                            String res;
+                            try (Stream<Record> stream = rq.stream()) {
+                              res = stream.map(r -> r.toString()).collect(Collectors.joining(", "));
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 }
