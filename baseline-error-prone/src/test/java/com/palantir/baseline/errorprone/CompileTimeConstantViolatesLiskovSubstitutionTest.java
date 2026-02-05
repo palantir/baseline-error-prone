@@ -25,16 +25,18 @@ class CompileTimeConstantViolatesLiskovSubstitutionTest {
     public void testInterface_negative() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  interface A {",
-                        "    void foo(@CompileTimeConstant String value);",
-                        "  }",
-                        "  static class B implements A {",
-                        "    @Override",
-                        "    public void foo(@CompileTimeConstant String value) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          interface A {
+                            void foo(@CompileTimeConstant String value);
+                          }
+                          static class B implements A {
+                            @Override
+                            public void foo(@CompileTimeConstant String value) {}
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -42,16 +44,18 @@ class CompileTimeConstantViolatesLiskovSubstitutionTest {
     public void testAbstractClass_negative() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  static abstract class A {",
-                        "    public abstract void foo(@CompileTimeConstant String value);",
-                        "  }",
-                        "  static class B extends A {",
-                        "    @Override",
-                        "    public void foo(@CompileTimeConstant String value) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          static abstract class A {
+                            public abstract void foo(@CompileTimeConstant String value);
+                          }
+                          static class B extends A {
+                            @Override
+                            public void foo(@CompileTimeConstant String value) {}
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -59,16 +63,18 @@ class CompileTimeConstantViolatesLiskovSubstitutionTest {
     public void testClass_negative() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  static class A {",
-                        "    public void foo(@CompileTimeConstant String value) {}",
-                        "  }",
-                        "  static class B extends A {",
-                        "    @Override",
-                        "    public void foo(@CompileTimeConstant String value) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          static class A {
+                            public void foo(@CompileTimeConstant String value) {}
+                          }
+                          static class B extends A {
+                            @Override
+                            public void foo(@CompileTimeConstant String value) {}
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -76,28 +82,32 @@ class CompileTimeConstantViolatesLiskovSubstitutionTest {
     public void testImplementsAnnotated_positive() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  interface A {",
-                        "    void foo(@CompileTimeConstant String value);",
-                        "  }",
-                        "  static class B implements A {",
-                        "    @Override",
-                        "    public void foo(String value) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          interface A {
+                            void foo(@CompileTimeConstant String value);
+                          }
+                          static class B implements A {
+                            @Override
+                            public void foo(String value) {}
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  interface A {",
-                        "    void foo(@CompileTimeConstant String value);",
-                        "  }",
-                        "  static class B implements A {",
-                        "    @Override",
-                        "    public void foo(@CompileTimeConstant String value) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          interface A {
+                            void foo(@CompileTimeConstant String value);
+                          }
+                          static class B implements A {
+                            @Override
+                            public void foo(@CompileTimeConstant String value) {}
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -105,28 +115,32 @@ class CompileTimeConstantViolatesLiskovSubstitutionTest {
     public void testExtendsAnnotated_positive() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  static class A {",
-                        "    public void foo(@CompileTimeConstant String value) {}",
-                        "  }",
-                        "  static class B extends A {",
-                        "    @Override",
-                        "    public void foo(String value) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          static class A {
+                            public void foo(@CompileTimeConstant String value) {}
+                          }
+                          static class B extends A {
+                            @Override
+                            public void foo(String value) {}
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  static class A {",
-                        "    public void foo(@CompileTimeConstant String value) {}",
-                        "  }",
-                        "  static class B extends A {",
-                        "    @Override",
-                        "    public void foo(@CompileTimeConstant String value) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          static class A {
+                            public void foo(@CompileTimeConstant String value) {}
+                          }
+                          static class B extends A {
+                            @Override
+                            public void foo(@CompileTimeConstant String value) {}
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -134,28 +148,32 @@ class CompileTimeConstantViolatesLiskovSubstitutionTest {
     public void testImplementsAnnotated_twoParametersFail_positive() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  interface A {",
-                        "    void foo(@CompileTimeConstant String a, @CompileTimeConstant String b);",
-                        "  }",
-                        "  static class B implements A {",
-                        "    @Override",
-                        "    public void foo(String a, String b) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          interface A {
+                            void foo(@CompileTimeConstant String a, @CompileTimeConstant String b);
+                          }
+                          static class B implements A {
+                            @Override
+                            public void foo(String a, String b) {}
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  interface A {",
-                        "    void foo(@CompileTimeConstant String a, @CompileTimeConstant String b);",
-                        "  }",
-                        "  static class B implements A {",
-                        "    @Override",
-                        "    public void foo(@CompileTimeConstant String a, @CompileTimeConstant String b) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          interface A {
+                            void foo(@CompileTimeConstant String a, @CompileTimeConstant String b);
+                          }
+                          static class B implements A {
+                            @Override
+                            public void foo(@CompileTimeConstant String a, @CompileTimeConstant String b) {}
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -163,17 +181,19 @@ class CompileTimeConstantViolatesLiskovSubstitutionTest {
     public void testSimpleImplementsUnannotated_positive() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  interface A {",
-                        "    void foo(String value);",
-                        "  }",
-                        "  static class B implements A {",
-                        "    @Override",
-                        "// BUG: Diagnostic contains: must also be applied to the super method",
-                        "    public void foo(@CompileTimeConstant String value) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          interface A {
+                            void foo(String value);
+                          }
+                          static class B implements A {
+                            @Override
+                        // BUG: Diagnostic contains: must also be applied to the super method
+                            public void foo(@CompileTimeConstant String value) {}
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -181,19 +201,21 @@ class CompileTimeConstantViolatesLiskovSubstitutionTest {
     public void testSimpleImplementsUnannotated_multipleParameters_positive() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CompileTimeConstant;",
-                        "class Test {",
-                        "  interface A {",
-                        "    void foo(String a, String b);",
-                        "  }",
-                        "  static class B implements A {",
-                        "    @Override",
-                        "    public void foo(",
-                        "        String a,",
-                        "// BUG: Diagnostic contains: must also be applied to the super method",
-                        "        @CompileTimeConstant String b) {}",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CompileTimeConstant;
+                        class Test {
+                          interface A {
+                            void foo(String a, String b);
+                          }
+                          static class B implements A {
+                            @Override
+                            public void foo(
+                                String a,
+                        // BUG: Diagnostic contains: must also be applied to the super method
+                                @CompileTimeConstant String b) {}
+                          }
+                        }
+                        """)
                 .doTest();
     }
 

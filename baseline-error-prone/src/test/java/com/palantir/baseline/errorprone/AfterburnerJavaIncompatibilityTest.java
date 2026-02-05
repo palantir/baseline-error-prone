@@ -25,11 +25,13 @@ class AfterburnerJavaIncompatibilityTest {
     void afterburnerNotAllowed() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.fasterxml.jackson.module.afterburner.AfterburnerModule;",
-                        "public class Test {",
-                        "  // BUG: Diagnostic contains: AfterburnerModule",
-                        "  AfterburnerModule module = new AfterburnerModule();",
-                        "}")
+                        """
+                        import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
+                        public class Test {
+                          // BUG: Diagnostic contains: AfterburnerModule
+                          AfterburnerModule module = new AfterburnerModule();
+                        }
+                        """)
                 .doTest();
     }
 
