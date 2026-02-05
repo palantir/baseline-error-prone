@@ -27,27 +27,31 @@ public final class PreferListsPartitionTests {
         CompilationTestHelper.newInstance(PreferListsPartition.class, getClass())
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.collect.Iterables;",
-                        "import java.util.List;",
-                        "class Test {",
-                        "  Iterable<?> f(List<?> list) {",
-                        "    // BUG: Diagnostic contains: Prefer com.google.common.collect.Lists.partition",
-                        "    return Iterables.partition(list, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.collect.Iterables;
+                        import java.util.List;
+                        class Test {
+                          Iterable<?> f(List<?> list) {
+                            // BUG: Diagnostic contains: Prefer com.google.common.collect.Lists.partition
+                            return Iterables.partition(list, 10);
+                          }
+                        }
+                        """)
                 .doTest();
 
         CompilationTestHelper.newInstance(PreferListsPartition.class, getClass())
                 .addSourceLines(
                         "Test.java",
-                        "import static com.google.common.collect.Iterables.partition;",
-                        "import java.util.List;",
-                        "class Test {",
-                        "   Iterable<?> f(List<?> list) {",
-                        "    // BUG: Diagnostic contains: Prefer com.google.common.collect.Lists.partition",
-                        "    return partition(list, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import static com.google.common.collect.Iterables.partition;
+                        import java.util.List;
+                        class Test {
+                           Iterable<?> f(List<?> list) {
+                            // BUG: Diagnostic contains: Prefer com.google.common.collect.Lists.partition
+                            return partition(list, 10);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -56,25 +60,29 @@ public final class PreferListsPartitionTests {
         CompilationTestHelper.newInstance(PreferListsPartition.class, getClass())
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.collect.Iterables;",
-                        "class Test {",
-                        "  void test(Iterable<String> items) {",
-                        "    // BUG: Diagnostic contains: Prefer com.palantir.common.streams.MoreIterables.partition",
-                        "    Iterables.partition(items, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.collect.Iterables;
+                        class Test {
+                          void test(Iterable<String> items) {
+                            // BUG: Diagnostic contains: Prefer com.palantir.common.streams.MoreIterables.partition
+                            Iterables.partition(items, 10);
+                          }
+                        }
+                        """)
                 .doTest();
 
         CompilationTestHelper.newInstance(PreferListsPartition.class, getClass())
                 .addSourceLines(
                         "Test.java",
-                        "import static com.google.common.collect.Iterables.partition;",
-                        "class Test {",
-                        "  void test(Iterable<String> items) {",
-                        "    // BUG: Diagnostic contains: Prefer com.palantir.common.streams.MoreIterables.partition",
-                        "    partition(items, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import static com.google.common.collect.Iterables.partition;
+                        class Test {
+                          void test(Iterable<String> items) {
+                            // BUG: Diagnostic contains: Prefer com.palantir.common.streams.MoreIterables.partition
+                            partition(items, 10);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -83,13 +91,15 @@ public final class PreferListsPartitionTests {
         CompilationTestHelper.newInstance(PreferListsPartition.class, getClass())
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.collect.Lists;",
-                        "import java.util.List;",
-                        "class Test {",
-                        "  Iterable<?> f(List<?> list) {",
-                        "    return Lists.partition(list, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.collect.Lists;
+                        import java.util.List;
+                        class Test {
+                          Iterable<?> f(List<?> list) {
+                            return Lists.partition(list, 10);
+                          }
+                        }
+                        """)
                 .expectNoDiagnostics()
                 .doTest();
     }
@@ -99,23 +109,27 @@ public final class PreferListsPartitionTests {
         RefactoringValidator.of(PreferListsPartition.class, getClass())
                 .addInputLines(
                         "Test.java",
-                        "import com.google.common.collect.Iterables;",
-                        "import java.util.List;",
-                        "class Test {",
-                        "  Iterable<?> f(Iterable<String> iterable) {",
-                        "    return Iterables.partition(iterable, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.collect.Iterables;
+                        import java.util.List;
+                        class Test {
+                          Iterable<?> f(Iterable<String> iterable) {
+                            return Iterables.partition(iterable, 10);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.common.collect.Iterables;",
-                        "import com.palantir.common.streams.MoreIterables;",
-                        "import java.util.List;",
-                        "class Test {",
-                        "  Iterable<?> f(Iterable<String> iterable) {",
-                        "    return MoreIterables.partition(iterable, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.collect.Iterables;
+                        import com.palantir.common.streams.MoreIterables;
+                        import java.util.List;
+                        class Test {
+                          Iterable<?> f(Iterable<String> iterable) {
+                            return MoreIterables.partition(iterable, 10);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -124,23 +138,27 @@ public final class PreferListsPartitionTests {
         RefactoringValidator.of(PreferListsPartition.class, getClass())
                 .addInputLines(
                         "Test.java",
-                        "import com.google.common.collect.Iterables;",
-                        "import java.util.Set;",
-                        "class Test {",
-                        "  Iterable<?> f(Set<?> set) {",
-                        "    return Iterables.partition(set, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.collect.Iterables;
+                        import java.util.Set;
+                        class Test {
+                          Iterable<?> f(Set<?> set) {
+                            return Iterables.partition(set, 10);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.common.collect.Iterables;",
-                        "import com.palantir.common.streams.MoreIterables;",
-                        "import java.util.Set;",
-                        "class Test {",
-                        "  Iterable<?> f(Set<?> set) {",
-                        "    return MoreIterables.partition(set, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.collect.Iterables;
+                        import com.palantir.common.streams.MoreIterables;
+                        import java.util.Set;
+                        class Test {
+                          Iterable<?> f(Set<?> set) {
+                            return MoreIterables.partition(set, 10);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -149,23 +167,27 @@ public final class PreferListsPartitionTests {
         RefactoringValidator.of(PreferListsPartition.class, getClass())
                 .addInputLines(
                         "Test.java",
-                        "import com.google.common.collect.Iterables;",
-                        "import java.util.List;",
-                        "class Test {",
-                        "  Iterable<?> f(List<?> list) {",
-                        "    return Iterables.partition(list, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.collect.Iterables;
+                        import java.util.List;
+                        class Test {
+                          Iterable<?> f(List<?> list) {
+                            return Iterables.partition(list, 10);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.common.collect.Iterables;",
-                        "import com.google.common.collect.Lists;",
-                        "import java.util.List;",
-                        "class Test {",
-                        "  Iterable<?> f(List<?> list) {",
-                        "    return Lists.partition(list, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.collect.Iterables;
+                        import com.google.common.collect.Lists;
+                        import java.util.List;
+                        class Test {
+                          Iterable<?> f(List<?> list) {
+                            return Lists.partition(list, 10);
+                          }
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
@@ -174,13 +196,15 @@ public final class PreferListsPartitionTests {
         CompilationTestHelper.newInstance(PreferListsPartition.class, getClass())
                 .addSourceLines(
                         "Test.java",
-                        "import com.palantir.common.streams.MoreIterables;",
-                        "import java.util.List;",
-                        "class Test {",
-                        "  Iterable<? extends List<? extends String>> test(List<String> items) {",
-                        "    return MoreIterables.partition(items, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.common.streams.MoreIterables;
+                        import java.util.List;
+                        class Test {
+                          Iterable<? extends List<? extends String>> test(List<String> items) {
+                            return MoreIterables.partition(items, 10);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -189,13 +213,15 @@ public final class PreferListsPartitionTests {
         CompilationTestHelper.newInstance(PreferListsPartition.class, getClass())
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.common.collect.Lists;",
-                        "import java.util.List;",
-                        "class Test {",
-                        "  Iterable<List<String>> test(List<String> items) {",
-                        "    return Lists.partition(items, 10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.collect.Lists;
+                        import java.util.List;
+                        class Test {
+                          Iterable<List<String>> test(List<String> items) {
+                            return Lists.partition(items, 10);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 }
