@@ -24,16 +24,20 @@ class PreferStaticLoggersTest {
     void testNonstaticLogger_stringName() {
         fix().addInputLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private final Logger log = LoggerFactory.getLogger(\"foo\");",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          private final Logger log = LoggerFactory.getLogger("foo");
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(\"foo\");",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          private static final Logger log = LoggerFactory.getLogger("foo");
+                        }
+                        """)
                 .doTest();
     }
 
@@ -41,16 +45,20 @@ class PreferStaticLoggersTest {
     void testNonstaticLogger_getClassName() {
         fix().addInputLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private final Logger log = LoggerFactory.getLogger(getClass());",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          private final Logger log = LoggerFactory.getLogger(getClass());
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                        }
+                        """)
                 .doTest();
     }
 

@@ -28,26 +28,30 @@ class PreferSafeLoggerTest {
     void testSimpleFix() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action() {",
-                        "    log.info(\"foo\", SafeArg.of(\"name\", \"value\"));",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action() {
+                            log.info("foo", SafeArg.of("name", "value"));
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import com.palantir.logsafe.logger.SafeLogger;",
-                        "import com.palantir.logsafe.logger.SafeLoggerFactory;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "  void action() {",
-                        "    log.info(\"foo\", SafeArg.of(\"name\", \"value\"));",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import com.palantir.logsafe.logger.SafeLogger;
+                        import com.palantir.logsafe.logger.SafeLoggerFactory;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+                          void action() {
+                            log.info("foo", SafeArg.of("name", "value"));
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -55,26 +59,30 @@ class PreferSafeLoggerTest {
     void testSimpleFix_stringAccessor() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(\"str\");",
-                        "  void action() {",
-                        "    log.info(\"foo\", SafeArg.of(\"name\", \"value\"));",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final Logger log = LoggerFactory.getLogger("str");
+                          void action() {
+                            log.info("foo", SafeArg.of("name", "value"));
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import com.palantir.logsafe.logger.SafeLogger;",
-                        "import com.palantir.logsafe.logger.SafeLoggerFactory;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final SafeLogger log = SafeLoggerFactory.get(\"str\");",
-                        "  void action() {",
-                        "    log.info(\"foo\", SafeArg.of(\"name\", \"value\"));",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import com.palantir.logsafe.logger.SafeLogger;
+                        import com.palantir.logsafe.logger.SafeLoggerFactory;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final SafeLogger log = SafeLoggerFactory.get("str");
+                          void action() {
+                            log.info("foo", SafeArg.of("name", "value"));
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -82,24 +90,28 @@ class PreferSafeLoggerTest {
     void testSimpleFixWithThrowable() {
         fix().addInputLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action(Throwable t) {",
-                        "    log.info(\"foo\", t);",
-                        "  }",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action(Throwable t) {
+                            log.info("foo", t);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.logger.SafeLogger;",
-                        "import com.palantir.logsafe.logger.SafeLoggerFactory;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "  void action(Throwable t) {",
-                        "    log.info(\"foo\", t);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.logger.SafeLogger;
+                        import com.palantir.logsafe.logger.SafeLoggerFactory;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+                          void action(Throwable t) {
+                            log.info("foo", t);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -107,26 +119,30 @@ class PreferSafeLoggerTest {
     void testSimpleFixWithArgAndThrowable() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action(Throwable t) {",
-                        "    log.info(\"foo\", SafeArg.of(\"name\", \"value\"), t);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action(Throwable t) {
+                            log.info("foo", SafeArg.of("name", "value"), t);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import com.palantir.logsafe.logger.SafeLogger;",
-                        "import com.palantir.logsafe.logger.SafeLoggerFactory;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "  void action(Throwable t) {",
-                        "    log.info(\"foo\", SafeArg.of(\"name\", \"value\"), t);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import com.palantir.logsafe.logger.SafeLogger;
+                        import com.palantir.logsafe.logger.SafeLoggerFactory;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+                          void action(Throwable t) {
+                            log.info("foo", SafeArg.of("name", "value"), t);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -134,28 +150,32 @@ class PreferSafeLoggerTest {
     void testFixWithLevelCheck() {
         fix().addInputLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action(Throwable t) {",
-                        "    if (log.isInfoEnabled()) {",
-                        "        log.info(\"foo\", t);",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action(Throwable t) {
+                            if (log.isInfoEnabled()) {
+                                log.info("foo", t);
+                            }
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.logger.SafeLogger;",
-                        "import com.palantir.logsafe.logger.SafeLoggerFactory;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "  void action(Throwable t) {",
-                        "    if (log.isInfoEnabled()) {",
-                        "        log.info(\"foo\", t);",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.logger.SafeLogger;
+                        import com.palantir.logsafe.logger.SafeLoggerFactory;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+                          void action(Throwable t) {
+                            if (log.isInfoEnabled()) {
+                                log.info("foo", t);
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -163,15 +183,17 @@ class PreferSafeLoggerTest {
     void testIgnoresIncorrectlyOrderedThrowables() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  // BUG: Diagnostic contains: Prefer using type-safe safe-logging loggers",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action(Throwable t) {",
-                        "    log.info(\"foo\", t, SafeArg.of(\"name\", \"value\"));",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.slf4j.*;
+                        class Test {
+                          // BUG: Diagnostic contains: Prefer using type-safe safe-logging loggers
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action(Throwable t) {
+                            log.info("foo", t, SafeArg.of("name", "value"));
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }
@@ -180,15 +202,17 @@ class PreferSafeLoggerTest {
     void testUnsafeLoggingUnmodified() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  // BUG: Diagnostic contains: Prefer using type-safe safe-logging loggers",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action() {",
-                        "    log.info(\"foo\", \"value\");",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.slf4j.*;
+                        class Test {
+                          // BUG: Diagnostic contains: Prefer using type-safe safe-logging loggers
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action() {
+                            log.info("foo", "value");
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }
@@ -197,19 +221,21 @@ class PreferSafeLoggerTest {
     void testPassedLoggerUnmodified() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  // BUG: Diagnostic contains: Prefer using type-safe safe-logging loggers",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action() {",
-                        "    log.info(\"foo\", SafeArg.of(\"name\", \"value\"));",
-                        "    bh(log);",
-                        "  }",
-                        "  static Logger bh(Logger log) {",
-                        "    return log;",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.slf4j.*;
+                        class Test {
+                          // BUG: Diagnostic contains: Prefer using type-safe safe-logging loggers
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action() {
+                            log.info("foo", SafeArg.of("name", "value"));
+                            bh(log);
+                          }
+                          static Logger bh(Logger log) {
+                            return log;
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }
@@ -219,15 +245,17 @@ class PreferSafeLoggerTest {
         // getName is not supported by SafeLogger, so we shouldn't make changes that won't compile.
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  // BUG: Diagnostic contains: Prefer using type-safe safe-logging loggers",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action() {",
-                        "    log.info(\"foo\", SafeArg.of(\"name\", log.getName()));",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.slf4j.*;
+                        class Test {
+                          // BUG: Diagnostic contains: Prefer using type-safe safe-logging loggers
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action() {
+                            log.info("foo", SafeArg.of("name", log.getName()));
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }
@@ -236,26 +264,30 @@ class PreferSafeLoggerTest {
     void testIsTraceEnabledInArg() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action() {",
-                        "    log.info(\"foo\", SafeArg.of(\"name\", log.isTraceEnabled()));",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action() {
+                            log.info("foo", SafeArg.of("name", log.isTraceEnabled()));
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import com.palantir.logsafe.logger.SafeLogger;",
-                        "import com.palantir.logsafe.logger.SafeLoggerFactory;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "  void action() {",
-                        "    log.info(\"foo\", SafeArg.of(\"name\", log.isTraceEnabled()));",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import com.palantir.logsafe.logger.SafeLogger;
+                        import com.palantir.logsafe.logger.SafeLoggerFactory;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+                          void action() {
+                            log.info("foo", SafeArg.of("name", log.isTraceEnabled()));
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -263,49 +295,53 @@ class PreferSafeLoggerTest {
     void testTooManyArgs() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action() {",
-                        "    log.info(\"msg\",",
-                        "        SafeArg.of(\"1\", 1),",
-                        "        SafeArg.of(\"2\", 2),",
-                        "        SafeArg.of(\"3\", 3),",
-                        "        SafeArg.of(\"4\", 4),",
-                        "        SafeArg.of(\"5\", 5),",
-                        "        SafeArg.of(\"6\", 6),",
-                        "        SafeArg.of(\"7\", 7),",
-                        "        SafeArg.of(\"8\", 8),",
-                        "        SafeArg.of(\"9\", 9),",
-                        "        SafeArg.of(\"10\", 10),",
-                        "        SafeArg.of(\"11\", 11));",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action() {
+                            log.info("msg",
+                                SafeArg.of("1", 1),
+                                SafeArg.of("2", 2),
+                                SafeArg.of("3", 3),
+                                SafeArg.of("4", 4),
+                                SafeArg.of("5", 5),
+                                SafeArg.of("6", 6),
+                                SafeArg.of("7", 7),
+                                SafeArg.of("8", 8),
+                                SafeArg.of("9", 9),
+                                SafeArg.of("10", 10),
+                                SafeArg.of("11", 11));
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import com.palantir.logsafe.logger.SafeLogger;",
-                        "import com.palantir.logsafe.logger.SafeLoggerFactory;",
-                        "import java.util.Arrays;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "  void action() {",
-                        "    log.info(\"msg\",",
-                        "        Arrays.asList(SafeArg.of(\"1\", 1),",
-                        "        SafeArg.of(\"2\", 2),",
-                        "        SafeArg.of(\"3\", 3),",
-                        "        SafeArg.of(\"4\", 4),",
-                        "        SafeArg.of(\"5\", 5),",
-                        "        SafeArg.of(\"6\", 6),",
-                        "        SafeArg.of(\"7\", 7),",
-                        "        SafeArg.of(\"8\", 8),",
-                        "        SafeArg.of(\"9\", 9),",
-                        "        SafeArg.of(\"10\", 10),",
-                        "        SafeArg.of(\"11\", 11)));",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import com.palantir.logsafe.logger.SafeLogger;
+                        import com.palantir.logsafe.logger.SafeLoggerFactory;
+                        import java.util.Arrays;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+                          void action() {
+                            log.info("msg",
+                                Arrays.asList(SafeArg.of("1", 1),
+                                SafeArg.of("2", 2),
+                                SafeArg.of("3", 3),
+                                SafeArg.of("4", 4),
+                                SafeArg.of("5", 5),
+                                SafeArg.of("6", 6),
+                                SafeArg.of("7", 7),
+                                SafeArg.of("8", 8),
+                                SafeArg.of("9", 9),
+                                SafeArg.of("10", 10),
+                                SafeArg.of("11", 11)));
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -313,51 +349,55 @@ class PreferSafeLoggerTest {
     void testTooManyArgsWithThrowable() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void action(Throwable t) {",
-                        "    log.info(\"msg\",",
-                        "        SafeArg.of(\"1\", 1),",
-                        "        SafeArg.of(\"2\", 2),",
-                        "        SafeArg.of(\"3\", 3),",
-                        "        SafeArg.of(\"4\", 4),",
-                        "        SafeArg.of(\"5\", 5),",
-                        "        SafeArg.of(\"6\", 6),",
-                        "        SafeArg.of(\"7\", 7),",
-                        "        SafeArg.of(\"8\", 8),",
-                        "        SafeArg.of(\"9\", 9),",
-                        "        SafeArg.of(\"10\", 10),",
-                        "        SafeArg.of(\"11\", 11),",
-                        "        t);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final Logger log = LoggerFactory.getLogger(Test.class);
+                          void action(Throwable t) {
+                            log.info("msg",
+                                SafeArg.of("1", 1),
+                                SafeArg.of("2", 2),
+                                SafeArg.of("3", 3),
+                                SafeArg.of("4", 4),
+                                SafeArg.of("5", 5),
+                                SafeArg.of("6", 6),
+                                SafeArg.of("7", 7),
+                                SafeArg.of("8", 8),
+                                SafeArg.of("9", 9),
+                                SafeArg.of("10", 10),
+                                SafeArg.of("11", 11),
+                                t);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import com.palantir.logsafe.logger.SafeLogger;",
-                        "import com.palantir.logsafe.logger.SafeLoggerFactory;",
-                        "import java.util.Arrays;",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "  void action(Throwable t) {",
-                        "    log.info(\"msg\",",
-                        "        Arrays.asList(SafeArg.of(\"1\", 1),",
-                        "        SafeArg.of(\"2\", 2),",
-                        "        SafeArg.of(\"3\", 3),",
-                        "        SafeArg.of(\"4\", 4),",
-                        "        SafeArg.of(\"5\", 5),",
-                        "        SafeArg.of(\"6\", 6),",
-                        "        SafeArg.of(\"7\", 7),",
-                        "        SafeArg.of(\"8\", 8),",
-                        "        SafeArg.of(\"9\", 9),",
-                        "        SafeArg.of(\"10\", 10),",
-                        "        SafeArg.of(\"11\", 11)),",
-                        "        t);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import com.palantir.logsafe.logger.SafeLogger;
+                        import com.palantir.logsafe.logger.SafeLoggerFactory;
+                        import java.util.Arrays;
+                        import org.slf4j.*;
+                        class Test {
+                          private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+                          void action(Throwable t) {
+                            log.info("msg",
+                                Arrays.asList(SafeArg.of("1", 1),
+                                SafeArg.of("2", 2),
+                                SafeArg.of("3", 3),
+                                SafeArg.of("4", 4),
+                                SafeArg.of("5", 5),
+                                SafeArg.of("6", 6),
+                                SafeArg.of("7", 7),
+                                SafeArg.of("8", 8),
+                                SafeArg.of("9", 9),
+                                SafeArg.of("10", 10),
+                                SafeArg.of("11", 11)),
+                                t);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 }
