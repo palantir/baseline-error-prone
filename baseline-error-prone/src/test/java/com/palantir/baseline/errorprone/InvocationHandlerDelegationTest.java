@@ -25,15 +25,17 @@ class InvocationHandlerDelegationTest {
     void testSimpleInvocationHandler() {
         helper().addSourceLines(
                         "Test.java",
-                        "import java.lang.reflect.InvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "final class Test implements InvocationHandler {",
-                        "  @Override",
-                        "  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {",
-                        "    // BUG: Diagnostic contains: unwrap InvocationTargetException",
-                        "    return method.invoke(this, args);",
-                        "  }",
-                        "}")
+                        """
+                        import java.lang.reflect.InvocationHandler;
+                        import java.lang.reflect.Method;
+                        final class Test implements InvocationHandler {
+                          @Override
+                          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                            // BUG: Diagnostic contains: unwrap InvocationTargetException
+                            return method.invoke(this, args);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -41,16 +43,17 @@ class InvocationHandlerDelegationTest {
     void testSimpleAbstractInvocationHandler() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.google.common.reflect.AbstractInvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "final class Test extends AbstractInvocationHandler {",
-                        "  @Override",
-                        "  public Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable"
-                                + " {",
-                        "    // BUG: Diagnostic contains: unwrap InvocationTargetException",
-                        "    return method.invoke(this, args);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.reflect.AbstractInvocationHandler;
+                        import java.lang.reflect.Method;
+                        final class Test extends AbstractInvocationHandler {
+                          @Override
+                          public Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
+                            // BUG: Diagnostic contains: unwrap InvocationTargetException
+                            return method.invoke(this, args);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -58,15 +61,16 @@ class InvocationHandlerDelegationTest {
     void testAllowedWithoutDynamicInvocation() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.google.common.reflect.AbstractInvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "final class Test extends AbstractInvocationHandler {",
-                        "  @Override",
-                        "  public Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable"
-                                + " {",
-                        "    return this.toString();",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.reflect.AbstractInvocationHandler;
+                        import java.lang.reflect.Method;
+                        final class Test extends AbstractInvocationHandler {
+                          @Override
+                          public Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
+                            return this.toString();
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -74,20 +78,21 @@ class InvocationHandlerDelegationTest {
     void testCorrectAbstractInvocationHandler_getCause() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.google.common.reflect.AbstractInvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "import java.lang.reflect.InvocationTargetException;",
-                        "final class Test extends AbstractInvocationHandler {",
-                        "  @Override",
-                        "  public Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable"
-                                + " {",
-                        "    try {",
-                        "      return method.invoke(this, args);",
-                        "    } catch (InvocationTargetException e) {",
-                        "        throw e.getCause();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.reflect.AbstractInvocationHandler;
+                        import java.lang.reflect.Method;
+                        import java.lang.reflect.InvocationTargetException;
+                        final class Test extends AbstractInvocationHandler {
+                          @Override
+                          public Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
+                            try {
+                              return method.invoke(this, args);
+                            } catch (InvocationTargetException e) {
+                                throw e.getCause();
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -95,41 +100,45 @@ class InvocationHandlerDelegationTest {
     void testCorrectInvocationHandler_getTargetException() {
         helper().addSourceLines(
                         "Test.java",
-                        "import java.lang.reflect.InvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "import java.lang.reflect.InvocationTargetException;",
-                        "final class Test implements InvocationHandler {",
-                        "  @Override",
-                        "  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {",
-                        "    try {",
-                        "      return method.invoke(this, args);",
-                        "    } catch (InvocationTargetException e) {",
-                        "        throw e.getTargetException();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import java.lang.reflect.InvocationHandler;
+                        import java.lang.reflect.Method;
+                        import java.lang.reflect.InvocationTargetException;
+                        final class Test implements InvocationHandler {
+                          @Override
+                          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                            try {
+                              return method.invoke(this, args);
+                            } catch (InvocationTargetException e) {
+                                throw e.getTargetException();
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
     void testCorrectInvocationHandler_doesntRethrow() {
+        // Some proxies may check and rewrap the cause, the
+        // important part is that it's handled in some way.
         helper().addSourceLines(
                         "Test.java",
-                        "import java.lang.reflect.InvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "import java.lang.reflect.InvocationTargetException;",
-                        "final class Test implements InvocationHandler {",
-                        "  @Override",
-                        "  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {",
-                        "    try {",
-                        "      return method.invoke(this, args);",
-                        "    } catch (InvocationTargetException e) {",
-                        // Some proxies may check and rewrap the cause, the
-                        // important part is that it's handled in some way.
-                        "        return e.getCause();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import java.lang.reflect.InvocationHandler;
+                        import java.lang.reflect.Method;
+                        import java.lang.reflect.InvocationTargetException;
+                        final class Test implements InvocationHandler {
+                          @Override
+                          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                            try {
+                              return method.invoke(this, args);
+                            } catch (InvocationTargetException e) {
+                                return e.getCause();
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -137,40 +146,43 @@ class InvocationHandlerDelegationTest {
     void testInvocationHandler_catchUnion() {
         helper().addSourceLines(
                         "Test.java",
-                        "import java.lang.reflect.InvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "import java.lang.reflect.InvocationTargetException;",
-                        "import java.lang.reflect.UndeclaredThrowableException;",
-                        "final class Test implements InvocationHandler {",
-                        "  @Override",
-                        "  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {",
-                        "    try {",
-                        "      return method.invoke(this, args);",
-                        "    } catch (InvocationTargetException | UndeclaredThrowableException e) {",
-                        "      throw e.getCause();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import java.lang.reflect.InvocationHandler;
+                        import java.lang.reflect.Method;
+                        import java.lang.reflect.InvocationTargetException;
+                        import java.lang.reflect.UndeclaredThrowableException;
+                        final class Test implements InvocationHandler {
+                          @Override
+                          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                            try {
+                              return method.invoke(this, args);
+                            } catch (InvocationTargetException | UndeclaredThrowableException e) {
+                              throw e.getCause();
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
     void testCorrectInvocationHandler_lambda() {
+        // Avoid flagging invocations nested in anonymous classes or lambdas
         helper().addSourceLines(
                         "Test.java",
-                        "import java.lang.reflect.*;",
-                        "import com.google.common.util.concurrent.*;",
-                        "abstract class Test implements InvocationHandler {",
-                        "  @Override",
-                        "  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {",
-                        // Avoid flagging invocations nested in anonymous classes or lambdas
-                        "  return FluentFuture.from(executor().submit(() -> method.invoke(this, args)))",
-                        "    .catching(InvocationTargetException.class, ignored -> null,"
-                                + " MoreExecutors.directExecutor())",
-                        "    .get();",
-                        "  }",
-                        "  abstract ListeningExecutorService executor();",
-                        "}")
+                        """
+                        import java.lang.reflect.*;
+                        import com.google.common.util.concurrent.*;
+                        abstract class Test implements InvocationHandler {
+                          @Override
+                          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                          return FluentFuture.from(executor().submit(() -> method.invoke(this, args)))
+                            .catching(InvocationTargetException.class, ignored -> null, MoreExecutors.directExecutor())
+                            .get();
+                          }
+                          abstract ListeningExecutorService executor();
+                        }
+                        """)
                 .doTest();
     }
 
@@ -178,23 +190,24 @@ class InvocationHandlerDelegationTest {
     void testCorrectInvocationHandler_delegatesException() {
         helper().addSourceLines(
                         "Test.java",
-                        "import java.lang.reflect.InvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "import java.lang.reflect.InvocationTargetException;",
-                        "final class Test implements InvocationHandler {",
-                        "  @Override",
-                        "  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {",
-                        "    try {",
-                        "      return method.invoke(this, args);",
-                        "    } catch (InvocationTargetException e) {",
-                        "        throw handleInvocationTargetException(e);",
-                        "    }",
-                        "  }",
-                        "  private Throwable handleInvocationTargetException(InvocationTargetException e) throws"
-                                + " Throwable {",
-                        "    throw e.getCause();",
-                        "  }",
-                        "}")
+                        """
+                        import java.lang.reflect.InvocationHandler;
+                        import java.lang.reflect.Method;
+                        import java.lang.reflect.InvocationTargetException;
+                        final class Test implements InvocationHandler {
+                          @Override
+                          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                            try {
+                              return method.invoke(this, args);
+                            } catch (InvocationTargetException e) {
+                                throw handleInvocationTargetException(e);
+                            }
+                          }
+                          private Throwable handleInvocationTargetException(InvocationTargetException e) throws Throwable {
+                            throw e.getCause();
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -202,22 +215,24 @@ class InvocationHandlerDelegationTest {
     void testInvocationHandler_instanceOf_if() {
         helper().addSourceLines(
                         "Test.java",
-                        "import java.lang.reflect.InvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "import java.lang.reflect.InvocationTargetException;",
-                        "final class Test implements InvocationHandler {",
-                        "  @Override",
-                        "  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {",
-                        "    try {",
-                        "      return method.invoke(this, args);",
-                        "    } catch (Throwable t) {",
-                        "      if (t instanceof InvocationTargetException) {",
-                        "        throw t.getCause();",
-                        "      }",
-                        "      throw t;",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import java.lang.reflect.InvocationHandler;
+                        import java.lang.reflect.Method;
+                        import java.lang.reflect.InvocationTargetException;
+                        final class Test implements InvocationHandler {
+                          @Override
+                          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                            try {
+                              return method.invoke(this, args);
+                            } catch (Throwable t) {
+                              if (t instanceof InvocationTargetException) {
+                                throw t.getCause();
+                              }
+                              throw t;
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -225,19 +240,21 @@ class InvocationHandlerDelegationTest {
     void testInvocationHandler_instanceOf_ternary() {
         helper().addSourceLines(
                         "Test.java",
-                        "import java.lang.reflect.InvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "import java.lang.reflect.InvocationTargetException;",
-                        "final class Test implements InvocationHandler {",
-                        "  @Override",
-                        "  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {",
-                        "    try {",
-                        "      return method.invoke(this, args);",
-                        "    } catch (Throwable t) {",
-                        "      throw (t instanceof InvocationTargetException) ? t.getCause() : t;",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import java.lang.reflect.InvocationHandler;
+                        import java.lang.reflect.Method;
+                        import java.lang.reflect.InvocationTargetException;
+                        final class Test implements InvocationHandler {
+                          @Override
+                          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                            try {
+                              return method.invoke(this, args);
+                            } catch (Throwable t) {
+                              throw (t instanceof InvocationTargetException) ? t.getCause() : t;
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -246,26 +263,28 @@ class InvocationHandlerDelegationTest {
         // This implementation is functionally correct, but risks breaking when code is refactored.
         helper().addSourceLines(
                         "Test.java",
-                        "import java.lang.reflect.InvocationHandler;",
-                        "import java.lang.reflect.Method;",
-                        "import java.lang.reflect.InvocationTargetException;",
-                        "final class Test implements InvocationHandler {",
-                        "  @Override",
-                        "  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {",
-                        "    try {",
-                        "      // BUG: Diagnostic contains: unwrap InvocationTargetException",
-                        "      return method.invoke(this, args);",
-                        "    } catch (Throwable t) {",
-                        "      return handle(t);",
-                        "    }",
-                        "  }",
-                        "  private static Object handle(Throwable t) throws Throwable {",
-                        "    if (t instanceof InvocationTargetException) {",
-                        "      throw t.getCause();",
-                        "    }",
-                        "    throw t;",
-                        "  }",
-                        "}")
+                        """
+                        import java.lang.reflect.InvocationHandler;
+                        import java.lang.reflect.Method;
+                        import java.lang.reflect.InvocationTargetException;
+                        final class Test implements InvocationHandler {
+                          @Override
+                          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                            try {
+                              // BUG: Diagnostic contains: unwrap InvocationTargetException
+                              return method.invoke(this, args);
+                            } catch (Throwable t) {
+                              return handle(t);
+                            }
+                          }
+                          private static Object handle(Throwable t) throws Throwable {
+                            if (t instanceof InvocationTargetException) {
+                              throw t.getCause();
+                            }
+                            throw t;
+                          }
+                        }
+                        """)
                 .doTest();
     }
 

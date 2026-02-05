@@ -24,10 +24,12 @@ public class ImmutablesStyleTest {
     public void testInlineAnnotation() {
         helper().addSourceLines(
                         "Person.java",
-                        "import org.immutables.value.Value;",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "// BUG: Diagnostic contains: ImmutablesStyle",
-                        "public interface Person {}")
+                        """
+                        import org.immutables.value.Value;
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        // BUG: Diagnostic contains: ImmutablesStyle
+                        public interface Person {}
+                        """)
                 .doTest();
     }
 
@@ -35,14 +37,21 @@ public class ImmutablesStyleTest {
     public void testMetaAnnotation_defaultRetention() {
         helper().addSourceLines(
                         "MyMetaAnnotation.java",
-                        "import java.lang.annotation.ElementType;",
-                        "import java.lang.annotation.Target;",
-                        "import org.immutables.value.Value;",
-                        "@Target({ElementType.PACKAGE, ElementType.TYPE})\n",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "// BUG: Diagnostic contains: ImmutablesStyle",
-                        "public @interface MyMetaAnnotation {}")
-                .addSourceLines("Person.java", "@MyMetaAnnotation", "public interface Person {}")
+                        """
+                        import java.lang.annotation.ElementType;
+                        import java.lang.annotation.Target;
+                        import org.immutables.value.Value;
+                        @Target({ElementType.PACKAGE, ElementType.TYPE})
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        // BUG: Diagnostic contains: ImmutablesStyle
+                        public @interface MyMetaAnnotation {}
+                        """)
+                .addSourceLines(
+                        "Person.java",
+                        """
+                        @MyMetaAnnotation
+                        public interface Person {}
+                        """)
                 .doTest();
     }
 
@@ -50,17 +59,24 @@ public class ImmutablesStyleTest {
     public void testMetaAnnotation_classRetention() {
         helper().addSourceLines(
                         "MyMetaAnnotation.java",
-                        "import java.lang.annotation.ElementType;",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import java.lang.annotation.Target;",
-                        "import org.immutables.value.Value;",
-                        "@Target({ElementType.PACKAGE, ElementType.TYPE})\n",
-                        "@Retention(RetentionPolicy.CLASS)\n",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "// BUG: Diagnostic contains: ImmutablesStyle",
-                        "public @interface MyMetaAnnotation {}")
-                .addSourceLines("Person.java", "@MyMetaAnnotation", "public interface Person {}")
+                        """
+                        import java.lang.annotation.ElementType;
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import java.lang.annotation.Target;
+                        import org.immutables.value.Value;
+                        @Target({ElementType.PACKAGE, ElementType.TYPE})
+                        @Retention(RetentionPolicy.CLASS)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        // BUG: Diagnostic contains: ImmutablesStyle
+                        public @interface MyMetaAnnotation {}
+                        """)
+                .addSourceLines(
+                        "Person.java",
+                        """
+                        @MyMetaAnnotation
+                        public interface Person {}
+                        """)
                 .doTest();
     }
 
@@ -68,17 +84,24 @@ public class ImmutablesStyleTest {
     public void testMetaAnnotation_runtimeRetention() {
         helper().addSourceLines(
                         "MyMetaAnnotation.java",
-                        "import java.lang.annotation.ElementType;",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import java.lang.annotation.Target;",
-                        "import org.immutables.value.Value;",
-                        "@Target({ElementType.PACKAGE, ElementType.TYPE})\n",
-                        "@Retention(RetentionPolicy.RUNTIME)\n",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "// BUG: Diagnostic contains: ImmutablesStyle",
-                        "public @interface MyMetaAnnotation {}")
-                .addSourceLines("Person.java", "@MyMetaAnnotation", "public interface Person {}")
+                        """
+                        import java.lang.annotation.ElementType;
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import java.lang.annotation.Target;
+                        import org.immutables.value.Value;
+                        @Target({ElementType.PACKAGE, ElementType.TYPE})
+                        @Retention(RetentionPolicy.RUNTIME)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        // BUG: Diagnostic contains: ImmutablesStyle
+                        public @interface MyMetaAnnotation {}
+                        """)
+                .addSourceLines(
+                        "Person.java",
+                        """
+                        @MyMetaAnnotation
+                        public interface Person {}
+                        """)
                 .doTest();
     }
 
@@ -86,23 +109,39 @@ public class ImmutablesStyleTest {
     public void testMetaAnnotation_sourceRetention() {
         helper().addSourceLines(
                         "MyMetaAnnotation.java",
-                        "import java.lang.annotation.ElementType;",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import java.lang.annotation.Target;",
-                        "import org.immutables.value.Value;",
-                        "@Target({ElementType.PACKAGE, ElementType.TYPE})\n",
-                        "@Retention(RetentionPolicy.SOURCE)\n",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "public @interface MyMetaAnnotation {}")
-                .addSourceLines("Person.java", "@MyMetaAnnotation", "public interface Person {}")
+                        """
+                        import java.lang.annotation.ElementType;
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import java.lang.annotation.Target;
+                        import org.immutables.value.Value;
+                        @Target({ElementType.PACKAGE, ElementType.TYPE})
+                        @Retention(RetentionPolicy.SOURCE)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        public @interface MyMetaAnnotation {}
+                        """)
+                .addSourceLines(
+                        "Person.java",
+                        """
+                        @MyMetaAnnotation
+                        public interface Person {}
+                        """)
                 .doTest();
     }
 
     @Test
     public void testOtherAnnotation() {
-        helper().addSourceLines("MyOtherAnnotation.java", "public @interface MyOtherAnnotation {}")
-                .addSourceLines("Person.java", "@MyOtherAnnotation", "public interface Person {}")
+        helper().addSourceLines(
+                        "MyOtherAnnotation.java",
+                        """
+                        public @interface MyOtherAnnotation {}
+                        """)
+                .addSourceLines(
+                        "Person.java",
+                        """
+                        @MyOtherAnnotation
+                        public interface Person {}
+                        """)
                 .doTest();
     }
 
