@@ -24,29 +24,33 @@ class ImplicitPublicBuilderConstructorTest {
     void fixSimpleCase() {
         fix().addInputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  public static Builder builder() {",
-                        "    return new Builder();",
-                        "  }",
-                        "  public static class Builder {",
-                        "    public Test build() {",
-                        "      return new Test();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          public static Builder builder() {
+                            return new Builder();
+                          }
+                          public static class Builder {
+                            public Test build() {
+                              return new Test();
+                            }
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  public static Builder builder() {",
-                        "    return new Builder();",
-                        "  }",
-                        "  public static class Builder {",
-                        "    private Builder() {}",
-                        "    public Test build() {",
-                        "      return new Test();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          public static Builder builder() {
+                            return new Builder();
+                          }
+                          public static class Builder {
+                            private Builder() {}
+                            public Test build() {
+                              return new Test();
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -54,33 +58,37 @@ class ImplicitPublicBuilderConstructorTest {
     void fixWithFields() {
         fix().addInputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  public static Builder builder() {",
-                        "    return new Builder();",
-                        "  }",
-                        "  public static class Builder {",
-                        "    private int foo;",
-                        "    private String bar = \"bar\";",
-                        "    public Test build() {",
-                        "      return new Test();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          public static Builder builder() {
+                            return new Builder();
+                          }
+                          public static class Builder {
+                            private int foo;
+                            private String bar = "bar";
+                            public Test build() {
+                              return new Test();
+                            }
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  public static Builder builder() {",
-                        "    return new Builder();",
-                        "  }",
-                        "  public static class Builder {",
-                        "    private int foo;",
-                        "    private String bar = \"bar\";",
-                        "    private Builder() {}",
-                        "    public Test build() {",
-                        "      return new Test();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          public static Builder builder() {
+                            return new Builder();
+                          }
+                          public static class Builder {
+                            private int foo;
+                            private String bar = "bar";
+                            private Builder() {}
+                            public Test build() {
+                              return new Test();
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -88,29 +96,33 @@ class ImplicitPublicBuilderConstructorTest {
     void fixWithFieldsWithoutSpacing() {
         fix().addInputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  public static Builder builder() {",
-                        "    return new Builder();",
-                        "  }",
-                        "  public static class Builder {private int foo;public Test build() {",
-                        "      return new Test();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          public static Builder builder() {
+                            return new Builder();
+                          }
+                          public static class Builder {private int foo;public Test build() {
+                              return new Test();
+                            }
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  public static Builder builder() {",
-                        "    return new Builder();",
-                        "  }",
-                        "  public static class Builder {",
-                        "    private int foo;",
-                        "    private Builder() {}",
-                        "    public Test build() {",
-                        "      return new Test();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          public static Builder builder() {
+                            return new Builder();
+                          }
+                          public static class Builder {
+                            private int foo;
+                            private Builder() {}
+                            public Test build() {
+                              return new Test();
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -118,13 +130,15 @@ class ImplicitPublicBuilderConstructorTest {
     void testNoStaticFactory() {
         fix().addInputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  public static class Builder {",
-                        "    public Test build() {",
-                        "      return new Test();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          public static class Builder {
+                            public Test build() {
+                              return new Test();
+                            }
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }

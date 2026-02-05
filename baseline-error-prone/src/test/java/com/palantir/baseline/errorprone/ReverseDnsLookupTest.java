@@ -25,26 +25,30 @@ class ReverseDnsLookupTest {
     void testFix() {
         fix().addInputLines(
                         "Test.java",
-                        "import java.net.InetAddress;",
-                        "import java.net.InetSocketAddress;",
-                        "class Test {",
-                        "  void f(InetAddress ia, InetSocketAddress isa) {",
-                        "    ia.getHostName();",
-                        "    ia.getCanonicalHostName();",
-                        "    isa.getHostName();",
-                        "  }",
-                        "}")
+                        """
+                        import java.net.InetAddress;
+                        import java.net.InetSocketAddress;
+                        class Test {
+                          void f(InetAddress ia, InetSocketAddress isa) {
+                            ia.getHostName();
+                            ia.getCanonicalHostName();
+                            isa.getHostName();
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import java.net.InetAddress;",
-                        "import java.net.InetSocketAddress;",
-                        "class Test {",
-                        "  void f(InetAddress ia, InetSocketAddress isa) {",
-                        "    ia.getHostAddress();",
-                        "    ia.getHostAddress();",
-                        "    isa.getHostString();",
-                        "  }",
-                        "}")
+                        """
+                        import java.net.InetAddress;
+                        import java.net.InetSocketAddress;
+                        class Test {
+                          void f(InetAddress ia, InetSocketAddress isa) {
+                            ia.getHostAddress();
+                            ia.getHostAddress();
+                            isa.getHostString();
+                          }
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 

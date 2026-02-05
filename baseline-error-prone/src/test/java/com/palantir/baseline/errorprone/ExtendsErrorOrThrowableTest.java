@@ -25,23 +25,43 @@ public final class ExtendsErrorOrThrowableTest {
     void testSimple() {
         helper().addSourceLines(
                         "Test.java",
-                        "// BUG: Diagnostic contains: Class should not extend Error or Throwable directly",
-                        "public class Test extends Error {",
-                        "  public Test() {}",
-                        "}")
+                        """
+                        // BUG: Diagnostic contains: Class should not extend Error or Throwable directly
+                        public class Test extends Error {
+                          public Test() {}
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
     void testNonJavaLangError() {
-        helper().addSourceLines("Error.java", "public class Error {", "  public Error() {}", "}")
-                .addSourceLines("Test.java", "public class Test extends Error {", "  public Test() {}", "}")
+        helper().addSourceLines(
+                        "Error.java",
+                        """
+                        public class Error {
+                          public Error() {}
+                        }
+                        """)
+                .addSourceLines(
+                        "Test.java",
+                        """
+                        public class Test extends Error {
+                          public Test() {}
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
     void testSimpleException() {
-        helper().addSourceLines("Test.java", "public class Test extends RuntimeException {", "  public Test() {}", "}")
+        helper().addSourceLines(
+                        "Test.java",
+                        """
+                        public class Test extends RuntimeException {
+                          public Test() {}
+                        }
+                        """)
                 .expectNoDiagnostics()
                 .doTest();
     }
@@ -50,24 +70,44 @@ public final class ExtendsErrorOrThrowableTest {
     void testSpecificJavaError() {
         helper().addSourceLines(
                         "Test.java",
-                        "// BUG: Diagnostic contains: Class should not extend Error or Throwable directly",
-                        "public class Test extends OutOfMemoryError {",
-                        "  public Test() {}",
-                        "}")
+                        """
+                        // BUG: Diagnostic contains: Class should not extend Error or Throwable directly
+                        public class Test extends OutOfMemoryError {
+                          public Test() {}
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
     void testSpecificJavaErrorNoFix() {
-        fix().addInputLines("Test.java", "public class Test extends OutOfMemoryError {", "  public Test() {}", "}")
+        fix().addInputLines(
+                        "Test.java",
+                        """
+                        public class Test extends OutOfMemoryError {
+                          public Test() {}
+                        }
+                        """)
                 .expectUnchanged()
                 .doTestExpectingFailure(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
     @Test
     void testFixError() {
-        fix().addInputLines("Test.java", "public class Test extends Error {", "  public Test() {}", "}")
-                .addOutputLines("Test.java", "public class Test extends RuntimeException {", "  public Test() {}", "}")
+        fix().addInputLines(
+                        "Test.java",
+                        """
+                        public class Test extends Error {
+                          public Test() {}
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        """
+                        public class Test extends RuntimeException {
+                          public Test() {}
+                        }
+                        """)
                 .doTest();
     }
 
@@ -75,17 +115,31 @@ public final class ExtendsErrorOrThrowableTest {
     void testThrowableDiagnostic() {
         helper().addSourceLines(
                         "Test.java",
-                        "// BUG: Diagnostic contains: Class should not extend Error or Throwable directly",
-                        "public class Test extends Throwable {",
-                        "  public Test() {}",
-                        "}")
+                        """
+                        // BUG: Diagnostic contains: Class should not extend Error or Throwable directly
+                        public class Test extends Throwable {
+                          public Test() {}
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
     void testFixThrowable() {
-        fix().addInputLines("Test.java", "public class Test extends Throwable {", "  public Test() {}", "}")
-                .addOutputLines("Test.java", "public class Test extends RuntimeException {", "  public Test() {}", "}")
+        fix().addInputLines(
+                        "Test.java",
+                        """
+                        public class Test extends Throwable {
+                          public Test() {}
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        """
+                        public class Test extends RuntimeException {
+                          public Test() {}
+                        }
+                        """)
                 .doTest();
     }
 

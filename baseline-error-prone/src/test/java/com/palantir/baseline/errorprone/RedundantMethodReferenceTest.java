@@ -25,26 +25,30 @@ class RedundantMethodReferenceTest {
     void testFix() {
         fix().addInputLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.function.*;",
-                        "class Test {",
-                        "  String func(Optional<String> in, Supplier<String> defaultValue, Collection<String> col) {",
-                        "    Comparator c = Comparator.comparing(Objects::nonNull);",
-                        "    in.ifPresent(col::add);",
-                        "    return in.orElseGet(defaultValue::get);",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.function.*;
+                        class Test {
+                          String func(Optional<String> in, Supplier<String> defaultValue, Collection<String> col) {
+                            Comparator c = Comparator.comparing(Objects::nonNull);
+                            in.ifPresent(col::add);
+                            return in.orElseGet(defaultValue::get);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.function.*;",
-                        "class Test {",
-                        "  String func(Optional<String> in, Supplier<String> defaultValue, Collection<String> col) {",
-                        "    Comparator c = Comparator.comparing(Objects::nonNull);",
-                        "    in.ifPresent(col::add);",
-                        "    return in.orElseGet(defaultValue);",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.function.*;
+                        class Test {
+                          String func(Optional<String> in, Supplier<String> defaultValue, Collection<String> col) {
+                            Comparator c = Comparator.comparing(Objects::nonNull);
+                            in.ifPresent(col::add);
+                            return in.orElseGet(defaultValue);
+                          }
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
@@ -52,24 +56,26 @@ class RedundantMethodReferenceTest {
     void testFunctionalInterfaceAdditionalMethod() {
         fix().addInputLines(
                         "Test.java",
-                        "import java.util.*;",
-                        "import java.util.stream.*;",
-                        "import java.util.function.*;",
-                        "class Test {",
-                        "  void func(Stream<String> in, List<String> items) {",
-                        "    Ambiguous ambiguous = new Ambiguous();",
-                        "    in.forEach(ambiguous::printError);",
-                        "  }",
-                        "  static class Ambiguous implements Consumer<String> {",
-                        "    @Override",
-                        "    public void accept(String value) {",
-                        "        System.out.println(value);",
-                        "    }",
-                        "    public void printError(String value) {",
-                        "        System.err.println(value);",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.*;
+                        import java.util.stream.*;
+                        import java.util.function.*;
+                        class Test {
+                          void func(Stream<String> in, List<String> items) {
+                            Ambiguous ambiguous = new Ambiguous();
+                            in.forEach(ambiguous::printError);
+                          }
+                          static class Ambiguous implements Consumer<String> {
+                            @Override
+                            public void accept(String value) {
+                                System.out.println(value);
+                            }
+                            public void printError(String value) {
+                                System.err.println(value);
+                            }
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }

@@ -24,22 +24,26 @@ class ZeroWarmupRateLimiterTest {
     public void should_remove_duration_zero() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import java.time.Duration;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(10, Duration.ZERO);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import java.time.Duration;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(10, Duration.ZERO);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import java.time.Duration;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import java.time.Duration;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(10);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -47,22 +51,26 @@ class ZeroWarmupRateLimiterTest {
     public void should_remove_duration_zero_static_import() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import static java.time.Duration.ZERO;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(10, ZERO);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import static java.time.Duration.ZERO;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(10, ZERO);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import static java.time.Duration.ZERO;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import static java.time.Duration.ZERO;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(10);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -70,22 +78,26 @@ class ZeroWarmupRateLimiterTest {
     public void should_remove_int_literal_zero() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import java.util.concurrent.TimeUnit;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(10, 0, TimeUnit.SECONDS);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import java.util.concurrent.TimeUnit;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(10, 0, TimeUnit.SECONDS);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import java.util.concurrent.TimeUnit;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import java.util.concurrent.TimeUnit;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(10);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -93,22 +105,26 @@ class ZeroWarmupRateLimiterTest {
     public void should_remove_long_literal_zero() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import java.util.concurrent.TimeUnit;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(10, 0L, TimeUnit.SECONDS);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import java.util.concurrent.TimeUnit;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(10, 0L, TimeUnit.SECONDS);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import java.util.concurrent.TimeUnit;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(10);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import java.util.concurrent.TimeUnit;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(10);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -116,13 +132,15 @@ class ZeroWarmupRateLimiterTest {
     public void should_not_modify_existing_uses() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import java.time.Duration;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(10, Duration.ofMillis(100));",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import java.time.Duration;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(10, Duration.ofMillis(100));
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }
@@ -131,13 +149,15 @@ class ZeroWarmupRateLimiterTest {
     public void should_not_modify_existing_uses_int_literal() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import java.util.concurrent.TimeUnit;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(10, 100, TimeUnit.SECONDS);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import java.util.concurrent.TimeUnit;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(10, 100, TimeUnit.SECONDS);
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }
@@ -146,13 +166,15 @@ class ZeroWarmupRateLimiterTest {
     public void should_not_modify_existing_int_literal_zero_permits() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.google.common.util.concurrent.RateLimiter;",
-                        "import java.util.concurrent.TimeUnit;",
-                        "class Test {",
-                        "  void f() {",
-                        "    RateLimiter.create(0, 100, TimeUnit.SECONDS);",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.common.util.concurrent.RateLimiter;
+                        import java.util.concurrent.TimeUnit;
+                        class Test {
+                          void f() {
+                            RateLimiter.create(0, 100, TimeUnit.SECONDS);
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }

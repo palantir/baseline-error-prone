@@ -23,20 +23,24 @@ class OptionalFlatMapOfNullableTest {
     void testFix_expression() {
         fix().addInputLines(
                         "Test.java",
-                        "import java.util.Optional;",
-                        "class Test {",
-                        "   Optional<?> f(Optional<String> in) {",
-                        "       return in.flatMap(x -> Optional.ofNullable(x));",
-                        "   }",
-                        "}")
+                        """
+                        import java.util.Optional;
+                        class Test {
+                           Optional<?> f(Optional<String> in) {
+                               return in.flatMap(x -> Optional.ofNullable(x));
+                           }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import java.util.Optional;",
-                        "class Test {",
-                        "   Optional<?> f(Optional<String> in) {",
-                        "       return in.map(x -> x);",
-                        "   }",
-                        "}")
+                        """
+                        import java.util.Optional;
+                        class Test {
+                           Optional<?> f(Optional<String> in) {
+                               return in.map(x -> x);
+                           }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -44,20 +48,24 @@ class OptionalFlatMapOfNullableTest {
     void testFix_statement() {
         fix().addInputLines(
                         "Test.java",
-                        "import java.util.Optional;",
-                        "class Test {",
-                        "   Optional<?> f(Optional<String> in) {",
-                        "       return in.flatMap(x -> { return Optional.ofNullable(x); });",
-                        "   }",
-                        "}")
+                        """
+                        import java.util.Optional;
+                        class Test {
+                           Optional<?> f(Optional<String> in) {
+                               return in.flatMap(x -> { return Optional.ofNullable(x); });
+                           }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import java.util.Optional;",
-                        "class Test {",
-                        "   Optional<?> f(Optional<String> in) {",
-                        "       return in.map(x -> { return x; });",
-                        "   }",
-                        "}")
+                        """
+                        import java.util.Optional;
+                        class Test {
+                           Optional<?> f(Optional<String> in) {
+                               return in.map(x -> { return x; });
+                           }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -65,26 +73,30 @@ class OptionalFlatMapOfNullableTest {
     void testFix_statement_additionalStatements() {
         fix().addInputLines(
                         "Test.java",
-                        "import java.util.Optional;",
-                        "class Test {",
-                        "   Optional<?> f(Optional<String> in) {",
-                        "       return in.flatMap(x -> {",
-                        "         String y = x + x;",
-                        "         return Optional.ofNullable(y);",
-                        "       });",
-                        "   }",
-                        "}")
+                        """
+                        import java.util.Optional;
+                        class Test {
+                           Optional<?> f(Optional<String> in) {
+                               return in.flatMap(x -> {
+                                 String y = x + x;
+                                 return Optional.ofNullable(y);
+                               });
+                           }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import java.util.Optional;",
-                        "class Test {",
-                        "   Optional<?> f(Optional<String> in) {",
-                        "       return in.map(x -> {",
-                        "         String y = x + x;",
-                        "         return y;",
-                        "       });",
-                        "   }",
-                        "}")
+                        """
+                        import java.util.Optional;
+                        class Test {
+                           Optional<?> f(Optional<String> in) {
+                               return in.map(x -> {
+                                 String y = x + x;
+                                 return y;
+                               });
+                           }
+                        }
+                        """)
                 .doTest();
     }
 

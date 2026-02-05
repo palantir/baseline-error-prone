@@ -25,29 +25,33 @@ class ObjectsHashCodeUnnecessaryVarargsTest {
     public void test() {
         fix().addInputLines(
                         "Test.java",
-                        "import java.util.Objects;",
-                        "public class Test {",
-                        "  void f(Object a, Object[] b, String[] c, String d) {",
-                        "    Objects.hash(a);",
-                        "    Objects.hash(a, a);",
-                        "    Objects.hash(b);",
-                        "    Objects.hash(c);",
-                        "    Objects.hash(d);",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.Objects;
+                        public class Test {
+                          void f(Object a, Object[] b, String[] c, String d) {
+                            Objects.hash(a);
+                            Objects.hash(a, a);
+                            Objects.hash(b);
+                            Objects.hash(c);
+                            Objects.hash(d);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import java.util.Objects;",
-                        "public class Test {",
-                        "  void f(Object a, Object[] b, String[] c, String d) {",
-                        "    Objects.hashCode(a);",
-                        "    Objects.hash(a, a);",
-                        "    Objects.hash(b);",
-                        "    // BUG: Diagnostic contains: non-varargs call of varargs method",
-                        "    Objects.hash(c);",
-                        "    Objects.hashCode(d);",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.Objects;
+                        public class Test {
+                          void f(Object a, Object[] b, String[] c, String d) {
+                            Objects.hashCode(a);
+                            Objects.hash(a, a);
+                            Objects.hash(b);
+                            // BUG: Diagnostic contains: non-varargs call of varargs method
+                            Objects.hash(c);
+                            Objects.hashCode(d);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
