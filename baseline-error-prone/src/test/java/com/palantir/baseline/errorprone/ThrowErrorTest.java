@@ -26,12 +26,14 @@ class ThrowErrorTest {
     void testAssertionError() {
         helper().addSourceLines(
                         "Test.java",
-                        "class Test {",
-                        "   void f() {",
-                        "       // BUG: Diagnostic contains: Prefer throwing a RuntimeException",
-                        "       throw new AssertionError();",
-                        "   }",
-                        "}")
+                        """
+                        class Test {
+                           void f() {
+                               // BUG: Diagnostic contains: Prefer throwing a RuntimeException
+                               throw new AssertionError();
+                           }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -39,12 +41,14 @@ class ThrowErrorTest {
     void testError() {
         helper().addSourceLines(
                         "Test.java",
-                        "class Test {",
-                        "   void f() {",
-                        "       // BUG: Diagnostic contains: Prefer throwing a RuntimeException",
-                        "       throw new Error();",
-                        "   }",
-                        "}")
+                        """
+                        class Test {
+                           void f() {
+                               // BUG: Diagnostic contains: Prefer throwing a RuntimeException
+                               throw new Error();
+                           }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -66,7 +70,15 @@ class ThrowErrorTest {
 
     @Test
     void testRethrowIsAllowed() {
-        helper().addSourceLines("Test.java", "class Test {", "   void f(Error e) {", "       throw e;", "   }", "}")
+        helper().addSourceLines(
+                        "Test.java",
+                        """
+                        class Test {
+                           void f(Error e) {
+                               throw e;
+                           }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -74,43 +86,47 @@ class ThrowErrorTest {
     void testFix() {
         fix().addInputLines(
                         "Test.java",
-                        "class Test {",
-                        "   void f1() {",
-                        "       throw new AssertionError();",
-                        "   }",
-                        "   void f2(String nonConstant) {",
-                        "       throw new AssertionError(nonConstant);",
-                        "   }",
-                        "   void f3() {",
-                        "       throw new AssertionError(\"constant\");",
-                        "   }",
-                        "   void f4(String nonConstant, Throwable t) {",
-                        "       throw new AssertionError(nonConstant, t);",
-                        "   }",
-                        "   void f5(Throwable t) {",
-                        "       throw new AssertionError(\"constant\", t);",
-                        "   }",
-                        "}")
+                        """
+                        class Test {
+                           void f1() {
+                               throw new AssertionError();
+                           }
+                           void f2(String nonConstant) {
+                               throw new AssertionError(nonConstant);
+                           }
+                           void f3() {
+                               throw new AssertionError("constant");
+                           }
+                           void f4(String nonConstant, Throwable t) {
+                               throw new AssertionError(nonConstant, t);
+                           }
+                           void f5(Throwable t) {
+                               throw new AssertionError("constant", t);
+                           }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.exceptions.SafeIllegalStateException;",
-                        "class Test {",
-                        "   void f1() {",
-                        "       throw new IllegalStateException();",
-                        "   }",
-                        "   void f2(String nonConstant) {",
-                        "       throw new IllegalStateException(nonConstant);",
-                        "   }",
-                        "   void f3() {",
-                        "       throw new SafeIllegalStateException(\"constant\");",
-                        "   }",
-                        "   void f4(String nonConstant, Throwable t) {",
-                        "       throw new IllegalStateException(nonConstant, t);",
-                        "   }",
-                        "   void f5(Throwable t) {",
-                        "       throw new SafeIllegalStateException(\"constant\", t);",
-                        "   }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.exceptions.SafeIllegalStateException;
+                        class Test {
+                           void f1() {
+                               throw new IllegalStateException();
+                           }
+                           void f2(String nonConstant) {
+                               throw new IllegalStateException(nonConstant);
+                           }
+                           void f3() {
+                               throw new SafeIllegalStateException("constant");
+                           }
+                           void f4(String nonConstant, Throwable t) {
+                               throw new IllegalStateException(nonConstant, t);
+                           }
+                           void f5(Throwable t) {
+                               throw new SafeIllegalStateException("constant", t);
+                           }
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 

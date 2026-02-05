@@ -34,14 +34,16 @@ class BugCheckerAutoServiceTest {
         compilationHelper()
                 .addSourceLines(
                         "TestChecker.java",
-                        "import com.google.auto.service.AutoService;",
-                        "import com.google.errorprone.BugPattern;",
-                        "import com.google.errorprone.bugpatterns.BugChecker;",
-                        "import com.google.errorprone.BugPattern.SeverityLevel;",
-                        "@AutoService(BugChecker.class)",
-                        "@BugPattern(name=\"Test\", summary=\"a\", severity=SeverityLevel.ERROR)",
-                        "public class TestChecker extends BugChecker {",
-                        "}")
+                        """
+                        import com.google.auto.service.AutoService;
+                        import com.google.errorprone.BugPattern;
+                        import com.google.errorprone.bugpatterns.BugChecker;
+                        import com.google.errorprone.BugPattern.SeverityLevel;
+                        @AutoService(BugChecker.class)
+                        @BugPattern(name="Test", summary="a", severity=SeverityLevel.ERROR)
+                        public class TestChecker extends BugChecker {
+                        }
+                        """)
                 .doTest();
     }
 
@@ -50,11 +52,13 @@ class BugCheckerAutoServiceTest {
         compilationHelper()
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.auto.service.AutoService;",
-                        "@AutoService(Runnable.class)",
-                        "public class Test implements Runnable {",
-                        "  public void run() {}",
-                        "}")
+                        """
+                        import com.google.auto.service.AutoService;
+                        @AutoService(Runnable.class)
+                        public class Test implements Runnable {
+                          public void run() {}
+                        }
+                        """)
                 .doTest();
     }
 
@@ -62,23 +66,27 @@ class BugCheckerAutoServiceTest {
     public void fixBugChecker() {
         fix().addInputLines(
                         "TestChecker.java",
-                        "import com.google.auto.service.AutoService;",
-                        "import com.google.errorprone.BugPattern;",
-                        "import com.google.errorprone.bugpatterns.BugChecker;",
-                        "import com.google.errorprone.BugPattern.SeverityLevel;",
-                        "@BugPattern(name=\"Test\", summary=\"a\", severity=SeverityLevel.ERROR)",
-                        "public class TestChecker extends BugChecker {",
-                        "}")
+                        """
+                        import com.google.auto.service.AutoService;
+                        import com.google.errorprone.BugPattern;
+                        import com.google.errorprone.bugpatterns.BugChecker;
+                        import com.google.errorprone.BugPattern.SeverityLevel;
+                        @BugPattern(name="Test", summary="a", severity=SeverityLevel.ERROR)
+                        public class TestChecker extends BugChecker {
+                        }
+                        """)
                 .addOutputLines(
                         "TestChecker.java",
-                        "import com.google.auto.service.AutoService;",
-                        "import com.google.errorprone.BugPattern;",
-                        "import com.google.errorprone.bugpatterns.BugChecker;",
-                        "import com.google.errorprone.BugPattern.SeverityLevel;",
-                        "@AutoService(BugChecker.class)",
-                        "@BugPattern(name=\"Test\", summary=\"a\", severity=SeverityLevel.ERROR)",
-                        "public class TestChecker extends BugChecker {",
-                        "}")
+                        """
+                        import com.google.auto.service.AutoService;
+                        import com.google.errorprone.BugPattern;
+                        import com.google.errorprone.bugpatterns.BugChecker;
+                        import com.google.errorprone.BugPattern.SeverityLevel;
+                        @AutoService(BugChecker.class)
+                        @BugPattern(name="Test", summary="a", severity=SeverityLevel.ERROR)
+                        public class TestChecker extends BugChecker {
+                        }
+                        """)
                 .doTest();
     }
 }

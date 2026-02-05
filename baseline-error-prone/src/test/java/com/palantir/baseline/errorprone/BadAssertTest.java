@@ -24,21 +24,24 @@ final class BadAssertTest {
     void testNoDescription() {
         fix().addInputLines(
                         "Test.java",
-                        // format-hint
-                        "public class Test {",
-                        "  void f(boolean in) {",
-                        "    assert in;",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          void f(boolean in) {
+                            assert in;
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  void f(boolean in) {",
-                        "    if (!in) {",
-                        "        throw new IllegalStateException();",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          void f(boolean in) {
+                            if (!in) {
+                                throw new IllegalStateException();
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -46,19 +49,23 @@ final class BadAssertTest {
     void testConstantStringDescription() {
         fix().addInputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  void f(boolean in) {",
-                        "    assert in : \"oops\";",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          void f(boolean in) {
+                            assert in : "oops";
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.Preconditions;",
-                        "public class Test {",
-                        "  void f(boolean in) {",
-                        "    Preconditions.checkState(in, \"oops\");",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.Preconditions;
+                        public class Test {
+                          void f(boolean in) {
+                            Preconditions.checkState(in, "oops");
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -66,21 +73,24 @@ final class BadAssertTest {
     void testConstantNonStringDescription() {
         fix().addInputLines(
                         "Test.java",
-                        // format-hint
-                        "public class Test {",
-                        "  void f(boolean in) {",
-                        "    assert in : 1;",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          void f(boolean in) {
+                            assert in : 1;
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  void f(boolean in) {",
-                        "    if (!in) {",
-                        "        throw new IllegalStateException(String.valueOf(1));",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          void f(boolean in) {
+                            if (!in) {
+                                throw new IllegalStateException(String.valueOf(1));
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -88,21 +98,24 @@ final class BadAssertTest {
     void testNonConstantStringDescription() {
         fix().addInputLines(
                         "Test.java",
-                        // format-hint
-                        "public class Test {",
-                        "  void f(boolean in, String desc) {",
-                        "    assert in : desc;",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          void f(boolean in, String desc) {
+                            assert in : desc;
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "public class Test {",
-                        "  void f(boolean in, String desc) {",
-                        "    if (!in) {",
-                        "        throw new IllegalStateException(desc);",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        public class Test {
+                          void f(boolean in, String desc) {
+                            if (!in) {
+                                throw new IllegalStateException(desc);
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 

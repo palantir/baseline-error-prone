@@ -24,20 +24,24 @@ final class AssertNoArgsTest {
     void testServiceExceptionAssert_hasArgs() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.conjure.java.api.testing.ServiceExceptionAssert;",
-                        "public class Test {",
-                        "  void f(ServiceExceptionAssert a) {",
-                        "    a.hasArgs();",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.conjure.java.api.testing.ServiceExceptionAssert;
+                        public class Test {
+                          void f(ServiceExceptionAssert a) {
+                            a.hasArgs();
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.conjure.java.api.testing.ServiceExceptionAssert;",
-                        "public class Test {",
-                        "  void f(ServiceExceptionAssert a) {",
-                        "    a.hasNoArgs();",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.conjure.java.api.testing.ServiceExceptionAssert;
+                        public class Test {
+                          void f(ServiceExceptionAssert a) {
+                            a.hasNoArgs();
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -45,13 +49,15 @@ final class AssertNoArgsTest {
     void testServiceExceptionAssert_hasArgs_notEmpty() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.conjure.java.api.testing.ServiceExceptionAssert;",
-                        "import com.palantir.logsafe.Arg;",
-                        "public class Test {",
-                        "  void f(ServiceExceptionAssert a, Arg<?> arg) {",
-                        "    a.hasArgs(arg);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.conjure.java.api.testing.ServiceExceptionAssert;
+                        import com.palantir.logsafe.Arg;
+                        public class Test {
+                          void f(ServiceExceptionAssert a, Arg<?> arg) {
+                            a.hasArgs(arg);
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }
@@ -60,20 +66,24 @@ final class AssertNoArgsTest {
     void testLoggableExceptionAssert_hasArgs() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.testing.LoggableExceptionAssert;",
-                        "public class Test {",
-                        "  void f(LoggableExceptionAssert a) {",
-                        "    a.hasArgs();",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.testing.LoggableExceptionAssert;
+                        public class Test {
+                          void f(LoggableExceptionAssert a) {
+                            a.hasArgs();
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.testing.LoggableExceptionAssert;",
-                        "public class Test {",
-                        "  void f(LoggableExceptionAssert a) {",
-                        "    a.hasNoArgs();",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.testing.LoggableExceptionAssert;
+                        public class Test {
+                          void f(LoggableExceptionAssert a) {
+                            a.hasNoArgs();
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -81,13 +91,15 @@ final class AssertNoArgsTest {
     void testLoggableExceptionAssert_hasArgs_notEmpty() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.Arg;",
-                        "import com.palantir.logsafe.testing.LoggableExceptionAssert;",
-                        "public class Test {",
-                        "  void f(LoggableExceptionAssert a, Arg<?> arg) {",
-                        "    a.hasArgs(arg);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.Arg;
+                        import com.palantir.logsafe.testing.LoggableExceptionAssert;
+                        public class Test {
+                          void f(LoggableExceptionAssert a, Arg<?> arg) {
+                            a.hasArgs(arg);
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }
@@ -96,20 +108,24 @@ final class AssertNoArgsTest {
     void testLoggableExceptionAssert_hasExactlyArgs() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.testing.LoggableExceptionAssert;",
-                        "public class Test {",
-                        "  void f(LoggableExceptionAssert a) {",
-                        "    a.hasExactlyArgs();",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.testing.LoggableExceptionAssert;
+                        public class Test {
+                          void f(LoggableExceptionAssert a) {
+                            a.hasExactlyArgs();
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.testing.LoggableExceptionAssert;",
-                        "public class Test {",
-                        "  void f(LoggableExceptionAssert a) {",
-                        "    a.hasNoArgs();",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.testing.LoggableExceptionAssert;
+                        public class Test {
+                          void f(LoggableExceptionAssert a) {
+                            a.hasNoArgs();
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -117,13 +133,15 @@ final class AssertNoArgsTest {
     void testLoggableExceptionAssert_hasExactlyArgs_notEmpty() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.Arg;",
-                        "import com.palantir.logsafe.testing.LoggableExceptionAssert;",
-                        "public class Test {",
-                        "  void f(LoggableExceptionAssert a, Arg<?> arg) {",
-                        "    a.hasExactlyArgs(arg);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.Arg;
+                        import com.palantir.logsafe.testing.LoggableExceptionAssert;
+                        public class Test {
+                          void f(LoggableExceptionAssert a, Arg<?> arg) {
+                            a.hasExactlyArgs(arg);
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }
@@ -132,20 +150,24 @@ final class AssertNoArgsTest {
     void testLoggableExceptionAssert_containsArgs() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.testing.LoggableExceptionAssert;",
-                        "public class Test {",
-                        "  void f(LoggableExceptionAssert a) {",
-                        "    a.containsArgs();",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.testing.LoggableExceptionAssert;
+                        public class Test {
+                          void f(LoggableExceptionAssert a) {
+                            a.containsArgs();
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.testing.LoggableExceptionAssert;",
-                        "public class Test {",
-                        "  void f(LoggableExceptionAssert a) {",
-                        "    a.hasNoArgs();",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.testing.LoggableExceptionAssert;
+                        public class Test {
+                          void f(LoggableExceptionAssert a) {
+                            a.hasNoArgs();
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -153,13 +175,15 @@ final class AssertNoArgsTest {
     void testLoggableExceptionAssert_containsArgs_notEmpty() {
         fix().addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.Arg;",
-                        "import com.palantir.logsafe.testing.LoggableExceptionAssert;",
-                        "public class Test {",
-                        "  void f(LoggableExceptionAssert a, Arg<?> arg) {",
-                        "    a.containsArgs(arg);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.Arg;
+                        import com.palantir.logsafe.testing.LoggableExceptionAssert;
+                        public class Test {
+                          void f(LoggableExceptionAssert a, Arg<?> arg) {
+                            a.containsArgs(arg);
+                          }
+                        }
+                        """)
                 .expectUnchanged()
                 .doTest();
     }

@@ -37,13 +37,15 @@ public final class AutoCloseableMustBeClosedTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.io.*;",
-                        "class Test {",
-                        "    // BUG: Diagnostic contains: should be annotated @MustBeClosed",
-                        "    private AutoCloseable autoCloseable() {",
-                        "        return new ByteArrayInputStream(new byte[0]);",
-                        "    }",
-                        "}")
+                        """
+                        import java.io.*;
+                        class Test {
+                            // BUG: Diagnostic contains: should be annotated @MustBeClosed
+                            private AutoCloseable autoCloseable() {
+                                return new ByteArrayInputStream(new byte[0]);
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -52,13 +54,15 @@ public final class AutoCloseableMustBeClosedTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.io.*;",
-                        "class Test {",
-                        "    // BUG: Diagnostic contains: should be annotated @MustBeClosed",
-                        "    private InputStream inputStream() {",
-                        "        return new ByteArrayInputStream(new byte[0]);",
-                        "    }",
-                        "}")
+                        """
+                        import java.io.*;
+                        class Test {
+                            // BUG: Diagnostic contains: should be annotated @MustBeClosed
+                            private InputStream inputStream() {
+                                return new ByteArrayInputStream(new byte[0]);
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -67,13 +71,15 @@ public final class AutoCloseableMustBeClosedTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.io.*;",
-                        "class Test {",
-                        "    // BUG: Diagnostic contains: should be annotated @MustBeClosed",
-                        "    private OutputStream outputStream() {",
-                        "        return new ByteArrayOutputStream();",
-                        "    }",
-                        "}")
+                        """
+                        import java.io.*;
+                        class Test {
+                            // BUG: Diagnostic contains: should be annotated @MustBeClosed
+                            private OutputStream outputStream() {
+                                return new ByteArrayOutputStream();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -82,13 +88,15 @@ public final class AutoCloseableMustBeClosedTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.io.*;",
-                        "class Test extends FilterOutputStream {",
-                        "    // BUG: Diagnostic contains: should be annotated @MustBeClosed",
-                        "    public Test() {",
-                        "        super(new ByteArrayOutputStream());",
-                        "    }",
-                        "}")
+                        """
+                        import java.io.*;
+                        class Test extends FilterOutputStream {
+                            // BUG: Diagnostic contains: should be annotated @MustBeClosed
+                            public Test() {
+                                super(new ByteArrayOutputStream());
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -97,16 +105,18 @@ public final class AutoCloseableMustBeClosedTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.util.stream.*;",
-                        "class Test {",
-                        "    private Stream<Integer> a() {",
-                        "        return Stream.of(1);",
-                        "    }",
-                        "",
-                        "    private IntStream b() {",
-                        "        return IntStream.of(1);",
-                        "    }",
-                        "}")
+                        """
+                        import java.util.stream.*;
+                        class Test {
+                            private Stream<Integer> a() {
+                                return Stream.of(1);
+                            }
+
+                            private IntStream b() {
+                                return IntStream.of(1);
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -115,14 +125,16 @@ public final class AutoCloseableMustBeClosedTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.*;",
-                        "import java.io.*;",
-                        "class Test {",
-                        "    @MustBeClosed",
-                        "    private Writer alreadyAnnotated() {",
-                        "        return new StringWriter();",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.*;
+                        import java.io.*;
+                        class Test {
+                            @MustBeClosed
+                            private Writer alreadyAnnotated() {
+                                return new StringWriter();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -131,14 +143,16 @@ public final class AutoCloseableMustBeClosedTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import java.io.IOException;",
-                        "import java.net.Socket;",
-                        "import javax.net.ssl.SSLSocketFactory;",
-                        "abstract class Test extends SSLSocketFactory {",
-                        "    public Socket createSocket() throws IOException {",
-                        "        return new Socket();",
-                        "    }",
-                        "}")
+                        """
+                        import java.io.IOException;
+                        import java.net.Socket;
+                        import javax.net.ssl.SSLSocketFactory;
+                        abstract class Test extends SSLSocketFactory {
+                            public Socket createSocket() throws IOException {
+                                return new Socket();
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -147,14 +161,16 @@ public final class AutoCloseableMustBeClosedTest {
         compilationHelper
                 .addSourceLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.*;",
-                        "import java.io.*;",
-                        "class Test {",
-                        "    @CanIgnoreReturnValue",
-                        "    private Closeable ignoreReturn() {",
-                        "        return new StringReader(\"\");",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.*;
+                        import java.io.*;
+                        class Test {
+                            @CanIgnoreReturnValue
+                            private Closeable ignoreReturn() {
+                                return new StringReader("");
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -163,72 +179,76 @@ public final class AutoCloseableMustBeClosedTest {
         refactoringTestHelper
                 .addInputLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CanIgnoreReturnValue;",
-                        "import java.io.*;",
-                        "class Test extends FilterOutputStream {",
-                        "",
-                        "    public Test() {",
-                        "        super(new ByteArrayOutputStream());",
-                        "    }",
-                        "",
-                        "    public static Test create() {",
-                        "        return new Test();",
-                        "    }",
-                        "",
-                        "    private AutoCloseable autoCloseable() {",
-                        "        return new ByteArrayInputStream(new byte[0]);",
-                        "    }",
-                        "",
-                        "    private InputStream inputStream() {",
-                        "        return new ByteArrayInputStream(new byte[0]);",
-                        "    }",
-                        "",
-                        "    private OutputStream outputStream() {",
-                        "        return new ByteArrayOutputStream();",
-                        "    }",
-                        "",
-                        "    @CanIgnoreReturnValue",
-                        "    private Closeable ignoreReturn() {",
-                        "        return new StringReader(\"\");",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CanIgnoreReturnValue;
+                        import java.io.*;
+                        class Test extends FilterOutputStream {
+
+                            public Test() {
+                                super(new ByteArrayOutputStream());
+                            }
+
+                            public static Test create() {
+                                return new Test();
+                            }
+
+                            private AutoCloseable autoCloseable() {
+                                return new ByteArrayInputStream(new byte[0]);
+                            }
+
+                            private InputStream inputStream() {
+                                return new ByteArrayInputStream(new byte[0]);
+                            }
+
+                            private OutputStream outputStream() {
+                                return new ByteArrayOutputStream();
+                            }
+
+                            @CanIgnoreReturnValue
+                            private Closeable ignoreReturn() {
+                                return new StringReader("");
+                            }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.CanIgnoreReturnValue;",
-                        "import com.google.errorprone.annotations.MustBeClosed;",
-                        "import java.io.*;",
-                        "class Test extends FilterOutputStream {",
-                        "",
-                        "    @MustBeClosed",
-                        "    public Test() {",
-                        "        super(new ByteArrayOutputStream());",
-                        "    }",
-                        "",
-                        "    @MustBeClosed",
-                        "    public static Test create() {",
-                        "        return new Test();",
-                        "    }",
-                        "",
-                        "    @MustBeClosed",
-                        "    private AutoCloseable autoCloseable() {",
-                        "        return new ByteArrayInputStream(new byte[0]);",
-                        "    }",
-                        "",
-                        "    @MustBeClosed",
-                        "    private InputStream inputStream() {",
-                        "        return new ByteArrayInputStream(new byte[0]);",
-                        "    }",
-                        "",
-                        "    @MustBeClosed",
-                        "    private OutputStream outputStream() {",
-                        "        return new ByteArrayOutputStream();",
-                        "    }",
-                        "",
-                        "    @CanIgnoreReturnValue",
-                        "    private Closeable ignoreReturn() {",
-                        "        return new StringReader(\"\");",
-                        "    }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.CanIgnoreReturnValue;
+                        import com.google.errorprone.annotations.MustBeClosed;
+                        import java.io.*;
+                        class Test extends FilterOutputStream {
+
+                            @MustBeClosed
+                            public Test() {
+                                super(new ByteArrayOutputStream());
+                            }
+
+                            @MustBeClosed
+                            public static Test create() {
+                                return new Test();
+                            }
+
+                            @MustBeClosed
+                            private AutoCloseable autoCloseable() {
+                                return new ByteArrayInputStream(new byte[0]);
+                            }
+
+                            @MustBeClosed
+                            private InputStream inputStream() {
+                                return new ByteArrayInputStream(new byte[0]);
+                            }
+
+                            @MustBeClosed
+                            private OutputStream outputStream() {
+                                return new ByteArrayOutputStream();
+                            }
+
+                            @CanIgnoreReturnValue
+                            private Closeable ignoreReturn() {
+                                return new StringReader("");
+                            }
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
@@ -237,37 +257,41 @@ public final class AutoCloseableMustBeClosedTest {
         refactoringTestHelper
                 .addInputLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.MustBeClosed;",
-                        "import java.io.*;",
-                        "class Test {",
-                        "  interface Iface {",
-                        "    @MustBeClosed",
-                        "    InputStream stream() throws IOException;",
-                        "  }",
-                        "  static class Impl implements Iface {",
-                        "    @Override",
-                        "    public InputStream stream() throws IOException {",
-                        "      return new FileInputStream(new File(\"test\"));",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.MustBeClosed;
+                        import java.io.*;
+                        class Test {
+                          interface Iface {
+                            @MustBeClosed
+                            InputStream stream() throws IOException;
+                          }
+                          static class Impl implements Iface {
+                            @Override
+                            public InputStream stream() throws IOException {
+                              return new FileInputStream(new File("test"));
+                            }
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.google.errorprone.annotations.MustBeClosed;",
-                        "import java.io.*;",
-                        "class Test {",
-                        "  interface Iface {",
-                        "    @MustBeClosed",
-                        "    InputStream stream() throws IOException;",
-                        "  }",
-                        "  static class Impl implements Iface {",
-                        "    @MustBeClosed",
-                        "    @Override",
-                        "    public InputStream stream() throws IOException {",
-                        "      return new FileInputStream(new File(\"test\"));",
-                        "    }",
-                        "  }",
-                        "}")
+                        """
+                        import com.google.errorprone.annotations.MustBeClosed;
+                        import java.io.*;
+                        class Test {
+                          interface Iface {
+                            @MustBeClosed
+                            InputStream stream() throws IOException;
+                          }
+                          static class Impl implements Iface {
+                            @MustBeClosed
+                            @Override
+                            public InputStream stream() throws IOException {
+                              return new FileInputStream(new File("test"));
+                            }
+                          }
+                        }
+                        """)
                 .doTest();
     }
 }

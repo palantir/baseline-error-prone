@@ -23,26 +23,30 @@ class CollectionStreamForEachTest {
     public void test() {
         fix().addInputLines(
                         "Test.java",
-                        "import java.util.List;",
-                        "public class Test {",
-                        "  void f(List<String> in) {",
-                        "    in.stream().forEach(System.out::println);",
-                        "    in.stream().forEachOrdered(System.out::println);",
-                        "    in.stream().<String>forEach(System.out::println);",
-                        "    in.stream().<String>forEachOrdered(System.out::println);",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.List;
+                        public class Test {
+                          void f(List<String> in) {
+                            in.stream().forEach(System.out::println);
+                            in.stream().forEachOrdered(System.out::println);
+                            in.stream().<String>forEach(System.out::println);
+                            in.stream().<String>forEachOrdered(System.out::println);
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import java.util.List;",
-                        "public class Test {",
-                        "  void f(List<String> in) {",
-                        "    in.forEach(System.out::println);",
-                        "    in.forEach(System.out::println);",
-                        "    in.<String>forEach(System.out::println);",
-                        "    in.<String>forEach(System.out::println);",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.List;
+                        public class Test {
+                          void f(List<String> in) {
+                            in.forEach(System.out::println);
+                            in.forEach(System.out::println);
+                            in.<String>forEach(System.out::println);
+                            in.<String>forEach(System.out::println);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
