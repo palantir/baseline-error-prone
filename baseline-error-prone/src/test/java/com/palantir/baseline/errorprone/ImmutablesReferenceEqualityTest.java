@@ -24,15 +24,17 @@ public class ImmutablesReferenceEqualityTest {
     public void test() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.immutables.value.Value;",
-                        "class Test {",
-                        "  static boolean f(Foo foo1, Foo foo2) {",
-                        "    // BUG: Diagnostic contains: foo1.equals(foo2)",
-                        "    return foo1 == foo2;",
-                        "  }",
-                        "  @Value.Immutable",
-                        "  interface Foo {}",
-                        "}")
+                        """
+                        import org.immutables.value.Value;
+                        class Test {
+                          static boolean f(Foo foo1, Foo foo2) {
+                            // BUG: Diagnostic contains: foo1.equals(foo2)
+                            return foo1 == foo2;
+                          }
+                          @Value.Immutable
+                          interface Foo {}
+                        }
+                        """)
                 .doTest();
     }
 
