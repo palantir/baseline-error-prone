@@ -27,22 +27,26 @@ class UnsafeGaugeRegistrationTest {
         RefactoringValidator.of(UnsafeGaugeRegistration.class, getClass())
                 .addInputLines(
                         "Test.java",
-                        "import com.palantir.tritium.metrics.registry.MetricName;",
-                        "import com.palantir.tritium.metrics.registry.TaggedMetricRegistry;",
-                        "class Test {",
-                        "   void f(TaggedMetricRegistry registry, MetricName name) {",
-                        "       registry.gauge(name, () -> 1);",
-                        "   }",
-                        "}")
+                        """
+                        import com.palantir.tritium.metrics.registry.MetricName;
+                        import com.palantir.tritium.metrics.registry.TaggedMetricRegistry;
+                        class Test {
+                           void f(TaggedMetricRegistry registry, MetricName name) {
+                               registry.gauge(name, () -> 1);
+                           }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.tritium.metrics.registry.MetricName;",
-                        "import com.palantir.tritium.metrics.registry.TaggedMetricRegistry;",
-                        "class Test {",
-                        "   void f(TaggedMetricRegistry registry, MetricName name) {",
-                        "       registry.registerWithReplacement(name, () -> 1);",
-                        "   }",
-                        "}")
+                        """
+                        import com.palantir.tritium.metrics.registry.MetricName;
+                        import com.palantir.tritium.metrics.registry.TaggedMetricRegistry;
+                        class Test {
+                           void f(TaggedMetricRegistry registry, MetricName name) {
+                               registry.registerWithReplacement(name, () -> 1);
+                           }
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
@@ -51,24 +55,28 @@ class UnsafeGaugeRegistrationTest {
         RefactoringValidator.of(UnsafeGaugeRegistration.class, getClass())
                 .addInputLines(
                         "Test.java",
-                        "import com.codahale.metrics.Gauge;",
-                        "import com.palantir.tritium.metrics.registry.MetricName;",
-                        "import com.palantir.tritium.metrics.registry.TaggedMetricRegistry;",
-                        "class Test {",
-                        "   void f(TaggedMetricRegistry registry, MetricName name, Gauge<?> gauge) {",
-                        "       registry.gauge(name, gauge);",
-                        "   }",
-                        "}")
+                        """
+                        import com.codahale.metrics.Gauge;
+                        import com.palantir.tritium.metrics.registry.MetricName;
+                        import com.palantir.tritium.metrics.registry.TaggedMetricRegistry;
+                        class Test {
+                           void f(TaggedMetricRegistry registry, MetricName name, Gauge<?> gauge) {
+                               registry.gauge(name, gauge);
+                           }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.codahale.metrics.Gauge;",
-                        "import com.palantir.tritium.metrics.registry.MetricName;",
-                        "import com.palantir.tritium.metrics.registry.TaggedMetricRegistry;",
-                        "class Test {",
-                        "   void f(TaggedMetricRegistry registry, MetricName name, Gauge<?> gauge) {",
-                        "       registry.registerWithReplacement(name, gauge);",
-                        "   }",
-                        "}")
+                        """
+                        import com.codahale.metrics.Gauge;
+                        import com.palantir.tritium.metrics.registry.MetricName;
+                        import com.palantir.tritium.metrics.registry.TaggedMetricRegistry;
+                        class Test {
+                           void f(TaggedMetricRegistry registry, MetricName name, Gauge<?> gauge) {
+                               registry.registerWithReplacement(name, gauge);
+                           }
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
@@ -77,14 +85,16 @@ class UnsafeGaugeRegistrationTest {
         CompilationTestHelper.newInstance(UnsafeGaugeRegistration.class, getClass())
                 .addSourceLines(
                         "Test.java",
-                        "import com.codahale.metrics.Gauge;",
-                        "import com.palantir.tritium.metrics.registry.MetricName;",
-                        "import com.palantir.tritium.metrics.registry.TaggedMetricRegistry;",
-                        "class Test {",
-                        "   Gauge<?> f(TaggedMetricRegistry registry, MetricName name) {",
-                        "       return registry.gauge(name, () -> 1);",
-                        "   }",
-                        "}")
+                        """
+                        import com.codahale.metrics.Gauge;
+                        import com.palantir.tritium.metrics.registry.MetricName;
+                        import com.palantir.tritium.metrics.registry.TaggedMetricRegistry;
+                        class Test {
+                           Gauge<?> f(TaggedMetricRegistry registry, MetricName name) {
+                               return registry.gauge(name, () -> 1);
+                           }
+                        }
+                        """)
                 .doTest();
     }
 }
