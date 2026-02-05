@@ -25,14 +25,16 @@ class LoggingDoNotLogTest {
     void testJul() {
         helper().addSourceLines(
                         "Test.java",
-                        "import java.util.logging.*;",
-                        "import com.palantir.logsafe.*;",
-                        "class Test {",
-                        "  void f(@DoNotLog String in) {",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    Logger.getLogger(\"foo\").info(in);",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.logging.*;
+                        import com.palantir.logsafe.*;
+                        class Test {
+                          void f(@DoNotLog String in) {
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            Logger.getLogger("foo").info(in);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -40,14 +42,16 @@ class LoggingDoNotLogTest {
     void testSystemLogger() {
         helper().addSourceLines(
                         "Test.java",
-                        "import java.util.logging.*;",
-                        "import com.palantir.logsafe.*;",
-                        "class Test {",
-                        "  void f(@DoNotLog String in) {",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    System.getLogger(\"foo\").log(System.Logger.Level.INFO, in);",
-                        "  }",
-                        "}")
+                        """
+                        import java.util.logging.*;
+                        import com.palantir.logsafe.*;
+                        class Test {
+                          void f(@DoNotLog String in) {
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            System.getLogger("foo").log(System.Logger.Level.INFO, in);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -55,18 +59,20 @@ class LoggingDoNotLogTest {
     void testLog4j1() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.apache.log4j.*;",
-                        "import com.palantir.logsafe.*;",
-                        "class Test {",
-                        "  void f(@DoNotLog String in) {",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    LogManager.getLogger(\"foo\").info(in);",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    MDC.put(\"key\", in);",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    MDC.put(in, \"value\");",
-                        "  }",
-                        "}")
+                        """
+                        import org.apache.log4j.*;
+                        import com.palantir.logsafe.*;
+                        class Test {
+                          void f(@DoNotLog String in) {
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            LogManager.getLogger("foo").info(in);
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            MDC.put("key", in);
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            MDC.put(in, "value");
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -74,18 +80,20 @@ class LoggingDoNotLogTest {
     void testSlf4j() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "import com.palantir.logsafe.*;",
-                        "class Test {",
-                        "  void f(@DoNotLog String in) {",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    LoggerFactory.getLogger(\"foo\").info(in);",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    MDC.put(\"key\", in);",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    MDC.put(in, \"value\");",
-                        "  }",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        import com.palantir.logsafe.*;
+                        class Test {
+                          void f(@DoNotLog String in) {
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            LoggerFactory.getLogger("foo").info(in);
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            MDC.put("key", in);
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            MDC.put(in, "value");
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -93,13 +101,15 @@ class LoggingDoNotLogTest {
     void testException() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "class Test {",
-                        "  void f(@DoNotLog String in) {",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    throw new RuntimeException(in);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        class Test {
+                          void f(@DoNotLog String in) {
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            throw new RuntimeException(in);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -107,19 +117,21 @@ class LoggingDoNotLogTest {
     void testPreconditions() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import com.google.common.base.Preconditions;",
-                        "class Test {",
-                        "  void f(@DoNotLog String in) {",
-                        "    Preconditions.checkNotNull(in, \"do-not-log allowed as the check arg\");",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    Preconditions.checkArgument(false, in);",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    Preconditions.checkNotNull(null, in);",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    Preconditions.checkState(false, in);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import com.google.common.base.Preconditions;
+                        class Test {
+                          void f(@DoNotLog String in) {
+                            Preconditions.checkNotNull(in, "do-not-log allowed as the check arg");
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            Preconditions.checkArgument(false, in);
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            Preconditions.checkNotNull(null, in);
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            Preconditions.checkState(false, in);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -127,19 +139,21 @@ class LoggingDoNotLogTest {
     void testValidate() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "import org.apache.commons.lang3.Validate;",
-                        "class Test {",
-                        "  void f(@DoNotLog String in) {",
-                        "    Validate.notNull(in, \"do-not-log allowed as the check arg\");",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    Validate.isTrue(false, in);",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    Validate.notNull(null, in);",
-                        "    // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger",
-                        "    Validate.validState(false, in);",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.apache.commons.lang3.Validate;
+                        class Test {
+                          void f(@DoNotLog String in) {
+                            Validate.notNull(in, "do-not-log allowed as the check arg");
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            Validate.isTrue(false, in);
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            Validate.notNull(null, in);
+                            // BUG: Diagnostic contains: @DoNotLog types must not be passed to any logger
+                            Validate.validState(false, in);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 

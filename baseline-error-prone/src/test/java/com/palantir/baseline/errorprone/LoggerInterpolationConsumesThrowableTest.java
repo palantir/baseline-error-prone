@@ -25,13 +25,15 @@ class LoggerInterpolationConsumesThrowableTest {
     void testOneExtra_slf4j() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  static {",
-                        "    // BUG: Diagnostic contains: Please remove 1 '{}' placeholder.",
-                        "    LoggerFactory.getLogger(Test.class).error(\"{}\", new RuntimeException());",
-                        "  }",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          static {
+                            // BUG: Diagnostic contains: Please remove 1 '{}' placeholder.
+                            LoggerFactory.getLogger(Test.class).error("{}", new RuntimeException());
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -39,13 +41,15 @@ class LoggerInterpolationConsumesThrowableTest {
     void testOneExtra_safelogger() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.logger.*;",
-                        "class Test {",
-                        "  static {",
-                        "    // BUG: Diagnostic contains: Please remove 1 '{}' placeholder.",
-                        "    SafeLoggerFactory.get(Test.class).error(\"{}\", new RuntimeException());",
-                        "  }",
-                        "}")
+                        """
+                        import com.palantir.logsafe.logger.*;
+                        class Test {
+                          static {
+                            // BUG: Diagnostic contains: Please remove 1 '{}' placeholder.
+                            SafeLoggerFactory.get(Test.class).error("{}", new RuntimeException());
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -53,14 +57,16 @@ class LoggerInterpolationConsumesThrowableTest {
     void testOneExtraWithMarker() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  static {",
-                        "    // BUG: Diagnostic contains: Please remove 1 '{}' placeholder.",
-                        "    LoggerFactory.getLogger(Test.class).error(",
-                        "      MarkerFactory.getMarker(\"x\"), \"{}\", new RuntimeException());",
-                        "  }",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          static {
+                            // BUG: Diagnostic contains: Please remove 1 '{}' placeholder.
+                            LoggerFactory.getLogger(Test.class).error(
+                              MarkerFactory.getMarker("x"), "{}", new RuntimeException());
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -68,13 +74,15 @@ class LoggerInterpolationConsumesThrowableTest {
     void testOneExtraWithParameter() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  static {",
-                        "    // BUG: Diagnostic contains: Please remove 1 '{}' placeholder.",
-                        "    LoggerFactory.getLogger(Test.class).error(\"{} {}\", 1, new RuntimeException());",
-                        "  }",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          static {
+                            // BUG: Diagnostic contains: Please remove 1 '{}' placeholder.
+                            LoggerFactory.getLogger(Test.class).error("{} {}", 1, new RuntimeException());
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -82,13 +90,15 @@ class LoggerInterpolationConsumesThrowableTest {
     void testTwoExtra() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  static {",
-                        "    // BUG: Diagnostic contains: Please remove 2 '{}' placeholders.",
-                        "    LoggerFactory.getLogger(Test.class).error(\"{} {}\", new RuntimeException());",
-                        "  }",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          static {
+                            // BUG: Diagnostic contains: Please remove 2 '{}' placeholders.
+                            LoggerFactory.getLogger(Test.class).error("{} {}", new RuntimeException());
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -96,13 +106,15 @@ class LoggerInterpolationConsumesThrowableTest {
     void testTwoExtraWithParameter() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  static {",
-                        "    // BUG: Diagnostic contains: Please remove 2 '{}' placeholders.",
-                        "    LoggerFactory.getLogger(Test.class).error(\"{} {} {}\", 1, new RuntimeException());",
-                        "  }",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          static {
+                            // BUG: Diagnostic contains: Please remove 2 '{}' placeholders.
+                            LoggerFactory.getLogger(Test.class).error("{} {} {}", 1, new RuntimeException());
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -110,12 +122,14 @@ class LoggerInterpolationConsumesThrowableTest {
     void testExtraParamsIgnoredWhenNoThrowableIsPresent() {
         helper().addSourceLines(
                         "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "  static {",
-                        "    LoggerFactory.getLogger(Test.class).error(\"{} {} {}\", 1);",
-                        "  }",
-                        "}")
+                        """
+                        import org.slf4j.*;
+                        class Test {
+                          static {
+                            LoggerFactory.getLogger(Test.class).error("{} {} {}", 1);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
