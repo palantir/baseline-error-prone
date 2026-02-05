@@ -22,27 +22,21 @@ class DnsLookupTest {
 
     @Test
     void testFix() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        import java.net.InetSocketAddress;
-                        class Test {
-                          InetSocketAddress f() {
-                            return new InetSocketAddress("host", 443);
-                          }
-                        }
-                        """)
-                .addOutputLines(
-                        "Test.java",
-                        """
-                        import java.net.InetSocketAddress;
-                        class Test {
-                          InetSocketAddress f() {
-                            return InetSocketAddress.createUnresolved("host", 443);
-                          }
-                        }
-                        """)
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.net.InetSocketAddress;
+            class Test {
+              InetSocketAddress f() {
+                return new InetSocketAddress("host", 443);
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import java.net.InetSocketAddress;
+                class Test {
+                  InetSocketAddress f() {
+                    return InetSocketAddress.createUnresolved("host", 443);
+                  }
+                }
+                """).doTest();
     }
 
     private RefactoringValidator fix() {

@@ -22,36 +22,30 @@ class DeprecatedGuavaObjectsTest {
 
     @Test
     public void test() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        import com.google.common.base.Objects;
-                        import static com.google.common.base.Objects.equal;
-                        public class Test {
-                          void f(Object a, Object b) {
-                            com.google.common.base.Objects.equal(a, b);
-                            Objects.equal(a, b);
-                            equal(a, b);
-                            com.google.common.base.Objects.hashCode(a, b);
-                            Objects.hashCode(a, b);
-                          }
-                        }
-                        """)
-                .addOutputLines(
-                        "Test.java",
-                        """
-                        import java.util.Objects;
-                        public class Test {
-                          void f(Object a, Object b) {
-                            Objects.equals(a, b);
-                            Objects.equals(a, b);
-                            Objects.equals(a, b);
-                            Objects.hash(a, b);
-                            Objects.hash(a, b);
-                          }
-                        }
-                        """)
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import com.google.common.base.Objects;
+            import static com.google.common.base.Objects.equal;
+            public class Test {
+              void f(Object a, Object b) {
+                com.google.common.base.Objects.equal(a, b);
+                Objects.equal(a, b);
+                equal(a, b);
+                com.google.common.base.Objects.hashCode(a, b);
+                Objects.hashCode(a, b);
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import java.util.Objects;
+                public class Test {
+                  void f(Object a, Object b) {
+                    Objects.equals(a, b);
+                    Objects.equals(a, b);
+                    Objects.equals(a, b);
+                    Objects.hash(a, b);
+                    Objects.hash(a, b);
+                  }
+                }
+                """).doTest();
     }
 
     private RefactoringValidator fix() {

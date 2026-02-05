@@ -21,83 +21,65 @@ class OptionalFlatMapOfNullableTest {
 
     @Test
     void testFix_expression() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        import java.util.Optional;
-                        class Test {
-                           Optional<?> f(Optional<String> in) {
-                               return in.flatMap(x -> Optional.ofNullable(x));
-                           }
-                        }
-                        """)
-                .addOutputLines(
-                        "Test.java",
-                        """
-                        import java.util.Optional;
-                        class Test {
-                           Optional<?> f(Optional<String> in) {
-                               return in.map(x -> x);
-                           }
-                        }
-                        """)
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.util.Optional;
+            class Test {
+               Optional<?> f(Optional<String> in) {
+                   return in.flatMap(x -> Optional.ofNullable(x));
+               }
+            }
+            """).addOutputLines("Test.java", """
+                import java.util.Optional;
+                class Test {
+                   Optional<?> f(Optional<String> in) {
+                       return in.map(x -> x);
+                   }
+                }
+                """).doTest();
     }
 
     @Test
     void testFix_statement() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        import java.util.Optional;
-                        class Test {
-                           Optional<?> f(Optional<String> in) {
-                               return in.flatMap(x -> { return Optional.ofNullable(x); });
-                           }
-                        }
-                        """)
-                .addOutputLines(
-                        "Test.java",
-                        """
-                        import java.util.Optional;
-                        class Test {
-                           Optional<?> f(Optional<String> in) {
-                               return in.map(x -> { return x; });
-                           }
-                        }
-                        """)
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.util.Optional;
+            class Test {
+               Optional<?> f(Optional<String> in) {
+                   return in.flatMap(x -> { return Optional.ofNullable(x); });
+               }
+            }
+            """).addOutputLines("Test.java", """
+                import java.util.Optional;
+                class Test {
+                   Optional<?> f(Optional<String> in) {
+                       return in.map(x -> { return x; });
+                   }
+                }
+                """).doTest();
     }
 
     @Test
     void testFix_statement_additionalStatements() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        import java.util.Optional;
-                        class Test {
-                           Optional<?> f(Optional<String> in) {
-                               return in.flatMap(x -> {
-                                 String y = x + x;
-                                 return Optional.ofNullable(y);
-                               });
-                           }
-                        }
-                        """)
-                .addOutputLines(
-                        "Test.java",
-                        """
-                        import java.util.Optional;
-                        class Test {
-                           Optional<?> f(Optional<String> in) {
-                               return in.map(x -> {
-                                 String y = x + x;
-                                 return y;
-                               });
-                           }
-                        }
-                        """)
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.util.Optional;
+            class Test {
+               Optional<?> f(Optional<String> in) {
+                   return in.flatMap(x -> {
+                     String y = x + x;
+                     return Optional.ofNullable(y);
+                   });
+               }
+            }
+            """).addOutputLines("Test.java", """
+                import java.util.Optional;
+                class Test {
+                   Optional<?> f(Optional<String> in) {
+                       return in.map(x -> {
+                         String y = x + x;
+                         return y;
+                       });
+                   }
+                }
+                """).doTest();
     }
 
     private RefactoringValidator fix() {

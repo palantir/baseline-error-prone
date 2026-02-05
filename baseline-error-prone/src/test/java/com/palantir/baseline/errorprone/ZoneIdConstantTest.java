@@ -22,82 +22,64 @@ final class ZoneIdConstantTest {
 
     @Test
     void zoneIdZ() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        import java.time.ZoneId;
-                        class Test {
-                          static void f() {
-                            ZoneId zoneId = ZoneId.of("Z");
-                          }
-                        }
-                        """)
-                .addOutputLines(
-                        "Test.java",
-                        """
-                        import java.time.ZoneId;
-                        import java.time.ZoneOffset;
-                        class Test {
-                          static void f() {
-                            ZoneId zoneId = ZoneOffset.UTC;
-                          }
-                        }
-                        """)
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.time.ZoneId;
+            class Test {
+              static void f() {
+                ZoneId zoneId = ZoneId.of("Z");
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import java.time.ZoneId;
+                import java.time.ZoneOffset;
+                class Test {
+                  static void f() {
+                    ZoneId zoneId = ZoneOffset.UTC;
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void zoneIdUtc() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        import java.time.ZoneId;
-                        class Test {
-                          static void f() {
-                            ZoneId zoneId = ZoneId.of("UTC");
-                          }
-                        }
-                        """)
-                .addOutputLines(
-                        "Test.java",
-                        """
-                        import java.time.ZoneId;
-                        import java.time.ZoneOffset;
-                        class Test {
-                          static void f() {
-                            ZoneId zoneId = ZoneOffset.UTC;
-                          }
-                        }
-                        """)
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.time.ZoneId;
+            class Test {
+              static void f() {
+                ZoneId zoneId = ZoneId.of("UTC");
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import java.time.ZoneId;
+                import java.time.ZoneOffset;
+                class Test {
+                  static void f() {
+                    ZoneId zoneId = ZoneOffset.UTC;
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void zoneIdConstant() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        import java.time.ZoneId;
-                        class Test {
-                          static final String Z = "Z";
-                          static void f() {
-                            ZoneId zoneId = ZoneId.of(Z);
-                          }
-                        }
-                        """)
-                .addOutputLines(
-                        "Test.java",
-                        """
-                        import java.time.ZoneId;
-                        import java.time.ZoneOffset;
-                        class Test {
-                          static final String Z = "Z";
-                          static void f() {
-                            ZoneId zoneId = ZoneOffset.UTC;
-                          }
-                        }
-                        """)
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.time.ZoneId;
+            class Test {
+              static final String Z = "Z";
+              static void f() {
+                ZoneId zoneId = ZoneId.of(Z);
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import java.time.ZoneId;
+                import java.time.ZoneOffset;
+                class Test {
+                  static final String Z = "Z";
+                  static void f() {
+                    ZoneId zoneId = ZoneOffset.UTC;
+                  }
+                }
+                """).doTest();
     }
 
     private RefactoringValidator fix() {

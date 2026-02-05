@@ -23,124 +23,93 @@ import org.junit.jupiter.api.Test;
 public final class ExtendsErrorOrThrowableTest {
     @Test
     void testSimple() {
-        helper().addSourceLines(
-                        "Test.java",
-                        """
-                        // BUG: Diagnostic contains: Class should not extend Error or Throwable directly
-                        public class Test extends Error {
-                          public Test() {}
-                        }
-                        """)
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            // BUG: Diagnostic contains: Class should not extend Error or Throwable directly
+            public class Test extends Error {
+              public Test() {}
+            }
+            """).doTest();
     }
 
     @Test
     void testNonJavaLangError() {
-        helper().addSourceLines(
-                        "Error.java",
-                        """
-                        public class Error {
-                          public Error() {}
-                        }
-                        """)
-                .addSourceLines(
-                        "Test.java",
-                        """
-                        public class Test extends Error {
-                          public Test() {}
-                        }
-                        """)
+        helper().addSourceLines("Error.java", """
+            public class Error {
+              public Error() {}
+            }
+            """)
+                .addSourceLines("Test.java", """
+                    public class Test extends Error {
+                      public Test() {}
+                    }
+                    """)
                 .doTest();
     }
 
     @Test
     void testSimpleException() {
-        helper().addSourceLines(
-                        "Test.java",
-                        """
-                        public class Test extends RuntimeException {
-                          public Test() {}
-                        }
-                        """)
-                .expectNoDiagnostics()
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            public class Test extends RuntimeException {
+              public Test() {}
+            }
+            """).expectNoDiagnostics().doTest();
     }
 
     @Test
     void testSpecificJavaError() {
-        helper().addSourceLines(
-                        "Test.java",
-                        """
-                        // BUG: Diagnostic contains: Class should not extend Error or Throwable directly
-                        public class Test extends OutOfMemoryError {
-                          public Test() {}
-                        }
-                        """)
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            // BUG: Diagnostic contains: Class should not extend Error or Throwable directly
+            public class Test extends OutOfMemoryError {
+              public Test() {}
+            }
+            """).doTest();
     }
 
     @Test
     void testSpecificJavaErrorNoFix() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        public class Test extends OutOfMemoryError {
-                          public Test() {}
-                        }
-                        """)
+        fix().addInputLines("Test.java", """
+            public class Test extends OutOfMemoryError {
+              public Test() {}
+            }
+            """)
                 .expectUnchanged()
                 .doTestExpectingFailure(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
     @Test
     void testFixError() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        public class Test extends Error {
-                          public Test() {}
-                        }
-                        """)
-                .addOutputLines(
-                        "Test.java",
-                        """
-                        public class Test extends RuntimeException {
-                          public Test() {}
-                        }
-                        """)
-                .doTest();
+        fix().addInputLines("Test.java", """
+            public class Test extends Error {
+              public Test() {}
+            }
+            """).addOutputLines("Test.java", """
+                public class Test extends RuntimeException {
+                  public Test() {}
+                }
+                """).doTest();
     }
 
     @Test
     void testThrowableDiagnostic() {
-        helper().addSourceLines(
-                        "Test.java",
-                        """
-                        // BUG: Diagnostic contains: Class should not extend Error or Throwable directly
-                        public class Test extends Throwable {
-                          public Test() {}
-                        }
-                        """)
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            // BUG: Diagnostic contains: Class should not extend Error or Throwable directly
+            public class Test extends Throwable {
+              public Test() {}
+            }
+            """).doTest();
     }
 
     @Test
     void testFixThrowable() {
-        fix().addInputLines(
-                        "Test.java",
-                        """
-                        public class Test extends Throwable {
-                          public Test() {}
-                        }
-                        """)
-                .addOutputLines(
-                        "Test.java",
-                        """
-                        public class Test extends RuntimeException {
-                          public Test() {}
-                        }
-                        """)
-                .doTest();
+        fix().addInputLines("Test.java", """
+            public class Test extends Throwable {
+              public Test() {}
+            }
+            """).addOutputLines("Test.java", """
+                public class Test extends RuntimeException {
+                  public Test() {}
+                }
+                """).doTest();
     }
 
     private CompilationTestHelper helper() {

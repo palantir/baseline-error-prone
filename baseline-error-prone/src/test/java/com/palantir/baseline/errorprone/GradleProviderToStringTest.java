@@ -33,54 +33,46 @@ public class GradleProviderToStringTest {
 
     @Test
     public void failsUsedInStringConcatenation() {
-        compilationHelper
-                .addSourceLines(
-                        "Foo.java",
-                        """
-                        import org.gradle.api.Project;
-                        import org.gradle.api.Plugin;
-                        import org.gradle.api.provider.Provider;
-                        class Foo implements Plugin<Project> {
-                          public final void apply(Project project) {
-                            String nonProvider = "foo";
-                            Provider<String> provider = project.provider(() -> "hello");
-                            // BUG: Diagnostic contains: Calling toString on a Provider
-                            String value = "My bad provider value: " + provider + nonProvider;
-                          }
-                        }
-                        """)
-                .doTest();
+        compilationHelper.addSourceLines("Foo.java", """
+            import org.gradle.api.Project;
+            import org.gradle.api.Plugin;
+            import org.gradle.api.provider.Provider;
+            class Foo implements Plugin<Project> {
+              public final void apply(Project project) {
+                String nonProvider = "foo";
+                Provider<String> provider = project.provider(() -> "hello");
+                // BUG: Diagnostic contains: Calling toString on a Provider
+                String value = "My bad provider value: " + provider + nonProvider;
+              }
+            }
+            """).doTest();
     }
 
     @Test
     public void failsUsedInStringConcatenation_replacesWithGet() {
         refactoringValidator
-                .addInputLines(
-                        "Foo.java",
-                        """
-                        import org.gradle.api.Project;
-                        import org.gradle.api.Plugin;
-                        import org.gradle.api.provider.Provider;
-                        class Foo implements Plugin<Project> {
-                          public final void apply(Project project) {
-                            Provider<String> provider = project.provider(() -> "hello");
-                            String value = "My bad provider value: " + provider;
-                          }
-                        }
-                        """)
-                .addOutputLines(
-                        "Foo.java",
-                        """
-                        import org.gradle.api.Project;
-                        import org.gradle.api.Plugin;
-                        import org.gradle.api.provider.Provider;
-                        class Foo implements Plugin<Project> {
-                          public final void apply(Project project) {
-                            Provider<String> provider = project.provider(() -> "hello");
-                            String value = "My bad provider value: " + provider.get();
-                          }
-                        }
-                        """)
+                .addInputLines("Foo.java", """
+                    import org.gradle.api.Project;
+                    import org.gradle.api.Plugin;
+                    import org.gradle.api.provider.Provider;
+                    class Foo implements Plugin<Project> {
+                      public final void apply(Project project) {
+                        Provider<String> provider = project.provider(() -> "hello");
+                        String value = "My bad provider value: " + provider;
+                      }
+                    }
+                    """)
+                .addOutputLines("Foo.java", """
+                    import org.gradle.api.Project;
+                    import org.gradle.api.Plugin;
+                    import org.gradle.api.provider.Provider;
+                    class Foo implements Plugin<Project> {
+                      public final void apply(Project project) {
+                        Provider<String> provider = project.provider(() -> "hello");
+                        String value = "My bad provider value: " + provider.get();
+                      }
+                    }
+                    """)
                 .doTest();
     }
 }
