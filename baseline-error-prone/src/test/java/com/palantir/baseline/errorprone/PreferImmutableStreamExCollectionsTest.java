@@ -25,22 +25,26 @@ public class PreferImmutableStreamExCollectionsTest {
     void toMap() {
         fix().addInputLines(
                         "Test.java",
-                        "import one.util.streamex.EntryStream;",
-                        "import java.util.Map;",
-                        "public class Test {",
-                        "  Map<String, String> map = EntryStream.of(Map.of(\"hello\", \"world\")).toMap();",
-                        "  EntryStream<String, String> entryStream = EntryStream.of(Map.of(\"hello\", \"world\"));",
-                        "  Map<String, String> entryStream2 = entryStream.toMap();",
-                        "}")
+                        """
+                        import one.util.streamex.EntryStream;
+                        import java.util.Map;
+                        public class Test {
+                          Map<String, String> map = EntryStream.of(Map.of("hello", "world")).toMap();
+                          EntryStream<String, String> entryStream = EntryStream.of(Map.of("hello", "world"));
+                          Map<String, String> entryStream2 = entryStream.toMap();
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import one.util.streamex.EntryStream;",
-                        "import java.util.Map;",
-                        "public class Test {",
-                        "  Map<String, String> map = EntryStream.of(Map.of(\"hello\", \"world\")).toImmutableMap();",
-                        "  EntryStream<String, String> entryStream = EntryStream.of(Map.of(\"hello\", \"world\"));",
-                        "  Map<String, String> entryStream2 = entryStream.toImmutableMap();",
-                        "}")
+                        """
+                        import one.util.streamex.EntryStream;
+                        import java.util.Map;
+                        public class Test {
+                          Map<String, String> map = EntryStream.of(Map.of("hello", "world")).toImmutableMap();
+                          EntryStream<String, String> entryStream = EntryStream.of(Map.of("hello", "world"));
+                          Map<String, String> entryStream2 = entryStream.toImmutableMap();
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
@@ -48,22 +52,26 @@ public class PreferImmutableStreamExCollectionsTest {
     void toSet() {
         fix().addInputLines(
                         "Test.java",
-                        "import one.util.streamex.StreamEx;",
-                        "import java.util.stream.Collectors;",
-                        "import java.util.Set;",
-                        "public class Test {",
-                        "  Set<String> s = StreamEx.of(\"Hello\").toSet();",
-                        "  Set<String> s2 = StreamEx.of(\"Hello\").collect(Collectors.toSet());",
-                        "}")
+                        """
+                        import one.util.streamex.StreamEx;
+                        import java.util.stream.Collectors;
+                        import java.util.Set;
+                        public class Test {
+                          Set<String> s = StreamEx.of("Hello").toSet();
+                          Set<String> s2 = StreamEx.of("Hello").collect(Collectors.toSet());
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import one.util.streamex.StreamEx;",
-                        "import java.util.stream.Collectors;",
-                        "import java.util.Set;",
-                        "public class Test {",
-                        "  Set<String> s = StreamEx.of(\"Hello\").toImmutableSet();",
-                        "  Set<String> s2 = StreamEx.of(\"Hello\").toImmutableSet();",
-                        "}")
+                        """
+                        import one.util.streamex.StreamEx;
+                        import java.util.stream.Collectors;
+                        import java.util.Set;
+                        public class Test {
+                          Set<String> s = StreamEx.of("Hello").toImmutableSet();
+                          Set<String> s2 = StreamEx.of("Hello").toImmutableSet();
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
@@ -71,22 +79,26 @@ public class PreferImmutableStreamExCollectionsTest {
     void toList() {
         fix().addInputLines(
                         "Test.java",
-                        "import one.util.streamex.StreamEx;",
-                        "import java.util.List;",
-                        "import static java.util.stream.Collectors.toList;",
-                        "public class Test {",
-                        "  List<String> s = StreamEx.of(\"Hello\").toList();",
-                        "  List<String> s2 = StreamEx.of(\"Hello\").collect(toList());",
-                        "}")
+                        """
+                        import one.util.streamex.StreamEx;
+                        import java.util.List;
+                        import static java.util.stream.Collectors.toList;
+                        public class Test {
+                          List<String> s = StreamEx.of("Hello").toList();
+                          List<String> s2 = StreamEx.of("Hello").collect(toList());
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import one.util.streamex.StreamEx;",
-                        "import java.util.List;",
-                        "import static java.util.stream.Collectors.toList;",
-                        "public class Test {",
-                        "  List<String> s = StreamEx.of(\"Hello\").toImmutableList();",
-                        "  List<String> s2 = StreamEx.of(\"Hello\").toImmutableList();",
-                        "}")
+                        """
+                        import one.util.streamex.StreamEx;
+                        import java.util.List;
+                        import static java.util.stream.Collectors.toList;
+                        public class Test {
+                          List<String> s = StreamEx.of("Hello").toImmutableList();
+                          List<String> s2 = StreamEx.of("Hello").toImmutableList();
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 

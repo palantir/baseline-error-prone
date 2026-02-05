@@ -38,10 +38,12 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
-                        "class Bean {",
-                        "// BUG: Diagnostic contains: Prefer SafeIllegalArgumentException",
-                        "Exception foo = new IllegalArgumentException(\"Foo\");",
-                        "}")
+                        """
+                        class Bean {
+                        // BUG: Diagnostic contains: Prefer SafeIllegalArgumentException
+                        Exception foo = new IllegalArgumentException("Foo");
+                        }
+                        """)
                 .doTest();
     }
 
@@ -50,18 +52,20 @@ public class PreferSafeLoggableExceptionsTest {
         RefactoringValidator.of(PreferSafeLoggableExceptions.class, getClass())
                 .addInputLines(
                         "Bean.java",
-                        "class Bean {",
-                        "  Exception foo = new IllegalArgumentException(\"Foo\");",
-                        "}",
-                        "")
+                        """
+                        class Bean {
+                          Exception foo = new IllegalArgumentException("Foo");
+                        }
+                        """)
                 .addOutputLines(
                         "Bean.java",
-                        "import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;",
-                        "",
-                        "class Bean {",
-                        "  Exception foo = new SafeIllegalArgumentException(\"Foo\");",
-                        "}",
-                        "")
+                        """
+                        import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
+
+                        class Bean {
+                          Exception foo = new SafeIllegalArgumentException("Foo");
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
@@ -70,9 +74,11 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
-                        "class Bean {",
-                        "Exception foo = new IllegalArgumentException(new RuntimeException());",
-                        "}")
+                        """
+                        class Bean {
+                        Exception foo = new IllegalArgumentException(new RuntimeException());
+                        }
+                        """)
                 .doTest();
     }
 
@@ -81,18 +87,20 @@ public class PreferSafeLoggableExceptionsTest {
         RefactoringValidator.of(PreferSafeLoggableExceptions.class, getClass())
                 .addInputLines(
                         "Bean.java",
-                        "class Bean {",
-                        "  Exception foo = new IllegalArgumentException(\"Foo\");",
-                        "}",
-                        "")
+                        """
+                        class Bean {
+                          Exception foo = new IllegalArgumentException("Foo");
+                        }
+                        """)
                 .addOutputLines(
                         "Bean.java",
-                        "import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;",
-                        "",
-                        "class Bean {",
-                        "  Exception foo = new SafeIllegalArgumentException(\"Foo\");",
-                        "}",
-                        "")
+                        """
+                        import com.palantir.logsafe.exceptions.SafeIllegalArgumentException;
+
+                        class Bean {
+                          Exception foo = new SafeIllegalArgumentException("Foo");
+                        }
+                        """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
@@ -101,10 +109,12 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
-                        "class Bean {",
-                        "// BUG: Diagnostic contains: Prefer SafeIllegalStateException",
-                        "Exception foo = new IllegalStateException(\"Foo\");",
-                        "}")
+                        """
+                        class Bean {
+                        // BUG: Diagnostic contains: Prefer SafeIllegalStateException
+                        Exception foo = new IllegalStateException("Foo");
+                        }
+                        """)
                 .doTest();
     }
 
@@ -113,9 +123,11 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
-                        "class Bean {",
-                        "Exception foo = new IllegalStateException(new RuntimeException());",
-                        "}")
+                        """
+                        class Bean {
+                        Exception foo = new IllegalStateException(new RuntimeException());
+                        }
+                        """)
                 .doTest();
     }
 
@@ -124,9 +136,11 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
-                        "class Bean {",
-                        "Exception foo = new IllegalStateException(\"I am a non-constant string\" + Math.random());",
-                        "}")
+                        """
+                        class Bean {
+                        Exception foo = new IllegalStateException("I am a non-constant string" + Math.random());
+                        }
+                        """)
                 .doTest();
     }
 
@@ -135,13 +149,15 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "FooTest.java",
-                        "import org.junit.Test;",
-                        "class FooTest {",
-                        "  @Test",
-                        "  public void run_junit4_test() {",
-                        "    throw new IllegalStateException(\"constant\");",
-                        "  }",
-                        "}")
+                        """
+                        import org.junit.Test;
+                        class FooTest {
+                          @Test
+                          public void run_junit4_test() {
+                            throw new IllegalStateException("constant");
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -150,18 +166,20 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "FooTest.java",
-                        "import org.junit.jupiter.api.Test;",
-                        "import org.junit.jupiter.api.TestTemplate;",
-                        "class FooTest {",
-                        "  @Test",
-                        "  public void run_junit5_test() {",
-                        "    throw new IllegalStateException(\"constant\");",
-                        "  }",
-                        "  @TestTemplate",
-                        "  public void junit5_test_template() {",
-                        "    throw new IllegalStateException(\"constant\");",
-                        "  }",
-                        "}")
+                        """
+                        import org.junit.jupiter.api.Test;
+                        import org.junit.jupiter.api.TestTemplate;
+                        class FooTest {
+                          @Test
+                          public void run_junit5_test() {
+                            throw new IllegalStateException("constant");
+                          }
+                          @TestTemplate
+                          public void junit5_test_template() {
+                            throw new IllegalStateException("constant");
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -170,12 +188,14 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "FooTest.java",
-                        "import org.junit.Test;",
-                        "class FooTest {",
-                        "  Exception foo = new IllegalStateException(\"constant\");",
-                        "  @Test",
-                        "  public void doSomething() {}",
-                        "}")
+                        """
+                        import org.junit.Test;
+                        class FooTest {
+                          Exception foo = new IllegalStateException("constant");
+                          @Test
+                          public void doSomething() {}
+                        }
+                        """)
                 .doTest();
     }
 
@@ -184,12 +204,14 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "Foo.java",
-                        "import static org.assertj.core.api.Assertions.assertThat;",
-                        "class Foo {",
-                        "  public void f() {",
-                        "    throw new IllegalStateException(\"constant\");",
-                        "  }",
-                        "}")
+                        """
+                        import static org.assertj.core.api.Assertions.assertThat;
+                        class Foo {
+                          public void f() {
+                            throw new IllegalStateException("constant");
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -198,10 +220,12 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
-                        "class Bean {",
-                        "// BUG: Diagnostic contains: Prefer SafeIoException",
-                        "Exception foo = new java.io.IOException(\"Foo\");",
-                        "}")
+                        """
+                        class Bean {
+                        // BUG: Diagnostic contains: Prefer SafeIoException
+                        Exception foo = new java.io.IOException("Foo");
+                        }
+                        """)
                 .doTest();
     }
 
@@ -210,9 +234,11 @@ public class PreferSafeLoggableExceptionsTest {
         compilationHelper
                 .addSourceLines(
                         "Bean.java",
-                        "class Bean {",
-                        "Exception foo = new java.io.IOException(new RuntimeException());",
-                        "}")
+                        """
+                        class Bean {
+                        Exception foo = new java.io.IOException(new RuntimeException());
+                        }
+                        """)
                 .doTest();
     }
 }
