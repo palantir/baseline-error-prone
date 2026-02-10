@@ -68,11 +68,11 @@ org.pcollections:pcollections:4.0.1 (1 constraints: f21028b8)
 
 cglib:cglib-nodep:3.2.2 (1 constraints: 490ded24)
 
-com.fasterxml.jackson.core:jackson-annotations:2.21 (5 constraints: 92431605)
+com.fasterxml.jackson.core:jackson-annotations:2.21 (5 constraints: 93436905)
 
-com.fasterxml.jackson.core:jackson-core:2.21.0 (3 constraints: 1e3ab272)
+com.fasterxml.jackson.core:jackson-core:2.21.0 (3 constraints: 1e3ab472)
 
-com.fasterxml.jackson.core:jackson-databind:2.21.0 (4 constraints: 64453c10)
+com.fasterxml.jackson.core:jackson-databind:2.21.0 (4 constraints: 64453e10)
 
 com.fasterxml.jackson.module:jackson-module-afterburner:2.21.0 (1 constraints: 3705363b)
 
@@ -86,9 +86,9 @@ com.google.truth:truth:1.4.5 (2 constraints: 7726656a)
 
 com.netflix.nebula:nebula-test:10.6.2 (2 constraints: d61de72d)
 
-com.palantir.conjure.java:conjure-lib:8.69.0 (1 constraints: 4905823b)
+com.palantir.conjure.java:conjure-lib:8.70.0 (1 constraints: 41056b3b)
 
-com.palantir.conjure.java.api:errors:2.69.0 (2 constraints: 7c2157b2)
+com.palantir.conjure.java.api:errors:2.69.0 (2 constraints: 7d218cb2)
 
 com.palantir.conjure.java.api:test-utils:2.69.0 (1 constraints: 43055e3b)
 
@@ -102,7 +102,7 @@ com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.54.0 (1 constrai
 
 com.palantir.gradle.plugintesting:plugin-testing-core:0.54.0 (1 constraints: 3b053f3b)
 
-com.palantir.ri:resource-identifier:2.13.0 (2 constraints: 5415f0d9)
+com.palantir.ri:resource-identifier:2.13.0 (2 constraints: 5515f3d9)
 
 com.palantir.safe-logging:logger:3.11.0 (3 constraints: bf21c7d7)
 
@@ -110,13 +110,13 @@ com.palantir.safe-logging:logger-slf4j:3.11.0 (1 constraints: 300e8a50)
 
 com.palantir.safe-logging:logger-spi:3.11.0 (2 constraints: 6f1e0ab0)
 
-com.palantir.safe-logging:preconditions:3.11.0 (8 constraints: 4776207a)
+com.palantir.safe-logging:preconditions:3.11.0 (8 constraints: 4876397b)
 
 com.palantir.safe-logging:preconditions-assertj:3.11.0 (1 constraints: 3705383b)
 
-com.palantir.safe-logging:safe-logging:3.11.0 (9 constraints: c688ace8)
+com.palantir.safe-logging:safe-logging:3.11.0 (9 constraints: c788fbe9)
 
-com.palantir.tokens:auth-tokens:3.22.0 (2 constraints: 56152dda)
+com.palantir.tokens:auth-tokens:3.22.0 (2 constraints: 571530da)
 
 com.palantir.tritium:tritium-ids:0.124.0 (1 constraints: fa0f8ea6)
 
