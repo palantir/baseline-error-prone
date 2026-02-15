@@ -160,21 +160,21 @@ org.jetbrains:annotations:26.0.2 (3 constraints: da3af6a1)
 
 org.jooq:jooq:3.20.11 (1 constraints: 6905a340)
 
-org.junit.jupiter:junit-jupiter:6.0.2 (1 constraints: 49070b70)
+org.junit.jupiter:junit-jupiter:6.0.3 (1 constraints: 4a070d70)
 
-org.junit.jupiter:junit-jupiter-api:6.0.2 (6 constraints: 1275d7a6)
+org.junit.jupiter:junit-jupiter-api:6.0.3 (6 constraints: 167509a8)
 
-org.junit.jupiter:junit-jupiter-engine:6.0.2 (1 constraints: 050ecc3b)
+org.junit.jupiter:junit-jupiter-engine:6.0.3 (1 constraints: 060ecd3b)
 
-org.junit.jupiter:junit-jupiter-migrationsupport:6.0.2 (1 constraints: 0a050b36)
+org.junit.jupiter:junit-jupiter-migrationsupport:6.0.3 (1 constraints: 0b050c36)
 
-org.junit.jupiter:junit-jupiter-params:6.0.2 (2 constraints: c32427d7)
+org.junit.jupiter:junit-jupiter-params:6.0.3 (2 constraints: c42428d7)
 
-org.junit.platform:junit-platform-commons:6.0.2 (2 constraints: d7207a4a)
+org.junit.platform:junit-platform-commons:6.0.3 (2 constraints: d920ad4a)
 
-org.junit.platform:junit-platform-engine:6.0.2 (3 constraints: 2430cc56)
+org.junit.platform:junit-platform-engine:6.0.3 (3 constraints: 26304d57)
 
-org.junit.platform:junit-platform-launcher:6.0.2 (2 constraints: 581b6262)
+org.junit.platform:junit-platform-launcher:6.0.3 (2 constraints: 591ba162)
 
 org.mockito:mockito-core:5.21.0 (1 constraints: 4c11b1e0)
 
