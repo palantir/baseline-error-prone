@@ -104,17 +104,17 @@ com.palantir.gradle.plugintesting:plugin-testing-core:0.57.0 (1 constraints: 3e0
 
 com.palantir.ri:resource-identifier:2.13.0 (2 constraints: 5515f3d9)
 
-com.palantir.safe-logging:logger:3.11.0 (3 constraints: bf21c7d7)
+com.palantir.safe-logging:logger:3.12.0 (3 constraints: c0211dd8)
 
-com.palantir.safe-logging:logger-slf4j:3.11.0 (1 constraints: 300e8a50)
+com.palantir.safe-logging:logger-slf4j:3.12.0 (1 constraints: 310e8d50)
 
-com.palantir.safe-logging:logger-spi:3.11.0 (2 constraints: 6f1e0ab0)
+com.palantir.safe-logging:logger-spi:3.12.0 (2 constraints: 711e40b0)
 
-com.palantir.safe-logging:preconditions:3.11.0 (8 constraints: 4876397b)
+com.palantir.safe-logging:preconditions:3.12.0 (8 constraints: 4a76067d)
 
-com.palantir.safe-logging:preconditions-assertj:3.11.0 (1 constraints: 3705383b)
+com.palantir.safe-logging:preconditions-assertj:3.12.0 (1 constraints: 38053b3b)
 
-com.palantir.safe-logging:safe-logging:3.11.0 (9 constraints: c788fbe9)
+com.palantir.safe-logging:safe-logging:3.12.0 (9 constraints: cc887ced)
 
 com.palantir.tokens:auth-tokens:3.22.0 (2 constraints: 571530da)
 
@@ -142,7 +142,7 @@ org.apache.commons:commons-lang3:3.20.0 (1 constraints: 3705393b)
 
 org.apiguardian:apiguardian-api:1.1.2 (7 constraints: 677be455)
 
-org.assertj:assertj-core:3.27.7 (4 constraints: de44528c)
+org.assertj:assertj-core:3.27.7 (4 constraints: df44538c)
 
 org.codehaus.groovy:groovy:3.0.24 (3 constraints: 133429dd)
 
@@ -156,7 +156,7 @@ org.hamcrest:hamcrest-core:3.0 (4 constraints: 2a2bcb9d)
 
 org.hamcrest:hamcrest-library:2.2 (1 constraints: fc138e38)
 
-org.jetbrains:annotations:26.0.2 (3 constraints: da3af6a1)
+org.jetbrains:annotations:26.1.0 (3 constraints: d93af7a1)
 
 org.jooq:jooq:3.20.11 (1 constraints: 6905a340)
 
