@@ -236,6 +236,7 @@ class BaselineErrorProneIntegrationTest {
     @Test
     void compilejava_succeeds_when_using_deprecated_if_deprecated_api_is_in_the_same_repo_in_different_subprojects(
             GradleInvoker gradle, RootProject project, SubProject lib, SubProject app) {
+        // System.setProperty('org.gradle.java.compile-classpath-packaging', 'true')
         // ***DELINEATOR FOR REVIEW: when
         project.buildGradle().plugins().add("java");
         project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
@@ -251,6 +252,154 @@ class BaselineErrorProneIntegrationTest {
             """);
 
         lib.buildGradle().plugins().add("java-library");
+        lib.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+        lib.buildGradle().append("""
+            repositories {
+                mavenLocal()
+                // TODO(forozco): figure out why pTML no longer works
+                mavenCentral()
+            }
+            """);
+
+        app.buildGradle().plugins().add("java");
+        app.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+        app.buildGradle().append("""
+            repositories {
+                mavenLocal()
+                // TODO(forozco): figure out why pTML no longer works
+                mavenCentral()
+            }
+            dependencies {
+                implementation project(':lib')
+            }
+            """);
+
+        lib.mainSourceSet().java().writeClass("""
+            package test;
+            @Deprecated(forRemoval = true)
+            public class DeprecatedClass {
+                @Deprecated(forRemoval = true)
+                static void deprecated() {}
+
+                // Testing nested classes too
+                @Deprecated(forRemoval = true)
+                public static class Inner {}
+            }
+            """);
+
+        app.mainSourceSet().java().writeClass("""
+            package test;
+            public class Test {
+                // The object parameter is to ensure that we also notice classes
+                //   marked as deprecated in the same project/repo
+                void test(DeprecatedClass obj) {
+                    obj.deprecated();
+                }
+
+                void testInner(DeprecatedClass.Inner _obj) {}
+            }
+            """);
+
+        // ***DELINEATOR FOR REVIEW: then
+        InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
+        assertThat(result).task(":lib:compileJava").succeeded();
+        assertThat(result).task(":app:compileJava").succeeded();
+    }
+
+    @Test
+    void compile_works_when_using_deprecated_if_deprecated_api_is_in_the_same_repo_using_compile_classpath_packaging(
+            GradleInvoker gradle, RootProject project, SubProject lib, SubProject app) {
+        // when
+        project.buildGradle().plugins().add("java");
+        project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+        project.buildGradle().append("""
+            repositories {
+                mavenLocal()
+                // TODO(forozco): figure out why pTML no longer works
+                mavenCentral()
+            }
+            tasks.withType(JavaCompile) {
+                options.compilerArgs += ['-Werror']
+            }
+            """);
+
+        // Set the property
+        project.gradlePropertiesFile().setProperty("org.gradle.java.compile-classpath-packaging", "true");
+
+        lib.buildGradle().plugins().add("java-library");
+        lib.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+        lib.buildGradle().append("""
+            repositories {
+                mavenLocal()
+                // TODO(forozco): figure out why pTML no longer works
+                mavenCentral()
+            }
+            """);
+
+        app.buildGradle().plugins().add("java");
+        app.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+        app.buildGradle().append("""
+            repositories {
+                mavenLocal()
+                // TODO(forozco): figure out why pTML no longer works
+                mavenCentral()
+            }
+            dependencies {
+                implementation project(':lib')
+            }
+            """);
+
+        lib.mainSourceSet().java().writeClass("""
+            package test;
+            @Deprecated(forRemoval = true)
+            public class DeprecatedClass {
+                @Deprecated(forRemoval = true)
+                static void deprecated() {}
+
+                // Testing nested classes too
+                @Deprecated(forRemoval = true)
+                public static class Inner {}
+            }
+            """);
+
+        app.mainSourceSet().java().writeClass("""
+            package test;
+            public class Test {
+                // The object parameter is to ensure that we also notice classes
+                //   marked as deprecated in the same project/repo
+                void test(DeprecatedClass obj) {
+                    obj.deprecated();
+                }
+
+                void testInner(DeprecatedClass.Inner _obj) {}
+            }
+            """);
+
+        // ***DELINEATOR FOR REVIEW: then
+        InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
+        assertThat(result).task(":lib:compileJava").succeeded();
+        assertThat(result).task(":app:compileJava").succeeded();
+    }
+
+    @Test
+    void compile_works_when_using_deprecated_if_deprecated_api_is_in_the_same_repo_using_java_plugin_in_library(
+            GradleInvoker gradle, RootProject project, SubProject lib, SubProject app) {
+        // when
+        project.buildGradle().plugins().add("java");
+        project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+        project.buildGradle().append("""
+            repositories {
+                mavenLocal()
+                // TODO(forozco): figure out why pTML no longer works
+                mavenCentral()
+            }
+            tasks.withType(JavaCompile) {
+                options.compilerArgs += ['-Werror']
+            }
+            """);
+
+        // Mistakenly use the java plugin rather than java-library
+        lib.buildGradle().plugins().add("java");
         lib.buildGradle().plugins().add("com.palantir.baseline-error-prone");
         lib.buildGradle().append("""
             repositories {
