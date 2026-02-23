@@ -33,6 +33,7 @@ import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Dictionary;
@@ -71,23 +72,23 @@ public final class StrictCollectionIncompatibleType extends BugChecker
     private final ImmutableList<IncompatibleTypeMatcher> matchers = ImmutableList.of(
             // Matched patterns are based error-prone CollectionIncompatibleType
             // https://github.com/google/error-prone/blob/master/core/src/main/java/com/google/errorprone/bugpatterns/collectionincompatibletype/CollectionIncompatibleType.java
-            compatibleArgType(MAP, "containsKey(java.lang.Object)", 0, 0),
-            compatibleArgType(MAP, "containsValue(java.lang.Object)", 1, 0),
-            compatibleArgType(MAP, "get(java.lang.Object)", 0, 0),
-            compatibleArgType(MAP, "getOrDefault(java.lang.Object,V)", 0, 0),
-            compatibleArgType(MAP, "remove(java.lang.Object)", 0, 0),
-            compatibleArgType(COLLECTION, "contains(java.lang.Object)", 0, 0),
-            compatibleArgType(COLLECTION, "remove(java.lang.Object)", 0, 0),
-            compatibleArgType(DEQUE, "removeFirstOccurrence(java.lang.Object)", 0, 0),
-            compatibleArgType(DEQUE, "removeLastOccurrence(java.lang.Object)", 0, 0),
-            compatibleArgType(DICTIONARY, "get(java.lang.Object)", 0, 0),
-            compatibleArgType(DICTIONARY, "remove(java.lang.Object)", 0, 0),
-            compatibleArgType(LIST, "indexOf(java.lang.Object)", 0, 0),
-            compatibleArgType(LIST, "lastIndexOf(java.lang.Object)", 0, 0),
-            compatibleArgType(STACK, "search(java.lang.Object)", 0, 0),
-            compatibleArgType(VECTOR, "indexOf(java.lang.Object,int)", 0, 0),
-            compatibleArgType(VECTOR, "lastIndexOf(java.lang.Object,int)", 0, 0),
-            compatibleArgType(VECTOR, "removeElement(java.lang.Object)", 0, 0));
+            compatibleArgType(0, 0, MAP, "containsKey", "java.lang.Object"),
+            compatibleArgType(1, 0, MAP, "containsValue", "java.lang.Object"),
+            compatibleArgType(0, 0, MAP, "get", "java.lang.Object"),
+            compatibleArgType(0, 0, MAP, "getOrDefault", "java.lang.Object", "V"),
+            compatibleArgType(0, 0, MAP, "remove", "java.lang.Object"),
+            compatibleArgType(0, 0, COLLECTION, "contains", "java.lang.Object"),
+            compatibleArgType(0, 0, COLLECTION, "remove", "java.lang.Object"),
+            compatibleArgType(0, 0, DEQUE, "removeFirstOccurrence", "java.lang.Object"),
+            compatibleArgType(0, 0, DEQUE, "removeLastOccurrence", "java.lang.Object"),
+            compatibleArgType(0, 0, DICTIONARY, "get", "java.lang.Object"),
+            compatibleArgType(0, 0, DICTIONARY, "remove", "java.lang.Object"),
+            compatibleArgType(0, 0, LIST, "indexOf", "java.lang.Object"),
+            compatibleArgType(0, 0, LIST, "lastIndexOf", "java.lang.Object"),
+            compatibleArgType(0, 0, STACK, "search", "java.lang.Object"),
+            compatibleArgType(0, 0, VECTOR, "indexOf", "java.lang.Object", "int"),
+            compatibleArgType(0, 0, VECTOR, "lastIndexOf", "java.lang.Object", "int"),
+            compatibleArgType(0, 0, VECTOR, "removeElement", "java.lang.Object"));
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
@@ -164,11 +165,12 @@ public final class StrictCollectionIncompatibleType extends BugChecker
     }
 
     private IncompatibleTypeMatcher compatibleArgType(
-            String baseType, String signature, int typeArgumentIndex, int argumentIndex) {
+            int typeArgumentIndex, int argumentIndex, String baseType, String methodName, String... parameters) {
         // Eagerly create the matcher to avoid allocation for each check
-        @SuppressWarnings("deprecation")
-        Matcher<ExpressionTree> methodMatcher =
-                MethodMatchers.instanceMethod().onDescendantOf(baseType).withSignature(signature);
+        Matcher<ExpressionTree> methodMatcher = MethodMatchers.instanceMethod()
+                .onDescendantOf(baseType)
+                .named(methodName)
+                .withParameters(Arrays.asList(parameters));
         return new IncompatibleTypeMatcher() {
 
             @Override

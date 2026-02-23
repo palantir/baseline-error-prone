@@ -14,7 +14,7 @@ org.jooq:jooq = 3.20.11
 org.slf4j:* = 2.0.17
 org.immutables:* = 2.12.1
 com.google.code.findbugs:jsr305 = 3.0.2
-com.google.errorprone:error_prone_* = 2.44.0
+com.google.errorprone:error_prone_* = 2.46.0
 com.palantir.gradle.utils:* = 0.23.0
 com.uber.nullaway:nullaway = 0.13.1
 
