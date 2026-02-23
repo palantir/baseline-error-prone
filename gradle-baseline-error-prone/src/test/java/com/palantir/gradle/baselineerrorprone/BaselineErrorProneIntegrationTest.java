@@ -236,7 +236,6 @@ class BaselineErrorProneIntegrationTest {
     @Test
     void compilejava_succeeds_when_using_deprecated_if_deprecated_api_is_in_the_same_repo_in_different_subprojects(
             GradleInvoker gradle, RootProject project, SubProject lib, SubProject app) {
-        // System.setProperty('org.gradle.java.compile-classpath-packaging', 'true')
         // ***DELINEATOR FOR REVIEW: when
         project.buildGradle().plugins().add("java");
         project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
