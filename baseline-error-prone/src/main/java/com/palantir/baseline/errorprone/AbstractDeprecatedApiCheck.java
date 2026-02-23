@@ -229,6 +229,8 @@ public abstract class AbstractDeprecatedApiCheck extends BugChecker
 
             // It's possible that there could be false positives here, but if the JAR file is within a /build/libs/ or
             //   /build/artifacts/ directory, it's likely a local build JAR from the current repository.
+            // Ideally, this would check whether these are in the same repository as the current one, but it's
+            //  unfortunately non-trivial to reliably determine the repository root from the compiler
             return jarPath.toString().contains("/build/libs/")
                     || jarPath.toString().contains("/build/artifacts/");
         } catch (Exception e) {
