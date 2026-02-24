@@ -165,7 +165,7 @@ public abstract class AbstractDeprecatedApiCheck extends BugChecker
      * Returns true if the given URI points to a regular file on the local file system, as opposed to e.g.
      *   not an actual file, or a file within a zip/jar file system.
      */
-    private boolean isRegularFileOnSystem(URI uri) {
+    private static boolean isRegularFileOnSystem(URI uri) {
         if (!"file".equals(uri.getScheme())) {
             return false;
         }
@@ -192,7 +192,7 @@ public abstract class AbstractDeprecatedApiCheck extends BugChecker
      *   which likely indicates it's from a local build of the same repository.
      * We don't need to flag these usages, as breaks would be caught at compile time anyway.
      */
-    private boolean isClassInBuildOutputDirectory(URI uri) {
+    private static boolean isClassInBuildOutputDirectory(URI uri) {
         return isRegularFileOnSystem(uri) && uri.getPath().contains("/build/classes/");
     }
 
@@ -209,7 +209,7 @@ public abstract class AbstractDeprecatedApiCheck extends BugChecker
      *
      * This can also happen for repositories that apply the "java" plugin rather than the "java-library" plugin.
      */
-    private boolean isLocalBuildJar(URI uri) {
+    private static boolean isLocalBuildJar(URI uri) {
         String uriStr = uri.toString();
         if (!uriStr.startsWith("jar:file:")) {
             return false;
