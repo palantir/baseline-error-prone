@@ -45,7 +45,31 @@ class BaselineErrorProneIntegrationTest {
         return project.buildGradle().append("""
             repositories {
                 mavenLocal()
-                // TODO(forozco): figure out why pTML no longer works
+                // TODO(forozco): figure out why pTML no longer works - same below
+                mavenCentral()
+            }
+            """);
+    }
+
+    GradleFile javaProjectBuildFile(SubProject project) {
+        project.buildGradle().plugins().add("java");
+        project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+
+        return project.buildGradle().append("""
+            repositories {
+                mavenLocal()
+                mavenCentral()
+            }
+            """);
+    }
+
+    GradleFile javaLibraryProjectBuildFile(SubProject project) {
+        project.buildGradle().plugins().add("java-library");
+        project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+
+        return project.buildGradle().append("""
+            repositories {
+                mavenLocal()
                 mavenCentral()
             }
             """);
@@ -148,10 +172,8 @@ class BaselineErrorProneIntegrationTest {
         assertThat(result).output().contains("[ArrayEquals] Reference equality used to compare arrays");
     }
 
-    // ***DELINEATOR FOR REVIEW: compileJava_fails_when_using_deprecated_APIs
     @Test
     void compilejava_fails_when_using_deprecated_apis(GradleInvoker gradle, RootProject project) {
-        // ***DELINEATOR FOR REVIEW: when
         standardBuildFile(project);
         project.buildGradle().append("""
             dependencies {
@@ -173,18 +195,14 @@ class BaselineErrorProneIntegrationTest {
             }
             """);
 
-        // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
         assertThat(result).task(":compileJava").failed();
         assertThat(result).output().contains("CheckedServiceException#<init> is deprecated for removal");
     }
 
-    // ***DELINEATOR FOR REVIEW:
-    // compileJava_succeeds_when_using_deprecated_for_removal_apis_even_with_werror_if_check_is_disabled
     @Test
     void compilejava_succeeds_when_using_deprecated_for_removal_apis_even_with_werror_if_check_is_disabled(
             GradleInvoker gradle, RootProject project) {
-        // ***DELINEATOR FOR REVIEW: when
         standardBuildFile(project);
         project.buildGradle().append("""
             dependencies {
@@ -212,16 +230,13 @@ class BaselineErrorProneIntegrationTest {
             }
             """);
 
-        // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
         assertThat(result).task(":compileJava").succeeded();
     }
 
-    // ***DELINEATOR FOR REVIEW: compileJava_succeeds_when_using_deprecated_if_deprecated_api_is_in_the_same_project
     @Test
     void compilejava_succeeds_when_using_deprecated_if_deprecated_api_is_in_the_same_project(
             GradleInvoker gradle, RootProject project) {
-        // ***DELINEATOR FOR REVIEW: when
         standardBuildFile(project);
         project.buildGradle().append("""
             tasks.withType(JavaCompile) {
@@ -233,132 +248,58 @@ class BaselineErrorProneIntegrationTest {
 
         project.mainSourceSet().java().writeClass(javaFileUsingDeprecatedApi);
 
-        // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
         assertThat(result).task(":compileJava").succeeded();
     }
 
-    // ***DELINEATOR FOR REVIEW:
-    // compileJava_succeeds_when_using_deprecated_if_deprecated_api_is_in_the_same_repo_in_different_subprojects
-    @Test
+    enum DeprecatedMultiProjectConfiguration {
+        DEFAULT,
+        COMPILATION_CLASSPATH_PACKAGING,
+        JAVA_PLUGIN_IN_LIBRARY
+    }
+
+    @ParameterizedTest
+    @EnumSource(DeprecatedMultiProjectConfiguration.class)
     void compilejava_succeeds_when_using_deprecated_if_deprecated_api_is_in_the_same_repo_in_different_subprojects(
-            GradleInvoker gradle, RootProject project, SubProject lib, SubProject app) {
-        // ***DELINEATOR FOR REVIEW: when
-        project.buildGradle().plugins().add("java");
-        project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+            DeprecatedMultiProjectConfiguration config,
+            GradleInvoker gradle,
+            RootProject project,
+            SubProject lib,
+            SubProject app) {
+        standardBuildFile(project);
         project.buildGradle().append("""
-            allprojects {
-                repositories {
-                    mavenLocal()
-                    // TODO(forozco): figure out why pTML no longer works
-                    mavenCentral()
-                }
-            }
             tasks.withType(JavaCompile) {
                 options.compilerArgs += ['-Werror']
             }
             """);
 
-        lib.buildGradle().plugins().add("java-library");
-        lib.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+        if (config == DeprecatedMultiProjectConfiguration.COMPILATION_CLASSPATH_PACKAGING) {
+            // Set org.gradle.java.compile-classpath-packaging to true
+            // This makes the app project use jars for the lib sub project, rather than class files directly
+            project.gradlePropertiesFile()
+                    .setProperty("systemProp.org.gradle.java.compile-classpath-packaging", "true");
+        }
 
-        app.buildGradle().plugins().add("java");
-        app.buildGradle().plugins().add("com.palantir.baseline-error-prone");
+        // Set up lib sub-project
+        if (config == DeprecatedMultiProjectConfiguration.JAVA_PLUGIN_IN_LIBRARY) {
+            // Mistakenly use the java plugin rather than java-library
+            javaProjectBuildFile(lib);
+        } else {
+            javaLibraryProjectBuildFile(lib);
+        }
+
+        lib.mainSourceSet().java().writeClass(javaFileWithDeprecations);
+
+        // Set up app sub-project, depending on lib
+        javaProjectBuildFile(app);
         app.buildGradle().append("""
             dependencies {
                 implementation project(':lib')
             }
             """);
 
-        lib.mainSourceSet().java().writeClass(javaFileWithDeprecations);
-
         app.mainSourceSet().java().writeClass(javaFileUsingDeprecatedApi);
 
-        // ***DELINEATOR FOR REVIEW: then
-        InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
-        assertThat(result).task(":lib:compileJava").succeeded();
-        assertThat(result).task(":app:compileJava").succeeded();
-    }
-
-    @Test
-    void compile_works_when_using_deprecated_if_deprecated_api_is_in_the_same_repo_using_compile_classpath_packaging(
-            GradleInvoker gradle, RootProject project, SubProject lib, SubProject app) {
-        // when
-        project.buildGradle().plugins().add("java");
-        project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
-        project.buildGradle().append("""
-            allprojects {
-                repositories {
-                    mavenLocal()
-                    // TODO(forozco): figure out why pTML no longer works
-                    mavenCentral()
-                }
-            }
-            tasks.withType(JavaCompile) {
-                options.compilerArgs += ['-Werror']
-            }
-            """);
-
-        // Set org.gradle.java.compile-classpath-packaging to true
-        project.gradlePropertiesFile().setProperty("systemProp.org.gradle.java.compile-classpath-packaging", "true");
-
-        lib.buildGradle().plugins().add("java-library");
-        lib.buildGradle().plugins().add("com.palantir.baseline-error-prone");
-
-        app.buildGradle().plugins().add("java");
-        app.buildGradle().plugins().add("com.palantir.baseline-error-prone");
-        app.buildGradle().append("""
-            dependencies {
-                implementation project(':lib')
-            }
-            """);
-
-        lib.mainSourceSet().java().writeClass(javaFileWithDeprecations);
-
-        app.mainSourceSet().java().writeClass(javaFileUsingDeprecatedApi);
-
-        // ***DELINEATOR FOR REVIEW: then
-        InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
-        assertThat(result).task(":lib:compileJava").succeeded();
-        assertThat(result).task(":app:compileJava").succeeded();
-    }
-
-    @Test
-    void compile_works_when_using_deprecated_if_deprecated_api_is_in_the_same_repo_using_java_plugin_in_library(
-            GradleInvoker gradle, RootProject project, SubProject lib, SubProject app) {
-        // when
-        project.buildGradle().plugins().add("java");
-        project.buildGradle().plugins().add("com.palantir.baseline-error-prone");
-        project.buildGradle().append("""
-            allprojects {
-                repositories {
-                    mavenLocal()
-                    // TODO(forozco): figure out why pTML no longer works
-                    mavenCentral()
-                }
-            }
-            tasks.withType(JavaCompile) {
-                options.compilerArgs += ['-Werror']
-            }
-            """);
-
-        // Mistakenly use the java plugin rather than java-library
-        lib.buildGradle().plugins().add("java");
-        lib.buildGradle().plugins().add("com.palantir.baseline-error-prone");
-
-        app.buildGradle().plugins().add("java");
-        app.buildGradle().plugins().add("com.palantir.baseline-error-prone");
-        app.buildGradle().append("""
-                        dependencies {
-                            implementation project(':lib')
-                        }
-            """);
-
-        lib.mainSourceSet().java().writeClass(javaFileWithDeprecations);
-
-        app.mainSourceSet().java().writeClass(javaFileUsingDeprecatedApi);
-
-        // ***DELINEATOR FOR REVIEW: then
         InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
         assertThat(result).task(":lib:compileJava").succeeded();
         assertThat(result).task(":app:compileJava").succeeded();
