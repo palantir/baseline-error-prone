@@ -124,17 +124,9 @@ public abstract class AbstractDeprecatedApiCheck extends BugChecker
             return Description.NO_MATCH;
         }
 
-        // Note: the logic below will NOT work if the target dependency applies the "java" plugin rather than
-        //   the "java-library" plugin, because in that case the classfile that we get here will be within the
-        //   jar file itself, which makes it particularly tricky to distinguish from just regular jar dependencies.
-        // This should however be good enough for well-behaved repositories.
         Optional<URI> classFileUri = owningClass.map(c -> c.classfile).map(FileObject::toUri);
         if (classFileUri.isPresent()
-                && isRegularFileOnSystem(classFileUri.get())
-                && classFileUri.get().getPath().contains("/classes")) {
-            // If the class file is a regular file on the local file system, and is within a /classes/ directory,
-            //   this means we're calling a deprecated API within the same repository, even though maybe not the
-            //   same project. We don't need to flag these usages, as breaks would be caught at compile time anyway.
+                && (isClassInBuildOutputDirectory(classFileUri.get()) || isLocalBuildJar(classFileUri.get()))) {
             return Description.NO_MATCH;
         }
 
@@ -173,7 +165,7 @@ public abstract class AbstractDeprecatedApiCheck extends BugChecker
      * Returns true if the given URI points to a regular file on the local file system, as opposed to e.g.
      *   not an actual file, or a file within a zip/jar file system.
      */
-    private boolean isRegularFileOnSystem(URI uri) {
+    private static boolean isRegularFileOnSystem(URI uri) {
         if (!"file".equals(uri.getScheme())) {
             return false;
         }
@@ -191,6 +183,58 @@ public abstract class AbstractDeprecatedApiCheck extends BugChecker
             return Files.exists(path) && Files.isRegularFile(path);
         } catch (Exception e) {
             log.log(Level.WARNING, "Failed to check if URI is a regular file on the system: " + uri, e);
+            return false;
+        }
+    }
+
+    /**
+     * Returns true if the given URI points to a class file within a /build/classes/ directory on the local file system,
+     *   which likely indicates it's from a local build of the same repository.
+     * We don't need to flag these usages, as breaks would be caught at compile time anyway.
+     */
+    private static boolean isClassInBuildOutputDirectory(URI uri) {
+        return isRegularFileOnSystem(uri) && uri.getPath().contains("/build/classes/");
+    }
+
+    /**
+     * Returns true if the given URI points to a class file within a JAR file that is likely from a
+     *   local build of the same repository, as opposed to a dependency JAR from e.g. Gradle's cache.
+     * This is a best-effort heuristic, and may have false positives or false negatives, but should be good enough for
+     *   well-behaved repositories that don't have unusual build setups or directory structures.
+     *
+     * This step is important for cases like setting org.gradle.java.compile-classpath-packaging to true,
+     *   which is done by IntelliJ when using the JUnit runner (as opposed to the Gradle runner). This can happen for
+     *   instance when running a test from a class that lives in a main or testFixtures source set (for instance,
+     *   when in a test-only subproject, and running tests from a base abstract class).
+     *
+     * This can also happen for repositories that apply the "java" plugin rather than the "java-library" plugin.
+     */
+    private static boolean isLocalBuildJar(URI uri) {
+        String uriStr = uri.toString();
+        if (!uriStr.startsWith("jar:file:")) {
+            return false;
+        }
+        try {
+            // JAR URIs have the form: jar:file:/path/to/foo.jar!/com/example/Foo.class
+            int separatorIndex = uriStr.indexOf("!/");
+            if (separatorIndex < 0) {
+                return false;
+            }
+            Path jarPath = Paths.get(uriStr.substring("jar:file:".length(), separatorIndex));
+
+            if (jarPath.toString().contains("/.gradle/caches/")) {
+                // The file is in the Gradle cache directory, so it shouldn't be a local build JAR
+                return false;
+            }
+
+            // It's possible that there could be false positives here, but if the JAR file is within a /build/libs/ or
+            //   /build/artifacts/ directory, it's likely a local build JAR from the current repository.
+            // Ideally, this would check whether these are in the same repository as the current one, but it's
+            //  unfortunately non-trivial to reliably determine the repository root from the compiler
+            return jarPath.toString().contains("/build/libs/")
+                    || jarPath.toString().contains("/build/artifacts/");
+        } catch (Exception e) {
+            log.log(Level.WARNING, "Failed to check JAR URI for local build: " + uri, e);
             return false;
         }
     }
