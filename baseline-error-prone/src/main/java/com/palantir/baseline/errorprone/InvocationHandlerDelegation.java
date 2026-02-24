@@ -140,8 +140,8 @@ public final class InvocationHandlerDelegation extends BugChecker implements Bug
 
     @SuppressWarnings("UnnecessaryMethodReference")
     private static final Matcher<MethodTree> HANDLES_ITE = Matchers.anyOf(
-            Matchers.contains(TryTree.class, (Matcher<TryTree>)
-                    (tree, state) -> CONTAINS_METHOD_INVOKE.matches(tree.getBlock(), state)
+            Matchers.contains(TryTree.class, (Matcher<TryTree>) (tree, state) ->
+                    CONTAINS_METHOD_INVOKE.matches(tree.getBlock(), state)
                             && tree.getCatches().stream()
                                     .anyMatch(catchTree -> CONTAINS_UNWRAP_ITE.matches(catchTree.getBlock(), state))),
             // If Method.invoke occurs in a lambda or anonymous class, we don't have enough
