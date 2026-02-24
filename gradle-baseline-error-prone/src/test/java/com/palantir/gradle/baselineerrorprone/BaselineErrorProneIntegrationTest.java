@@ -45,7 +45,6 @@ class BaselineErrorProneIntegrationTest {
         return project.buildGradle().append("""
             repositories {
                 mavenLocal()
-                // TODO(forozco): figure out why pTML no longer works - same below
                 mavenCentral()
             }
             """);
