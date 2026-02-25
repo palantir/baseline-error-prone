@@ -96,13 +96,13 @@ com.palantir.conjure.java.api:test-utils:2.69.0 (1 constraints: 43055e3b)
 
 com.palantir.conjure.java.runtime:conjure-java-annotations:8.31.0 (1 constraints: 3e055e3b)
 
-com.palantir.gradle.plugintesting:configuration-cache-spec:0.59.0 (1 constraints: 40054e3b)
+com.palantir.gradle.plugintesting:configuration-cache-spec:0.60.0 (1 constraints: 3805373b)
 
-com.palantir.gradle.plugintesting:discover-tests-cli:0.59.0 (1 constraints: 40054e3b)
+com.palantir.gradle.plugintesting:discover-tests-cli:0.60.0 (1 constraints: 3805373b)
 
-com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.59.0 (1 constraints: a5072b7e)
+com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.60.0 (1 constraints: 9d070c7e)
 
-com.palantir.gradle.plugintesting:plugin-testing-core:0.59.0 (1 constraints: 40054e3b)
+com.palantir.gradle.plugintesting:plugin-testing-core:0.60.0 (1 constraints: 3805373b)
 
 com.palantir.ri:resource-identifier:2.13.0 (2 constraints: 5515f3d9)
 
@@ -158,7 +158,7 @@ org.hamcrest:hamcrest-core:3.0 (4 constraints: 2a2bcb9d)
 
 org.hamcrest:hamcrest-library:2.2 (1 constraints: fc138e38)
 
-org.jetbrains:annotations:26.1.0 (3 constraints: d93af7a1)
+org.jetbrains:annotations:26.1.0 (3 constraints: d83ac7a1)
 
 org.jooq:jooq:3.20.11 (1 constraints: 6905a340)
 
