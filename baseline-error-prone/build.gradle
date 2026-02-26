@@ -25,6 +25,8 @@ dependencies {
     testImplementation 'org.apache.commons:commons-lang3'
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.immutables:value::annotations'
+    testImplementation 'com.github.ben-manes.caffeine:caffeine'
+    testImplementation 'com.palantir.cache:cache'
     testImplementation 'org.jooq:jooq'
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.slf4j:slf4j-api'
