@@ -17,6 +17,7 @@
 package com.palantir.baseline.errorprone;
 
 import com.google.auto.service.AutoService;
+import com.google.common.base.Ascii;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.BugPattern;
 import com.google.errorprone.VisitorState;
@@ -36,7 +37,6 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Symbol;
-import com.google.common.base.Ascii;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -117,10 +117,6 @@ public final class CaffeineLoadingCacheToAsyncLoadingCache extends BugChecker
             return Description.NO_MATCH;
         }
 
-        if (!builderCalls.containsKey("maximumSize")) {
-            return Description.NO_MATCH;
-        }
-
         SuggestedFix fix = buildFix(tree, builderCalls, state);
         if (fix == null) {
             return Description.NO_MATCH;
@@ -145,8 +141,13 @@ public final class CaffeineLoadingCacheToAsyncLoadingCache extends BugChecker
         String cacheName = deriveCacheName(buildCall, state);
 
         // Build the maximumSize argument
-        String maxSizeArg = state.getSourceForNode(
-                builderCalls.get("maximumSize").getArguments().get(0));
+        String maxSizeArg;
+        if (builderCalls.containsKey("maximumSize")) {
+            maxSizeArg = state.getSourceForNode(
+                    builderCalls.get("maximumSize").getArguments().get(0));
+        } else {
+            maxSizeArg = "Long.MAX_VALUE";
+        }
 
         // Build expiry
         String expiryCall = buildExpiryCall(builderCalls, state, fix);

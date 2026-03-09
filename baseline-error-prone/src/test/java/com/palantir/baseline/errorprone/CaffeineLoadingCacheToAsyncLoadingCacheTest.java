@@ -95,6 +95,34 @@ final class CaffeineLoadingCacheToAsyncLoadingCacheTest {
                             "}")
                     .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
         }
+
+        @Test
+        void adds_maximum_size_when_not_present() {
+            fix().addInputLines(
+                            "Test.java",
+                            "import com.github.benmanes.caffeine.cache.Caffeine;",
+                            "import com.github.benmanes.caffeine.cache.LoadingCache;",
+                            "import com.palantir.cache.ExecutorFactory;",
+                            "class Test {",
+                            "  private final ExecutorFactory executorFactory = null;",
+                            "  LoadingCache<String, String> cache = Caffeine.newBuilder()",
+                            "      .build(this::load);",
+                            "  private String load(String key) { return key; }",
+                            "}")
+                    .addOutputLines(
+                            "Test.java",
+                            "import com.palantir.cache.AsyncLoadingCache;",
+                            "import com.palantir.cache.Cache;",
+                            "import com.palantir.cache.ExecutorFactory;",
+                            "class Test {",
+                            "  private final ExecutorFactory executorFactory = null;",
+                            "  AsyncLoadingCache<String, String> cache ="
+                                    + " Cache.<String, String>builder().name(\"test\").maximumSize(Long.MAX_VALUE).noExpiry()"
+                                    + ".noMetrics().executor(executorFactory).buildAsyncWithLoader(this::load);",
+                            "  private String load(String key) { return key; }",
+                            "}")
+                    .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+        }
     }
 
     @Nested
