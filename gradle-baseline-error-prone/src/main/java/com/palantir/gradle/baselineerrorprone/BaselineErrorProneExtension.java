@@ -47,6 +47,7 @@ public abstract class BaselineErrorProneExtension {
             "ImmutableMapDuplicateKeyStrategy",
             "ImmutablesStyle",
             "ImplicitPublicBuilderConstructor",
+            "JavaDurationGetSecondsToToSeconds",
             "JavaTimeDefaultTimeZone",
             "JavaTimeSystemDefaultTimeZone",
             "LoggerEnclosingClass",
@@ -76,6 +77,7 @@ public abstract class BaselineErrorProneExtension {
             "StrictUnusedVariable",
             "StringBuilderConstantParameters",
             "ThrowError",
+            "UnnecessaryAssignment",
             "UnnecessarilyQualified",
             "UnnecessaryLambdaArgumentParentheses",
             // TODO(ckozak): re-enable pending scala check
