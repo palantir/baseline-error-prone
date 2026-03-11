@@ -120,6 +120,8 @@ public final class BaselineErrorProne implements Plugin<Project> {
                 "PreferImmutableStreamExCollections",
                 "UnnecessaryTestMethodPrefix",
                 "UnusedVariable",
+                // Low-value fix, and mock-style tests are generally bad anyway
+                "UnnecessaryAssignment",
                 // Var seems low value. Forcing devs to add a dep for annotations is too much.
                 "Var",
                 // See VarUsage: The var keyword results in illegible code in most cases and should not be used.
