@@ -77,7 +77,6 @@ public abstract class BaselineErrorProneExtension {
             "StrictUnusedVariable",
             "StringBuilderConstantParameters",
             "ThrowError",
-            "UnnecessaryAssignment",
             "UnnecessarilyQualified",
             "UnnecessaryLambdaArgumentParentheses",
             // TODO(ckozak): re-enable pending scala check
