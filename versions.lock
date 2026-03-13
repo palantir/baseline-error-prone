@@ -58,7 +58,7 @@ org.checkerframework:dataflow-nullaway:3.53.0 (2 constraints: 7111abf2)
 
 org.immutables:value:2.12.1 (2 constraints: 0015bec1)
 
-org.jspecify:jspecify:1.0.0 (17 constraints: cc1585d6)
+org.jspecify:jspecify:1.0.0 (18 constraints: 9b23ceb7)
 
 org.ow2.asm:asm:9.9.1 (3 constraints: 803f18dc)
 
@@ -118,7 +118,7 @@ com.palantir.safe-logging:preconditions-assertj:3.12.0 (1 constraints: 38053b3b)
 
 com.palantir.safe-logging:safe-logging:3.12.0 (9 constraints: d088e3f0)
 
-com.palantir.tokens:auth-tokens:3.23.0 (2 constraints: 591565da)
+com.palantir.tokens:auth-tokens:4.0.0 (2 constraints: 251596cb)
 
 com.palantir.tritium:tritium-ids:0.125.0 (1 constraints: fb0f91a6)
 
