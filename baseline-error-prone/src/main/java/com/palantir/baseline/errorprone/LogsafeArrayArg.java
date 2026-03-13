@@ -21,6 +21,8 @@ import com.google.errorprone.BugPattern.SeverityLevel;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.bugpatterns.BugChecker.MethodInvocationTreeMatcher;
+import com.google.errorprone.fixes.SuggestedFix;
+import com.google.errorprone.fixes.SuggestedFixes;
 import com.google.errorprone.matchers.Description;
 import com.google.errorprone.matchers.Matcher;
 import com.google.errorprone.matchers.Matchers;
@@ -36,22 +38,33 @@ import java.util.List;
         summary = "Arrays should not be logged. Logged args are converted to strings using toString() "
                 + "and arrays implement toString() by returning their class name and hashcode, not by "
                 + "calling toString() on their contents. An array can be usefully logged by converting "
-                + "it to a list with Arrays.asList.")
+                + "it to a list with Arrays.asList (primitive arrays can be converted to lists with "
+                + "guava, e.g., Ints.asList).")
 public final class LogsafeArrayArg extends BugChecker implements MethodInvocationTreeMatcher {
 
     private static final Matcher<ExpressionTree> MATCHER = Matchers.staticMethod()
             .onClassAny("com.palantir.logsafe.SafeArg", "com.palantir.logsafe.UnsafeArg")
             .named("of")
             .withParameters(String.class.getName(), Object.class.getName());
-
     private static final Matcher<ExpressionTree> ARRAY = Matchers.isArrayType();
+    private static final Matcher<ExpressionTree> PRIMITIVE_ARRAY = Matchers.isPrimitiveArrayType();
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
         if (MATCHER.matches(tree, state)) {
             List<? extends ExpressionTree> args = tree.getArguments();
-            if (ARRAY.matches(args.get(1), state)) {
-                return describeMatch(tree);
+            ExpressionTree argValue = args.get(1);
+            if (ARRAY.matches(argValue, state)) {
+                if (PRIMITIVE_ARRAY.matches(argValue, state)) {
+                    return describeMatch(tree);
+                }
+                SuggestedFix.Builder fixBuilder = SuggestedFix.builder();
+                String newType = SuggestedFixes.qualifyType(state, fixBuilder, "java.util.Arrays");
+                String arg = state.getSourceForNode(argValue);
+                String replacement = newType + ".asList(" + arg + ")";
+                return buildDescription(tree)
+                        .addFix(fixBuilder.replace(argValue, replacement).build())
+                        .build();
             }
         }
         return Description.NO_MATCH;
