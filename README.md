@@ -46,6 +46,7 @@ checks](https://errorprone.info):
 - `Slf4jLevelCheck`: Slf4j level checks (`if (log.isInfoEnabled()) {`) must match the most severe level in the containing block.
 - `Slf4jLogsafeArgs`: Allow only com.palantir.logsafe.Arg types as parameter inputs to slf4j log messages. More information on
   Safe Logging can be found at [github.com/palantir/safe-logging](https://github.com/palantir/safe-logging).
+- `LogsafeArrayArg`: Arrays should not be passed as logsafe arguments. Arrays implement `toString()` by returning their class name and hashcode rather than their contents, so logging an array produces an unhelpful string. Convert the array to a list first, e.g., `Arrays.asList(arr)` for object arrays or `Ints.asList(arr)` for primitive arrays.
 - `PreferCollectionTransform`: Prefer Guava's Lists.transform or Collections2.transform instead of Iterables.transform when first argument's declared type is a List or Collection type for performance reasons.
 - `PreferListsPartition`: Prefer Guava's `Lists.partition(List, int)` instead of `Iterables.partition(Iterable, int)` when first argument's declared type is a list for performance reasons.
 - `PreferSafeLoggableExceptions`: Users should throw `SafeRuntimeException` instead of `RuntimeException` so that messages will not be needlessly redacted when logs are collected:
@@ -58,7 +59,7 @@ checks](https://errorprone.info):
     -com.google.common.base.Preconditions.checkNotNull(variable, "message");
     +com.palantir.logsafe.Preconditions.checkNotNull(variable, "message"); // equivalent functionality is available in the safe-logging variant
     ```
-- `PreferUncheckedIoExcepetion`: Prefer UncheckedIOException or SafeUncheckedIoException when wrapping IOException.
+- `PreferUncheckedIoException`: Prefer UncheckedIOException or SafeUncheckedIoException when wrapping IOException.
 - `ShutdownHook`: Applications should not use `Runtime#addShutdownHook`.
 - `GradleCacheableTaskAction`: Gradle plugins should not call `Task.doFirst` or `Task.doLast` with a lambda, as that is not cacheable. See [gradle/gradle#5510](https://github.com/gradle/gradle/issues/5510) for more details.
 - `PreferBuiltInConcurrentKeySet`: Discourage relying on Guava's `com.google.common.collect.Sets.newConcurrentHashSet()`, when Java's `java.util.concurrent.ConcurrentHashMap.newKeySet()` serves the same purpose.
