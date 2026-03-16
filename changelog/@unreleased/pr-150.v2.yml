@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Fix `PreferUncheckedIoException` typo and document missing `LogsafeArrayArg` check in README
+  links:
+  - https://github.com/palantir/baseline-error-prone/pull/150
