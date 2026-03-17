@@ -35,7 +35,7 @@ import com.sun.tools.javac.parser.Tokens.TokenKind;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = LinkType.CUSTOM,
         severity = SeverityLevel.ERROR,
         summary = "The `var` keyword results in illegible code in most cases and should not be used.")

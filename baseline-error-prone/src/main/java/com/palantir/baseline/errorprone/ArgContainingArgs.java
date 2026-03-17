@@ -35,7 +35,7 @@ import java.util.List;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = LinkType.CUSTOM,
         severity = SeverityLevel.ERROR,
         summary = "SafeArg.of or UnsafeArg.of should not be called with an Arg or a Collection of Args as the value. "

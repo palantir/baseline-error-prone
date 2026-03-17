@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = SeverityLevel.SUGGESTION,
         summary = "Using Stream::min is more efficient than finding the first element of the sorted stream. "

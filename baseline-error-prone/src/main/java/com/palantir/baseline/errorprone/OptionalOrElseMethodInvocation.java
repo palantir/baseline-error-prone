@@ -33,7 +33,7 @@ import com.sun.source.tree.Tree.Kind;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = SeverityLevel.ERROR,
         summary = "Expression passed to Optional#orElse invokes a method, use Optional#orElseGet instead")

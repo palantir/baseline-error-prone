@@ -49,7 +49,7 @@ import javax.annotation.Nullable;
 @AutoService(BugChecker.class)
 @BugPattern(
         altNames = {"SuspiciousMethodCalls", "CollectionIncompatibleType"},
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = BugPattern.SeverityLevel.WARNING,
         summary = "Likely programming error due to using incompatible types as "

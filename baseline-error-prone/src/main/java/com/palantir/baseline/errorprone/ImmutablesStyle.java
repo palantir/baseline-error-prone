@@ -44,7 +44,7 @@ import javax.annotation.Nullable;
 @AutoService(BugChecker.class)
 @BugPattern(
         linkType = LinkType.CUSTOM,
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         severity = SeverityLevel.WARNING,
         summary = "Using an inline Immutables @Value.Style annotation or meta-annotation with non-SOURCE "
                 + "retention forces consumers to add a Immutables annotations to their compile classpath."
