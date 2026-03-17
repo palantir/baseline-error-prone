@@ -37,7 +37,7 @@ import java.lang.reflect.Proxy;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = LinkType.CUSTOM,
         severity = SeverityLevel.WARNING,
         summary = "Proxy instances should be created using constant types known at compile time to allow native-image "

@@ -34,7 +34,7 @@ import com.sun.tools.javac.code.Symbol;
 @SuppressWarnings("BugPatternNaming")
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = BugPattern.SeverityLevel.ERROR,
         summary = "Deprecated APIs should not be relied upon as they may be removed in a future release.",

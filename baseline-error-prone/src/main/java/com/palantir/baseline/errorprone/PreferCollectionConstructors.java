@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = BugPattern.SeverityLevel.WARNING,
         summary = "Since Java 7 the standard collection constructors should be used instead of the static factory "

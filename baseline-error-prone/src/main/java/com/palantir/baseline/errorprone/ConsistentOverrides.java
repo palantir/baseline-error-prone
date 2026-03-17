@@ -39,7 +39,7 @@ import org.immutables.value.Value.Immutable;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = SeverityLevel.ERROR,
         summary = "Method overrides should have variable names consistent with the super-method when there "

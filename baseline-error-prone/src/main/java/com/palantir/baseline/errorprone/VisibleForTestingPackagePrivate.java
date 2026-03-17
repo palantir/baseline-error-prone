@@ -34,7 +34,7 @@ import javax.lang.model.element.Modifier;
 /** Development Practices: Writing good unit tests. */
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = BugPattern.SeverityLevel.WARNING,
         summary = "@VisibleForTesting members should be package-private.")

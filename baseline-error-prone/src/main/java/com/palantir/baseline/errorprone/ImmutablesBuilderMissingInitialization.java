@@ -66,7 +66,7 @@ import java.util.stream.Stream;
 @AutoService(BugChecker.class)
 @BugPattern(
         linkType = LinkType.CUSTOM,
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         severity = BugPattern.SeverityLevel.ERROR,
         summary = "All required fields of an Immutables builder must be initialized")
 public final class ImmutablesBuilderMissingInitialization extends BugChecker implements MethodInvocationTreeMatcher {

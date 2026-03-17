@@ -30,7 +30,7 @@ import com.sun.source.tree.NewClassTree;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = BugPattern.SeverityLevel.WARNING,
         summary = "The HashMap(int) and HashSet(int) constructors are misleading: once the HashMap/HashSet reaches 3/4"

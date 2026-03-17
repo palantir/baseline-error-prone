@@ -30,7 +30,7 @@ import com.sun.tools.javac.code.Type;
 @AutoService(BugChecker.class)
 @BugPattern(
         linkType = LinkType.CUSTOM,
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         severity = SeverityLevel.ERROR,
         summary = "Comparison of Immutables value using reference equality instead of value equality.")
 public final class ImmutablesReferenceEquality extends AbstractReferenceEquality {

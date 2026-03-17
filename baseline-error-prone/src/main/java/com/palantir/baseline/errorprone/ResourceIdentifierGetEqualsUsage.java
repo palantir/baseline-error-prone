@@ -39,7 +39,7 @@ import javax.lang.model.element.Name;
                 + "ResourceIdentifier#has{Instance,Locator,Service,Type} instead, which does not allocate any memory.",
         severity = SeverityLevel.WARNING,
         linkType = BugPattern.LinkType.CUSTOM,
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks")
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks")
 public final class ResourceIdentifierGetEqualsUsage extends BugChecker
         implements BugChecker.MethodInvocationTreeMatcher {
 

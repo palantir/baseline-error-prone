@@ -31,7 +31,7 @@ import java.util.List;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = LinkType.CUSTOM,
         severity = SeverityLevel.ERROR,
         summary = "It is unsafe to create a SafeArg of Throwable.getMessage, SafeLoggable.getLogMessage may be used.")

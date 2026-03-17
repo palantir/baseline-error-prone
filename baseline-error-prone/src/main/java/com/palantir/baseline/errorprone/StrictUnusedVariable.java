@@ -128,7 +128,7 @@ import javax.lang.model.element.Name;
  */
 @AutoService(BugChecker.class)
 @BugPattern(
-        link = "https://github.com/palantir/gradle-baseline#baseline-error-prone-checks",
+        link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         summary = "Unused.",
         severity = ERROR,
