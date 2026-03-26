@@ -160,7 +160,7 @@ org.hamcrest:hamcrest-library:2.2 (1 constraints: fc138e38)
 
 org.jetbrains:annotations:26.1.0 (3 constraints: d73a50a1)
 
-org.jooq:jooq:3.21.0 (1 constraints: 38053c3b)
+org.jooq:jooq:3.21.1 (1 constraints: 39053d3b)
 
 org.junit.jupiter:junit-jupiter:6.0.3 (1 constraints: 4a070d70)
 
