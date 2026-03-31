@@ -29,19 +29,12 @@ import com.google.errorprone.matchers.Matchers;
 import com.google.errorprone.util.ASTHelpers;
 import com.google.errorprone.util.MoreAnnotations;
 import com.palantir.baseline.errorprone.safety.Safety;
-import com.palantir.baseline.errorprone.safety.SafetyAnalysis;
 import com.palantir.baseline.errorprone.safety.SafetyAnnotations;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ClassTree;
-import com.sun.source.tree.ExpressionTree;
-import com.sun.source.tree.LambdaExpressionTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.ModifiersTree;
-import com.sun.source.tree.NewClassTree;
-import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.Tree;
-import com.sun.source.util.TreePath;
-import com.sun.source.util.TreeScanner;
 import com.sun.tools.javac.code.Attribute;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
@@ -52,7 +45,6 @@ import com.sun.tools.javac.code.Symbol.TypeSymbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.util.Name;
 import javax.lang.model.element.Modifier;
-import org.checkerframework.errorprone.javacutil.TreePathUtil;
 
 @AutoService(BugChecker.class)
 @BugPattern(
@@ -335,57 +327,5 @@ public final class SafeLoggingPropagation extends BugChecker
             return Description.NO_MATCH;
         }
         return handleSafety(method, method.getModifiers(), state, methodDeclaredSafety, combinedReturnSafety);
-    }
-
-    private static final class ReturnStatementSafetyScanner extends TreeScanner<Safety, VisitorState> {
-
-        private final MethodTree target;
-
-        ReturnStatementSafetyScanner(MethodTree target) {
-            this.target = target;
-        }
-
-        @Override
-        public Safety visitReturn(ReturnTree node, VisitorState visitorState) {
-            ExpressionTree expression = node.getExpression();
-            if (expression == null) {
-                return null;
-            }
-            // Validate that the discovered ReturnTree is from the same scope as the 'target' method.
-            TreePath path = TreePath.getPath(visitorState.getPath().getCompilationUnit(), expression);
-            if (target.equals(TreePathUtil.enclosingMethodOrLambda(path))) {
-                return SafetyAnalysis.of(visitorState.withPath(path));
-            } else {
-                // Unclear what's happening in this case, so we definitely don't want to claim SAFE
-                return Safety.UNKNOWN;
-            }
-        }
-
-        // Don't search beyond the scope of the method
-        @Override
-        public Safety visitClass(ClassTree _node, VisitorState _obj) {
-            return null;
-        }
-
-        @Override
-        public Safety visitNewClass(NewClassTree node, VisitorState _state) {
-            return null;
-        }
-
-        @Override
-        public Safety visitLambdaExpression(LambdaExpressionTree node, VisitorState _state) {
-            return null;
-        }
-
-        @Override
-        public Safety reduce(Safety lhs, Safety rhs) {
-            if (lhs == null) {
-                return rhs;
-            }
-            if (rhs == null) {
-                return lhs;
-            }
-            return lhs.leastUpperBound(rhs);
-        }
     }
 }
