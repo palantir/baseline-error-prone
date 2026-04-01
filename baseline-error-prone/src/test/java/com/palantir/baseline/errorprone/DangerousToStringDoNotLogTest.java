@@ -240,6 +240,134 @@ class DangerousToStringDoNotLogTest {
     }
 
     @Test
+    void flags_record_with_do_not_log_component() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                        public record Test(String name, @DoNotLog String secret) {}
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void flags_record_with_do_not_log_type_component() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.tokens.auth.*;
+                        // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                        public record Test(String name, BearerToken token) {}
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void allows_record_with_safe_components() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(@Safe String name, @Safe String value) {}
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void allows_record_with_do_not_log_component_and_to_string_override() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(String name, @DoNotLog String secret) {
+                          @Override
+                          public String toString() {
+                            return "Test{name=" + name + "}";
+                          }
+                        }
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void allows_record_with_unannotated_components() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        public record Test(String name, int value) {}
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void allows_record_with_unsafe_component() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(@Unsafe String name) {}
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void flags_record_with_do_not_log_component_and_to_string_override_including_secret() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(String name, @DoNotLog String secret) {
+                          @Override
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          public String toString() {
+                            return "Test{name=" + name + ", secret=" + secret + "}";
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void flags_record_with_do_not_log_inherited_type() {
+        helper().addSourceLines(
+                        "Secret.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        @DoNotLog
+                        public interface Secret {
+                          String value();
+                        }
+                        """)
+                .addSourceLines(
+                        "SecretImpl.java",
+                        // language=Java
+                        """
+                        public record SecretImpl(String value) implements Secret {}
+                        """)
+                .addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                        public record Test(String name, SecretImpl secret) {}
+                        """)
+                .doTest();
+    }
+
+    @Test
     void allows_abstract_to_string() {
         helper().addSourceLines(
                         "Test.java",
