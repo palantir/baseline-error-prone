@@ -1233,6 +1233,44 @@ class SafeLoggingPropagationTest {
                 .doTest();
     }
 
+    // TODO: Switch expressions don't propagate safety — the method should be annotated @Unsafe because case 1 returns
+    //  an @Unsafe type. Traditional switch statements work correctly.
+    @Test
+    void testSwitchExpressionPropagatesSafety() {
+        fix().addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @Unsafe record Dummy() {}
+                          public Object get(int num) {
+                            return switch (num) {
+                              case 1 -> new Dummy();
+                              default -> "safe";
+                            };
+                          }
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @Unsafe record Dummy() {}
+                          @Unsafe
+                          public Object get(int num) {
+                            return switch (num) {
+                              case 1 -> new Dummy();
+                              default -> "safe";
+                            };
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
     private RefactoringValidator fix(String... args) {
         return RefactoringValidator.of(SafeLoggingPropagation.class, getClass(), args);
     }
