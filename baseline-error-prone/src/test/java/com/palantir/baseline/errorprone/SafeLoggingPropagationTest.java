@@ -1233,8 +1233,6 @@ class SafeLoggingPropagationTest {
                 .doTest();
     }
 
-    // TODO: Switch expressions don't propagate safety — the method should be annotated @Unsafe because case 1 returns
-    //  an @Unsafe type. Traditional switch statements work correctly.
     @Test
     void testSwitchExpressionPropagatesSafety() {
         fix().addInputLines(

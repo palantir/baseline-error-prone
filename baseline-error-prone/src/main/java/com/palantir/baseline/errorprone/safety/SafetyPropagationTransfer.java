@@ -869,8 +869,9 @@ public final class SafetyPropagationTransfer implements ForwardTransferFunction<
 
     @Override
     public TransferResult<Safety, AccessPathStore<Safety>> visitSwitchExpressionNode(
-            SwitchExpressionNode _node, TransferInput<Safety, AccessPathStore<Safety>> input) {
-        return unknown(input);
+            SwitchExpressionNode node, TransferInput<Safety, AccessPathStore<Safety>> input) {
+        Safety safety = getValueOfSubNode(input, node.getSwitchExpressionVar());
+        return noStoreChanges(safety, input);
     }
 
     @Override
