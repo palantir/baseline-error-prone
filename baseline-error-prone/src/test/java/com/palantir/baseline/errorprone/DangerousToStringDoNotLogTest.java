@@ -16,6 +16,7 @@
 
 package com.palantir.baseline.errorprone;
 
+import com.google.errorprone.BugCheckerRefactoringTestHelper;
 import com.google.errorprone.CompilationTestHelper;
 import org.junit.jupiter.api.Test;
 
@@ -382,7 +383,178 @@ class DangerousToStringDoNotLogTest {
                 .doTest();
     }
 
+    @Test
+    void flags_immutables_with_do_not_log_attribute() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          @DoNotLog String secret();
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void flags_immutables_with_do_not_log_type_attribute() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.tokens.auth.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          BearerToken token();
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void allows_immutables_with_do_not_log_redacted_attribute() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @DoNotLog @Value.Redacted String secret();
+                        }
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void allows_immutables_with_safe_attributes() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          @Safe String name();
+                        }
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void allows_immutables_with_do_not_log_and_to_string_override() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          abstract String name();
+                          @DoNotLog abstract String secret();
+                          @Override
+                          public String toString() {
+                            return "Test{name=" + name() + "}";
+                          }
+                        }
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void flags_immutables_value_default_with_do_not_log() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          abstract String name();
+                          @DoNotLog
+                          @Value.Default
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          String secret() {
+                            return "default";
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void flags_immutables_value_derived_with_do_not_log() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          abstract String name();
+                          @DoNotLog
+                          @Value.Derived
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          String secret() {
+                            return name();
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void fixes_immutables_do_not_log_attribute_with_redacted() {
+        refactoring()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @DoNotLog String secret();
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @Value.Redacted @DoNotLog String secret();
+                        }
+                        """)
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
     private CompilationTestHelper helper() {
         return CompilationTestHelper.newInstance(DangerousToStringDoNotLog.class, getClass());
+    }
+
+    private RefactoringValidator refactoring() {
+        return RefactoringValidator.of(DangerousToStringDoNotLog.class, getClass());
     }
 }

@@ -20,6 +20,8 @@ import com.google.auto.service.AutoService;
 import com.google.errorprone.BugPattern;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
+import com.google.errorprone.fixes.SuggestedFix;
+import com.google.errorprone.fixes.SuggestedFixes;
 import com.google.errorprone.matchers.Description;
 import com.google.errorprone.matchers.Matcher;
 import com.google.errorprone.matchers.Matchers;
@@ -40,8 +42,10 @@ import com.sun.tools.javac.code.Symbol.RecordComponent;
  * frequently used in logging in third-party libraries. The fix is to remove the sensitive data from the string
  * representation, or redact it.
  *
- * <p>Also flags Java records with {@code @DoNotLog} components that don't override {@code toString()},
- * since the compiler-generated toString includes all components.
+ * <p>Also flags Java records and {@code @Value.Immutable} types with {@code @DoNotLog} attributes
+ * that don't override {@code toString()}, since the auto-generated toString includes all attributes.
+ * For Immutables, attributes annotated with {@code @Value.Redacted} are excluded from the generated
+ * toString and are therefore not flagged.
  */
 @AutoService(BugChecker.class)
 @BugPattern(
@@ -81,23 +85,67 @@ public final class DangerousToStringDoNotLog extends BugChecker
     @Override
     public Description matchClass(ClassTree classTree, VisitorState state) {
         ClassSymbol classSymbol = ASTHelpers.getSymbol(classTree);
-        if (classSymbol == null || !classSymbol.isRecord()) {
+        if (classSymbol == null) {
             return Description.NO_MATCH;
         }
         if (TestCheckUtils.isTestCode(state)) {
             return Description.NO_MATCH;
         }
+        if (classSymbol.isRecord()) {
+            return matchRecord(classTree, classSymbol, state);
+        }
+        if (ASTHelpers.hasAnnotation(classSymbol, "org.immutables.value.Value.Immutable", state)) {
+            return matchImmutables(classTree, classSymbol, state);
+        }
+        return Description.NO_MATCH;
+    }
+
+    private Description matchRecord(ClassTree classTree, ClassSymbol classSymbol, VisitorState state) {
         if (hasToStringOverride(classTree, state)) {
-            // The MethodTreeMatcher handles explicit toString overrides
             return Description.NO_MATCH;
         }
         for (RecordComponent recordComponent : classSymbol.getRecordComponents()) {
-            Safety symbolSafety = SafetyAnnotations.getSafety(recordComponent, state);
-            Safety typeSafety = SafetyAnnotations.getSafety(recordComponent.type, state);
-            Safety typeSymSafety = SafetyAnnotations.getSafety(recordComponent.type.tsym, state);
-            Safety componentSafety = Safety.mergeAssumingUnknownIsSame(symbolSafety, typeSafety, typeSymSafety);
-            if (componentSafety == Safety.DO_NOT_LOG) {
+            if (SafetyAnnotations.getVariableSafety(recordComponent, state) == Safety.DO_NOT_LOG) {
                 return buildDescription(classTree).build();
+            }
+        }
+        return Description.NO_MATCH;
+    }
+
+    @SuppressWarnings("CyclomaticComplexity")
+    private Description matchImmutables(ClassTree classTree, ClassSymbol classSymbol, VisitorState state) {
+        // If the source type provides its own toString, the generated class won't override it,
+        // so the MethodTreeMatcher handles that case instead.
+        if (hasToStringOverride(classTree, state)) {
+            return Description.NO_MATCH;
+        }
+        for (Tree member : classTree.getMembers()) {
+            if (!(member instanceof MethodTree methodTree)) {
+                continue;
+            }
+            MethodSymbol methodSymbol = ASTHelpers.getSymbol(methodTree);
+            if (methodSymbol == null
+                    // Constructors and initializers are not Immutables attributes
+                    || methodSymbol.isConstructor()
+                    || methodSymbol.isStaticOrInstanceInit()
+                    // Immutables attributes are no-arg getters; methods with parameters are not attributes
+                    || !methodSymbol.getParameters().isEmpty()
+                    // void methods cannot be attributes
+                    || state.getTypes().isSameType(methodSymbol.getReturnType(), state.getSymtab().voidType)
+                    // Delegate to SafeLoggingPropagation's logic which handles abstract methods,
+                    // @Value.Default, @Value.Derived, @Value.Lazy, defaultAsDefault style, and Jackson
+                    || !SafeLoggingPropagation.isImmutablesField(classSymbol, methodSymbol, state)) {
+                continue;
+            }
+            // @Value.Redacted excludes the attribute from the generated toString, so it's safe
+            if (ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Redacted", state)) {
+                continue;
+            }
+            if (SafetyAnnotations.getMethodReturnSafety(methodSymbol, state) == Safety.DO_NOT_LOG) {
+                SuggestedFix.Builder fix = SuggestedFix.builder();
+                String annotation = SuggestedFixes.qualifyType(state, fix, "org.immutables.value.Value.Redacted");
+                fix.prefixWith(methodTree, String.format("@%s ", annotation));
+                return buildDescription(methodTree).addFix(fix.build()).build();
             }
         }
         return Description.NO_MATCH;

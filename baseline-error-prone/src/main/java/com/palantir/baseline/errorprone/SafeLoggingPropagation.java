@@ -142,11 +142,7 @@ public final class SafeLoggingPropagation extends BugChecker
         Safety safety = SafetyAnnotations.getTypeSafetyFromAncestors(classTree, state);
         safety = safety.leastUpperBound(SafetyAnnotations.getTypeSafetyFromKnownSubtypes(classTree, state));
         for (RecordComponent recordComponent : classSymbol.getRecordComponents()) {
-            Safety symbolSafety = SafetyAnnotations.getSafety(recordComponent, state);
-            Safety typeSafety = SafetyAnnotations.getSafety(recordComponent.type, state);
-            Safety typeSymSafety = SafetyAnnotations.getSafety(recordComponent.type.tsym, state);
-            Safety recordComponentSafety = Safety.mergeAssumingUnknownIsSame(symbolSafety, typeSafety, typeSymSafety);
-            safety = safety.leastUpperBound(recordComponentSafety);
+            safety = safety.leastUpperBound(SafetyAnnotations.getVariableSafety(recordComponent, state));
         }
         return handleSafety(classTree, classTree.getModifiers(), state, existingClassSafety, safety);
     }
@@ -158,7 +154,7 @@ public final class SafeLoggingPropagation extends BugChecker
         return matchArbitraryObject(classTree, classSymbol, state);
     }
 
-    private static boolean isImmutablesField(
+    static boolean isImmutablesField(
             ClassSymbol enclosingClass, MethodSymbol methodSymbol, VisitorState state) {
         return methodSymbol.getModifiers().contains(Modifier.ABSTRACT)
                 || ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Default", state)
@@ -197,12 +193,8 @@ public final class SafeLoggingPropagation extends BugChecker
                         // case logging may occur using jackson rather than toString.
                         continue;
                     }
-                    Safety getterSafety =
-                            Safety.mergeAssumingUnknownIsSame(safety, SafetyAnnotations.getSafety(methodSymbol, state));
-                    getterSafety = Safety.mergeAssumingUnknownIsSame(
-                            getterSafety, SafetyAnnotations.getSafety(methodSymbol.getReturnType(), state));
-                    getterSafety = Safety.mergeAssumingUnknownIsSame(
-                            getterSafety, SafetyAnnotations.getSafety(methodSymbol.getReturnType().tsym, state));
+                    Safety getterSafety = Safety.mergeAssumingUnknownIsSame(
+                            safety, SafetyAnnotations.getMethodReturnSafety(methodSymbol, state));
                     // The redaction check allows us to add @DoNotLog to redacted fields in the same sweep as
                     // adding class-level safety annotations. Otherwise, we would have to run the automatic
                     // fixes twice.
