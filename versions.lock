@@ -90,9 +90,9 @@ com.netflix.nebula:nebula-test:10.6.2 (2 constraints: d61de72d)
 
 com.palantir.conjure.java:conjure-lib:8.75.0 (1 constraints: 46057a3b)
 
-com.palantir.conjure.java.api:errors:2.70.0 (2 constraints: 6d21ceb0)
+com.palantir.conjure.java.api:errors:2.71.0 (2 constraints: 6e21d1b0)
 
-com.palantir.conjure.java.api:test-utils:2.70.0 (1 constraints: 3b05473b)
+com.palantir.conjure.java.api:test-utils:2.71.0 (1 constraints: 3c054a3b)
 
 com.palantir.conjure.java.runtime:conjure-java-annotations:8.33.0 (1 constraints: 4005643b)
 
@@ -112,15 +112,15 @@ com.palantir.safe-logging:logger-slf4j:3.13.0 (1 constraints: 320e9050)
 
 com.palantir.safe-logging:logger-spi:3.13.0 (2 constraints: 731e76b0)
 
-com.palantir.safe-logging:preconditions:3.13.0 (8 constraints: 55767483)
+com.palantir.safe-logging:preconditions:3.13.0 (8 constraints: 56765f84)
 
 com.palantir.safe-logging:preconditions-assertj:3.13.0 (1 constraints: 39053e3b)
 
-com.palantir.safe-logging:safe-logging:3.13.0 (9 constraints: d788b6f5)
+com.palantir.safe-logging:safe-logging:3.13.0 (9 constraints: d888d7f6)
 
 com.palantir.tokens:auth-tokens:4.2.0 (2 constraints: f514d0b6)
 
-com.palantir.tritium:tritium-ids:0.126.0 (1 constraints: fb0f91a6)
+com.palantir.tritium:tritium-ids:0.126.0 (1 constraints: fc0f94a6)
 
 com.palantir.tritium:tritium-registry:0.126.0 (1 constraints: 6b05a240)
 
@@ -178,7 +178,7 @@ org.junit.platform:junit-platform-engine:6.0.3 (3 constraints: 26304d57)
 
 org.junit.platform:junit-platform-launcher:6.0.3 (2 constraints: 591ba162)
 
-org.mockito:mockito-core:5.22.0 (1 constraints: 4d11b4e0)
+org.mockito:mockito-core:5.23.0 (1 constraints: 4e11b7e0)
 
 org.objenesis:objenesis:3.3 (2 constraints: 9b17f557)
 
