@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2025 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2026 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.matchers.Description;
 import com.google.errorprone.matchers.Matcher;
 import com.google.errorprone.matchers.Matchers;
+import com.google.errorprone.util.ASTHelpers;
 import com.palantir.baseline.errorprone.safety.Safety;
 import com.sun.source.tree.MethodTree;
 import com.sun.tools.javac.code.Flags;
@@ -54,7 +55,7 @@ public final class DangerousToStringDoNotLog extends BugChecker implements BugCh
         if (!TO_STRING.matches(method, state)) {
             return Description.NO_MATCH;
         }
-        MethodSymbol methodSymbol = com.google.errorprone.util.ASTHelpers.getSymbol(method);
+        MethodSymbol methodSymbol = ASTHelpers.getSymbol(method);
         if ((methodSymbol.flags() & Flags.ABSTRACT) != 0) {
             return Description.NO_MATCH;
         }

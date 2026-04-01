@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2025 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2026 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,155 +22,234 @@ import org.junit.jupiter.api.Test;
 class DangerousToStringDoNotLogTest {
 
     @Test
-    void testToStringConcatenatingDoNotLogField() {
+    void flags_string_concatenating_do_not_log_field() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "public final class Test {",
-                        "  @DoNotLog private String secret;",
-                        "  @Override",
-                        "  // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data",
-                        "  public String toString() {",
-                        "    return \"Test{secret=\" + secret + \"}\";",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @DoNotLog private String secret;
+                          @Override
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          public String toString() {
+                            return "Test{secret=" + secret + "}";
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
-    void testToStringWithStringFormat() {
+    void flags_string_format_with_do_not_log_field() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "public final class Test {",
-                        "  @DoNotLog private String secret;",
-                        "  @Override",
-                        "  // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data",
-                        "  public String toString() {",
-                        "    return String.format(\"Test{secret=%s}\", secret);",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @DoNotLog private String secret;
+                          @Override
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          public String toString() {
+                            return String.format("Test{secret=%s}", secret);
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
-    void testToStringCallingDoNotLogMethod() {
+    void flags_calling_do_not_log_method() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "public abstract class Test {",
-                        "  @DoNotLog abstract String token();",
-                        "  @Override",
-                        "  // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data",
-                        "  public String toString() {",
-                        "    return \"Test\" + token();",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public abstract class Test {
+                          @DoNotLog abstract String token();
+                          @Override
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          public String toString() {
+                            return "Test" + token();
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
-    void testToStringWithStringBuilder() {
+    void flags_string_builder_with_do_not_log_field() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "public final class Test {",
-                        "  @DoNotLog private String secret;",
-                        "  @Override",
-                        "  // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data",
-                        "  public String toString() {",
-                        "    return new StringBuilder(\"Test{\").append(secret).append(\"}\").toString();",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @DoNotLog private String secret;
+                          @Override
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          public String toString() {
+                            return new StringBuilder("Test{").append(secret).append("}").toString();
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
-    void testToStringWithDoNotLogType() {
+    void flags_do_not_log_type() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.tokens.auth.*;",
-                        "public final class Test {",
-                        "  private BearerToken token;",
-                        "  @Override",
-                        "  // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data",
-                        "  public String toString() {",
-                        "    return \"Test{token=\" + token + \"}\";",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        import com.palantir.tokens.auth.*;
+                        public final class Test {
+                          private BearerToken token;
+                          @Override
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          public String toString() {
+                            return "Test{token=" + token + "}";
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
     @Test
-    void testToStringWithSafeFieldsOnly() {
+    void flags_to_string_calling_interface_default_method_returning_do_not_log() {
+        helper().addSourceLines(
+                        "Secret.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public interface Secret {
+                          @DoNotLog
+                          default String secret() {
+                            return "secret";
+                          }
+                        }
+                        """)
+                .addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        public final class Test implements Secret {
+                          @Override
+                          // BUG: Diagnostic contains: toString() methods must not include @DoNotLog data
+                          public String toString() {
+                            return "Test{secret=" + secret() + "}";
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void allows_do_not_log_annotated_to_string_without_do_not_log_data() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "public final class Test {",
-                        "  @Safe private String name;",
-                        "  @Override",
-                        "  public String toString() {",
-                        "    return \"Test{name=\" + name + \"}\";",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          private String name;
+                          @DoNotLog
+                          @Override
+                          public String toString() {
+                            return "Test{name=" + name + "}";
+                          }
+                        }
+                        """)
                 .expectNoDiagnostics()
                 .doTest();
     }
 
     @Test
-    void testToStringReturningConstant() {
+    void allows_safe_fields_only() {
         helper().addSourceLines(
                         "Test.java",
-                        "public final class Test {",
-                        "  @Override",
-                        "  public String toString() {",
-                        "    return \"Test{}\";",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @Safe private String name;
+                          @Override
+                          public String toString() {
+                            return "Test{name=" + name + "}";
+                          }
+                        }
+                        """)
                 .expectNoDiagnostics()
                 .doTest();
     }
 
     @Test
-    void testToStringWithUnsafeField() {
+    void allows_constant_return() {
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "public final class Test {",
-                        "  @Unsafe private String name;",
-                        "  @Override",
-                        "  public String toString() {",
-                        "    return \"Test{name=\" + name + \"}\";",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        public final class Test {
+                          @Override
+                          public String toString() {
+                            return "Test{}";
+                          }
+                        }
+                        """)
                 .expectNoDiagnostics()
                 .doTest();
     }
 
     @Test
-    void testNonToStringMethodReturningDoNotLog() {
+    void allows_unsafe_field() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @Unsafe private String name;
+                          @Override
+                          public String toString() {
+                            return "Test{name=" + name + "}";
+                          }
+                        }
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void allows_non_to_string_method_returning_do_not_log() {
         // This is handled by SafeLoggingPropagation, not this check
         helper().addSourceLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "public final class Test {",
-                        "  @DoNotLog private String secret;",
-                        "  public String getSecret() {",
-                        "    return secret;",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @DoNotLog private String secret;
+                          public String getSecret() {
+                            return secret;
+                          }
+                        }
+                        """)
                 .expectNoDiagnostics()
                 .doTest();
     }
 
     @Test
-    void testAbstractToString() {
+    void allows_abstract_to_string() {
         helper().addSourceLines(
                         "Test.java",
-                        "public abstract class Test {",
-                        "  @Override",
-                        "  public abstract String toString();",
-                        "}")
+                        // language=Java
+                        """
+                        public abstract class Test {
+                          @Override
+                          public abstract String toString();
+                        }
+                        """)
                 .expectNoDiagnostics()
                 .doTest();
     }
