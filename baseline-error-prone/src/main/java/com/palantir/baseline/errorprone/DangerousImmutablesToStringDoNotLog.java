@@ -81,6 +81,10 @@ public final class DangerousImmutablesToStringDoNotLog extends BugChecker implem
             if (ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Redacted", state)) {
                 continue;
             }
+            // There is an easy fix for this: add the @Redacted annotation. Unfortunately, when this change rolls out,
+            // the fix will be automatically applied and merged into repositories. There can be cases where repositories
+            // are relying on the toString of the Immutable object to contain the specific @DoNotLog field. To be extra
+            // cautious as not to break repository logic, we have this check not suggest a fix.
             if (SafetyAnnotations.getMethodReturnSafety(methodSymbol, state) == Safety.DO_NOT_LOG) {
                 return buildDescription(methodTree).build();
             }
