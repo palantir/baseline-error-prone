@@ -19,6 +19,7 @@ package com.palantir.baseline.errorprone;
 import com.google.errorprone.CompilationTestHelper;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("MisformattedTestData")
 class DangerousImmutablesToStringDoNotLogTest {
 
     @Test

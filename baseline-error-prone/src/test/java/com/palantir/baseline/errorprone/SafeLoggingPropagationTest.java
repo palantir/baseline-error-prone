@@ -19,6 +19,7 @@ package com.palantir.baseline.errorprone;
 import com.google.errorprone.BugCheckerRefactoringTestHelper;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("MisformattedTestData")
 class SafeLoggingPropagationTest {
 
     @Test
