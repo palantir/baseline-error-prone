@@ -1233,6 +1233,78 @@ class SafeLoggingPropagationTest {
                 .doTest();
     }
 
+    @Test
+    void switch_expression_propagates_safety() {
+        fix().addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @Unsafe record Dummy() {}
+                          public Object get(int num) {
+                            return switch (num) {
+                              case 1 -> new Dummy();
+                              default -> "safe";
+                            };
+                          }
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @Unsafe record Dummy() {}
+                          @Unsafe
+                          public Object get(int num) {
+                            return switch (num) {
+                              case 1 -> new Dummy();
+                              default -> "safe";
+                            };
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void pattern_matching_switch_expression_propagates_safety() {
+        fix().addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @Unsafe record Secret(String value) {}
+                          public Object get(Object obj) {
+                            return switch (obj) {
+                              case Secret s -> s;
+                              default -> "safe";
+                            };
+                          }
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @Unsafe record Secret(String value) {}
+                          @Unsafe
+                          public Object get(Object obj) {
+                            return switch (obj) {
+                              case Secret s -> s;
+                              default -> "safe";
+                            };
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
     private RefactoringValidator fix(String... args) {
         return RefactoringValidator.of(SafeLoggingPropagation.class, getClass(), args);
     }
