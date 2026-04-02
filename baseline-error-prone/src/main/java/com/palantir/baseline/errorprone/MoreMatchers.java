@@ -105,5 +105,12 @@ final class MoreMatchers {
         return source.contains(modifier.name().toLowerCase(Locale.ENGLISH));
     }
 
+    /** Matches non-static {@code toString()} methods with no parameters returning {@link String}. */
+    static final Matcher<MethodTree> TO_STRING = Matchers.allOf(
+            Matchers.methodIsNamed("toString"),
+            Matchers.methodHasNoParameters(),
+            Matchers.not(Matchers.isStatic()),
+            Matchers.methodReturns(Matchers.isSameType(String.class)));
+
     private MoreMatchers() {}
 }

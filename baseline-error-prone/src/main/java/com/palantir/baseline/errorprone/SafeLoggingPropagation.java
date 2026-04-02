@@ -62,11 +62,6 @@ public final class SafeLoggingPropagation extends BugChecker
             Matchers.isSameType(SafetyAnnotations.UNSAFE),
             Matchers.isSameType(SafetyAnnotations.DO_NOT_LOG));
 
-    private static final Matcher<MethodTree> TO_STRING = Matchers.allOf(
-            Matchers.methodIsNamed("toString"),
-            Matchers.methodHasNoParameters(),
-            Matchers.not(Matchers.isStatic()),
-            Matchers.methodReturns(Matchers.isSameType(String.class)));
     private static final Matcher<MethodTree> METHOD_RETURNS_VOID = Matchers.methodReturns(Matchers.isVoidType());
 
     private static final com.google.errorprone.suppliers.Supplier<Name> TO_STRING_NAME =
@@ -154,8 +149,9 @@ public final class SafeLoggingPropagation extends BugChecker
         return matchArbitraryObject(classTree, classSymbol, state);
     }
 
-    static boolean isImmutablesField(
-            ClassSymbol enclosingClass, MethodSymbol methodSymbol, VisitorState state) {
+    // Package-private: also used by DangerousImmutablesToStringDoNotLog. Kept here rather than in MoreMatchers
+    // because it depends on several private Immutables/Jackson helpers in this class.
+    static boolean isImmutablesField(ClassSymbol enclosingClass, MethodSymbol methodSymbol, VisitorState state) {
         return methodSymbol.getModifiers().contains(Modifier.ABSTRACT)
                 || ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Default", state)
                 || ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Derived", state)

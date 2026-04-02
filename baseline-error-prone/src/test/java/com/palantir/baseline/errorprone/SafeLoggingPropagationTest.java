@@ -240,22 +240,28 @@ class SafeLoggingPropagationTest {
         BugCheckerRefactoringTestHelper.newInstance(SafeLoggingPropagation.class, getClass())
                 .addInputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "public final class Test {",
-                        "  @DoNotLog private String secret;",
-                        "  @Override public String toString() {",
-                        "    return \"Test{secret=\" + secret + \"}\";",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @DoNotLog private String secret;
+                          @Override public String toString() {
+                            return "Test{secret=" + secret + "}";
+                          }
+                        }
+                        """)
                 .addOutputLines(
                         "Test.java",
-                        "import com.palantir.logsafe.*;",
-                        "public final class Test {",
-                        "  @DoNotLog private String secret;",
-                        "  @DoNotLog @Override public String toString() {",
-                        "    return \"Test{secret=\" + secret + \"}\";",
-                        "  }",
-                        "}")
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @DoNotLog private String secret;
+                          @DoNotLog @Override public String toString() {
+                            return "Test{secret=" + secret + "}";
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
