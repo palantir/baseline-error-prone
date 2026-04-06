@@ -29,9 +29,8 @@ class DangerousRecordToStringDoNotLogTest {
                         // language=Java
                         """
                         import com.palantir.logsafe.*;
-                        public record Test(String name,
-                          // BUG: Diagnostic contains: Records with @DoNotLog components must override toString()
-                          @DoNotLog String secret) {}
+                        // BUG: Diagnostic contains: Record component 'secret' is @DoNotLog
+                        public record Test(String name, @DoNotLog String secret) {}
                         """)
                 .doTest();
     }
@@ -43,9 +42,8 @@ class DangerousRecordToStringDoNotLogTest {
                         // language=Java
                         """
                         import com.palantir.tokens.auth.*;
-                        public record Test(String name,
-                          // BUG: Diagnostic contains: Records with @DoNotLog components must override toString()
-                          BearerToken token) {}
+                        // BUG: Diagnostic contains: Record component 'token' is @DoNotLog
+                        public record Test(String name, BearerToken token) {}
                         """)
                 .doTest();
     }
@@ -72,9 +70,8 @@ class DangerousRecordToStringDoNotLogTest {
                         "Test.java",
                         // language=Java
                         """
-                        public record Test(String name,
-                          // BUG: Diagnostic contains: Records with @DoNotLog components must override toString()
-                          SecretImpl secret) {}
+                        // BUG: Diagnostic contains: Record component 'secret' is @DoNotLog
+                        public record Test(String name, SecretImpl secret) {}
                         """)
                 .doTest();
     }
@@ -130,6 +127,44 @@ class DangerousRecordToStringDoNotLogTest {
                         """
                         import com.palantir.logsafe.*;
                         public record Test(@Unsafe String name) {}
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void flags_all_do_not_log_components_when_multiple_exist() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        // BUG: Diagnostic matches: secret1
+                        public record Test(String name, @DoNotLog String secret1, @DoNotLog String secret2) {}
+                        """)
+                .expectErrorMessage("secret1", msg -> msg.contains("Record component 'secret1' is @DoNotLog"))
+                .doTest();
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        // BUG: Diagnostic matches: secret2
+                        public record Test(String name, @DoNotLog String secret1, @DoNotLog String secret2) {}
+                        """)
+                .expectErrorMessage("secret2", msg -> msg.contains("Record component 'secret2' is @DoNotLog"))
+                .doTest();
+    }
+
+    @Test
+    void suppression_on_class_suppresses_check() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        @SuppressWarnings("DangerousRecordToStringDoNotLog")
+                        public record Test(String name, @DoNotLog String secret) {}
                         """)
                 .expectNoDiagnostics()
                 .doTest();

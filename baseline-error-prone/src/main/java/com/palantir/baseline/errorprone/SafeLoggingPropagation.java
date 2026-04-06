@@ -152,6 +152,12 @@ public final class SafeLoggingPropagation extends BugChecker
     // Package-private: also used by DangerousImmutablesToStringDoNotLog. Kept here rather than in MoreMatchers
     // because it depends on several private Immutables/Jackson helpers in this class.
     static boolean isImmutablesField(ClassSymbol enclosingClass, MethodSymbol methodSymbol, VisitorState state) {
+        if (methodSymbol.isConstructor()
+                || methodSymbol.isStaticOrInstanceInit()
+                || !methodSymbol.getParameters().isEmpty()
+                || state.getTypes().isSameType(methodSymbol.getReturnType(), state.getSymtab().voidType)) {
+            return false;
+        }
         return methodSymbol.getModifiers().contains(Modifier.ABSTRACT)
                 || ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Default", state)
                 || ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Derived", state)
@@ -169,11 +175,7 @@ public final class SafeLoggingPropagation extends BugChecker
     }
 
     private static boolean isGetterMethod(ClassSymbol enclosingClass, MethodSymbol methodSymbol, VisitorState state) {
-        return !methodSymbol.isConstructor()
-                && !methodSymbol.isStaticOrInstanceInit()
-                && !state.getTypes().isSameType(methodSymbol.getReturnType(), state.getSymtab().voidType)
-                && methodSymbol.getParameters().isEmpty()
-                && (isImmutablesField(enclosingClass, methodSymbol, state) || isToString(methodSymbol, state));
+        return isImmutablesField(enclosingClass, methodSymbol, state) || isToString(methodSymbol, state);
     }
 
     @SuppressWarnings("checkstyle:CyclomaticComplexity")

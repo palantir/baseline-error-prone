@@ -31,9 +31,9 @@ class DangerousImmutablesToStringDoNotLogTest {
                         import com.palantir.logsafe.*;
                         import org.immutables.value.Value;
                         @Value.Immutable
+                        // BUG: Diagnostic contains: Attribute 'secret()' is @DoNotLog
                         interface Test {
                           String name();
-                          // BUG: Diagnostic contains: Immutables types with @DoNotLog attributes must either override toString()
                           @DoNotLog String secret();
                         }
                         """)
@@ -49,9 +49,9 @@ class DangerousImmutablesToStringDoNotLogTest {
                         import com.palantir.tokens.auth.*;
                         import org.immutables.value.Value;
                         @Value.Immutable
+                        // BUG: Diagnostic contains: Attribute 'token()' is @DoNotLog
                         interface Test {
                           String name();
-                          // BUG: Diagnostic contains: Immutables types with @DoNotLog attributes must either override toString()
                           BearerToken token();
                         }
                         """)
@@ -67,11 +67,11 @@ class DangerousImmutablesToStringDoNotLogTest {
                         import com.palantir.logsafe.*;
                         import org.immutables.value.Value;
                         @Value.Immutable
+                        // BUG: Diagnostic contains: Attribute 'secret()' is @DoNotLog
                         abstract class Test {
                           abstract String name();
                           @DoNotLog
                           @Value.Default
-                          // BUG: Diagnostic contains: Immutables types with @DoNotLog attributes must either override toString()
                           String secret() {
                             return "default";
                           }
@@ -89,11 +89,11 @@ class DangerousImmutablesToStringDoNotLogTest {
                         import com.palantir.logsafe.*;
                         import org.immutables.value.Value;
                         @Value.Immutable
+                        // BUG: Diagnostic contains: Attribute 'secret()' is @DoNotLog
                         abstract class Test {
                           abstract String name();
                           @DoNotLog
                           @Value.Derived
-                          // BUG: Diagnostic contains: Immutables types with @DoNotLog attributes must either override toString()
                           String secret() {
                             return name();
                           }
@@ -168,11 +168,11 @@ class DangerousImmutablesToStringDoNotLogTest {
                         import com.palantir.logsafe.*;
                         import org.immutables.value.Value;
                         @Value.Immutable
+                        // BUG: Diagnostic contains: Attribute 'secret()' is @DoNotLog
                         abstract class Test {
                           abstract String name();
                           @DoNotLog
                           @Value.Lazy
-                          // BUG: Diagnostic contains: Immutables types with @DoNotLog attributes must either override toString()
                           String secret() {
                             return name();
                           }
@@ -191,10 +191,10 @@ class DangerousImmutablesToStringDoNotLogTest {
                         import org.immutables.value.Value;
                         @Value.Immutable
                         @Value.Style(defaultAsDefault = true)
+                        // BUG: Diagnostic contains: Attribute 'secret()' is @DoNotLog
                         abstract class Test {
                           abstract String name();
                           @DoNotLog
-                          // BUG: Diagnostic contains: Immutables types with @DoNotLog attributes must either override toString()
                           String secret() {
                             return "default";
                           }
@@ -213,16 +213,116 @@ class DangerousImmutablesToStringDoNotLogTest {
                         import com.palantir.logsafe.*;
                         import org.immutables.value.Value;
                         @Value.Immutable
+                        // BUG: Diagnostic contains: Attribute 'secret()' is @DoNotLog
                         abstract class Test {
                           abstract String name();
                           @DoNotLog
                           @JsonProperty
-                          // BUG: Diagnostic contains: Immutables types with @DoNotLog attributes must either override toString()
                           String secret() {
                             return "default";
                           }
                         }
                         """)
+                .doTest();
+    }
+
+    @Test
+    void allows_immutables_with_do_not_log_auxiliary_attribute() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @DoNotLog @Value.Auxiliary String secret();
+                        }
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void flags_all_do_not_log_attributes_when_multiple_exist() {
+        CompilationTestHelper helper = helper();
+        // Both diagnostics land on the class line since this is a ClassTreeMatcher.
+        // We verify both fire by checking the error count via expectErrorMessage.
+        helper.addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        // BUG: Diagnostic matches: secret1
+                        interface Test {
+                          String name();
+                          @DoNotLog String secret1();
+                          @DoNotLog String secret2();
+                        }
+                        """)
+                .expectErrorMessage("secret1", msg -> msg.contains("Attribute 'secret1()' is @DoNotLog"))
+                .doTest();
+        // Verify secret2 was also flagged by running again with that expectation
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        // BUG: Diagnostic matches: secret2
+                        interface Test {
+                          String name();
+                          @DoNotLog String secret1();
+                          @DoNotLog String secret2();
+                        }
+                        """)
+                .expectErrorMessage("secret2", msg -> msg.contains("Attribute 'secret2()' is @DoNotLog"))
+                .doTest();
+    }
+
+    @Test
+    void flags_immutables_json_value_annotated_field_with_do_not_log() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.fasterxml.jackson.annotation.*;
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        // BUG: Diagnostic contains: Attribute 'secret()' is @DoNotLog
+                        abstract class Test {
+                          abstract String name();
+                          @DoNotLog
+                          @JsonValue
+                          String secret() {
+                            return "default";
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void suppression_on_class_suppresses_check() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @SuppressWarnings("DangerousImmutablesToStringDoNotLog")
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @DoNotLog String secret();
+                        }
+                        """)
+                .expectNoDiagnostics()
                 .doTest();
     }
 

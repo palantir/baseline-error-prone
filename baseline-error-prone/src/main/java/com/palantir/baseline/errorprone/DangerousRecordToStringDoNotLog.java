@@ -25,9 +25,6 @@ import com.google.errorprone.util.ASTHelpers;
 import com.palantir.baseline.errorprone.safety.Safety;
 import com.palantir.baseline.errorprone.safety.SafetyAnnotations;
 import com.sun.source.tree.ClassTree;
-import com.sun.source.tree.MethodTree;
-import com.sun.source.tree.Tree;
-import com.sun.source.tree.VariableTree;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.RecordComponent;
 
@@ -55,41 +52,22 @@ public final class DangerousRecordToStringDoNotLog extends BugChecker implements
         if (TestCheckUtils.isTestCode(state)) {
             return Description.NO_MATCH;
         }
-        if (hasToStringOverride(classTree, state)) {
+        if (MoreMatchers.hasToStringOverride(classTree, state)) {
             return Description.NO_MATCH;
         }
+        // Report on classTree so that @SuppressWarnings on the class is recognized by error-prone's
+        // suppression mechanism for ClassTreeMatchers. Use state.reportMatch rather than returning
+        // early so that all offending components are flagged in a single pass.
         for (RecordComponent recordComponent : classSymbol.getRecordComponents()) {
             if (SafetyAnnotations.getVariableSafety(recordComponent, state) == Safety.DO_NOT_LOG) {
-                Tree target = findComponentTree(classTree, recordComponent);
-                return buildDescription(target != null ? target : classTree).build();
+                state.reportMatch(buildDescription(classTree)
+                        .setMessage(String.format(
+                                "Record component '%s' is @DoNotLog but will be included in the"
+                                        + " auto-generated toString(). Override toString() to exclude sensitive data.",
+                                recordComponent.getSimpleName()))
+                        .build());
             }
         }
         return Description.NO_MATCH;
-    }
-
-    /**
-     * Maps a {@link RecordComponent} symbol back to its {@link VariableTree} AST node so the diagnostic
-     * points at the specific component. {@link RecordComponent} is a {@link com.sun.tools.javac.code.Symbol Symbol},
-     * not a {@link Tree}, so we match by name. Should always find a match, but the caller falls back to
-     * {@code classTree} defensively in case it doesn't.
-     */
-    private static Tree findComponentTree(ClassTree classTree, RecordComponent component) {
-        String name = component.getSimpleName().toString();
-        for (Tree member : classTree.getMembers()) {
-            if (member instanceof VariableTree variableTree
-                    && variableTree.getName().contentEquals(name)) {
-                return variableTree;
-            }
-        }
-        return null;
-    }
-
-    private static boolean hasToStringOverride(ClassTree classTree, VisitorState state) {
-        for (Tree member : classTree.getMembers()) {
-            if (member instanceof MethodTree methodTree && MoreMatchers.TO_STRING.matches(methodTree, state)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

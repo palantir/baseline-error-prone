@@ -105,6 +105,16 @@ final class MoreMatchers {
         return source.contains(modifier.name().toLowerCase(Locale.ENGLISH));
     }
 
+    /** Returns {@code true} if the class declares a {@code toString()} override. */
+    static boolean hasToStringOverride(ClassTree classTree, VisitorState state) {
+        for (Tree member : classTree.getMembers()) {
+            if (member instanceof MethodTree methodTree && TO_STRING.matches(methodTree, state)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** Matches non-static {@code toString()} methods with no parameters returning {@link String}. */
     static final Matcher<MethodTree> TO_STRING = Matchers.allOf(
             Matchers.methodIsNamed("toString"),

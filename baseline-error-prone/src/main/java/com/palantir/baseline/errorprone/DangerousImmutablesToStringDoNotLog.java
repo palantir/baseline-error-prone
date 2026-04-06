@@ -61,7 +61,7 @@ public final class DangerousImmutablesToStringDoNotLog extends BugChecker implem
         }
         // If the source type provides its own toString, the generated class won't override it,
         // so the DangerousToStringDoNotLog MethodTreeMatcher handles that case instead.
-        if (hasToStringOverride(classTree, state)) {
+        if (MoreMatchers.hasToStringOverride(classTree, state)) {
             return Description.NO_MATCH;
         }
         for (Tree member : classTree.getMembers()) {
@@ -69,35 +69,26 @@ public final class DangerousImmutablesToStringDoNotLog extends BugChecker implem
                 continue;
             }
             MethodSymbol methodSymbol = ASTHelpers.getSymbol(methodTree);
-            if (methodSymbol == null
-                    || methodSymbol.isConstructor()
-                    || methodSymbol.isStaticOrInstanceInit()
-                    || !methodSymbol.getParameters().isEmpty()
-                    || state.getTypes().isSameType(methodSymbol.getReturnType(), state.getSymtab().voidType)
-                    || !SafeLoggingPropagation.isImmutablesField(classSymbol, methodSymbol, state)) {
+            if (methodSymbol == null || !SafeLoggingPropagation.isImmutablesField(classSymbol, methodSymbol, state)) {
                 continue;
             }
-            // @Value.Redacted excludes the attribute from the generated toString, so it's safe
-            if (ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Redacted", state)) {
+            // @Value.Redacted and @Value.Auxiliary exclude the attribute from the generated toString
+            if (ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Redacted", state)
+                    || ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Auxiliary", state)) {
                 continue;
             }
-            // There is an easy fix for this: add the @Redacted annotation. Unfortunately, when this change rolls out,
-            // the fix will be automatically applied and merged into repositories. There can be cases where repositories
-            // are relying on the toString of the Immutable object to contain the specific @DoNotLog field. To be extra
-            // cautious as not to break repository logic, we have this check not suggest a fix.
+            // Report on classTree so that @SuppressWarnings on the class is recognized by error-prone's
+            // suppression mechanism for ClassTreeMatchers. Use state.reportMatch rather than returning
+            // early so that all offending attributes are flagged in a single pass.
             if (SafetyAnnotations.getMethodReturnSafety(methodSymbol, state) == Safety.DO_NOT_LOG) {
-                return buildDescription(methodTree).build();
+                state.reportMatch(buildDescription(classTree)
+                        .setMessage(String.format(
+                                "Attribute '%s()' is @DoNotLog but will be included in the auto-generated"
+                                        + " toString(). Override toString() or annotate with @Value.Redacted.",
+                                methodSymbol.getSimpleName()))
+                        .build());
             }
         }
         return Description.NO_MATCH;
-    }
-
-    private static boolean hasToStringOverride(ClassTree classTree, VisitorState state) {
-        for (Tree member : classTree.getMembers()) {
-            if (member instanceof MethodTree methodTree && MoreMatchers.TO_STRING.matches(methodTree, state)) {
-                return true;
-            }
-        }
-        return false;
     }
 }
