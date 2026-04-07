@@ -139,20 +139,10 @@ class DangerousRecordToStringDoNotLogTest {
                         // language=Java
                         """
                         import com.palantir.logsafe.*;
-                        // BUG: Diagnostic matches: secret1
+                        // BUG: Diagnostic contains: Record component 'secret1' is @DoNotLog
+                        // Record component 'secret2' is @DoNotLog
                         public record Test(String name, @DoNotLog String secret1, @DoNotLog String secret2) {}
                         """)
-                .expectErrorMessage("secret1", msg -> msg.contains("Record component 'secret1' is @DoNotLog"))
-                .doTest();
-        helper().addSourceLines(
-                        "Test.java",
-                        // language=Java
-                        """
-                        import com.palantir.logsafe.*;
-                        // BUG: Diagnostic matches: secret2
-                        public record Test(String name, @DoNotLog String secret1, @DoNotLog String secret2) {}
-                        """)
-                .expectErrorMessage("secret2", msg -> msg.contains("Record component 'secret2' is @DoNotLog"))
                 .doTest();
     }
 

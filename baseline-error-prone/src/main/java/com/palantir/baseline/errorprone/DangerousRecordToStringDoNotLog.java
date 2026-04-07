@@ -49,10 +49,10 @@ public final class DangerousRecordToStringDoNotLog extends BugChecker implements
         if (classSymbol == null || !classSymbol.isRecord()) {
             return Description.NO_MATCH;
         }
-        if (TestCheckUtils.isTestCode(state)) {
+        if (MoreMatchers.getToString(classTree, state).isPresent()) {
             return Description.NO_MATCH;
         }
-        if (MoreMatchers.hasToStringOverride(classTree, state)) {
+        if (TestCheckUtils.isTestCode(state)) {
             return Description.NO_MATCH;
         }
         // Report on classTree so that @SuppressWarnings on the class is recognized by error-prone's

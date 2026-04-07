@@ -44,8 +44,8 @@ import com.sun.tools.javac.code.Symbol.MethodSymbol;
         link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = BugPattern.SeverityLevel.ERROR,
-        summary = "Immutables types with @DoNotLog attributes must either override toString()"
-                + " or annotate the attribute with @Value.Redacted.")
+        summary = "Immutables types with @DoNotLog attributes must either annotate the attribute"
+                + " with @Value.Redacted or implement custom toString().")
 public final class DangerousImmutablesToStringDoNotLog extends BugChecker implements BugChecker.ClassTreeMatcher {
 
     @Override
@@ -56,12 +56,12 @@ public final class DangerousImmutablesToStringDoNotLog extends BugChecker implem
                 || !ASTHelpers.hasAnnotation(classSymbol, "org.immutables.value.Value.Immutable", state)) {
             return Description.NO_MATCH;
         }
-        if (TestCheckUtils.isTestCode(state)) {
-            return Description.NO_MATCH;
-        }
         // If the source type provides its own toString, the generated class won't override it,
         // so the DangerousToStringDoNotLog MethodTreeMatcher handles that case instead.
-        if (MoreMatchers.hasToStringOverride(classTree, state)) {
+        if (MoreMatchers.getToString(classTree, state).isPresent()) {
+            return Description.NO_MATCH;
+        }
+        if (TestCheckUtils.isTestCode(state)) {
             return Description.NO_MATCH;
         }
         for (Tree member : classTree.getMembers()) {
@@ -72,9 +72,11 @@ public final class DangerousImmutablesToStringDoNotLog extends BugChecker implem
             if (methodSymbol == null || !SafeLoggingPropagation.isImmutablesField(classSymbol, methodSymbol, state)) {
                 continue;
             }
-            // @Value.Redacted and @Value.Auxiliary exclude the attribute from the generated toString
+            // @Value.Redacted, @Value.Auxiliary, and @Value.Lazy exclude the attribute from the
+            // generated toString (lazy attributes act as auxiliary per Immutables docs)
             if (ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Redacted", state)
-                    || ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Auxiliary", state)) {
+                    || ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Auxiliary", state)
+                    || ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Lazy", state)) {
                 continue;
             }
             // Report on classTree so that @SuppressWarnings on the class is recognized by error-prone's
@@ -83,8 +85,8 @@ public final class DangerousImmutablesToStringDoNotLog extends BugChecker implem
             if (SafetyAnnotations.getMethodReturnSafety(methodSymbol, state) == Safety.DO_NOT_LOG) {
                 state.reportMatch(buildDescription(classTree)
                         .setMessage(String.format(
-                                "Attribute '%s()' is @DoNotLog but will be included in the auto-generated"
-                                        + " toString(). Override toString() or annotate with @Value.Redacted.",
+                                "Attribute '%s()' is @DoNotLog but will be included in the auto-generated toString()."
+                                        + " Annotate with @Value.Redacted, or implement a custom toString().",
                                 methodSymbol.getSimpleName()))
                         .build());
             }
