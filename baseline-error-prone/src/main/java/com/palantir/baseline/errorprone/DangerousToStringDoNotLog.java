@@ -23,6 +23,7 @@ import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.matchers.Description;
 import com.google.errorprone.util.ASTHelpers;
 import com.palantir.baseline.errorprone.safety.Safety;
+import com.palantir.baseline.errorprone.safety.SafetyAnnotations;
 import com.sun.source.tree.MethodTree;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
@@ -56,6 +57,14 @@ public final class DangerousToStringDoNotLog extends BugChecker implements BugCh
         }
         if (TestCheckUtils.isTestCode(state)) {
             return Description.NO_MATCH;
+        }
+        // A toString() method should never be annotated @DoNotLog — if the data is sensitive,
+        // it should be excluded from toString rather than marking the output as sensitive.
+        if (SafetyAnnotations.getAnnotatedSafety(method, state) == Safety.DO_NOT_LOG) {
+            return buildDescription(method)
+                    .setMessage("toString() should not be annotated @DoNotLog. Remove the sensitive data"
+                            + " from toString() instead of annotating the method.")
+                    .build();
         }
         Safety combinedReturnSafety = method.accept(new ReturnStatementSafetyScanner(method), state);
         if (combinedReturnSafety == Safety.DO_NOT_LOG) {

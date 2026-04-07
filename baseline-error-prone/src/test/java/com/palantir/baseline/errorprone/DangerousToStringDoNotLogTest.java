@@ -147,7 +147,7 @@ class DangerousToStringDoNotLogTest {
     }
 
     @Test
-    void allows_do_not_log_annotated_to_string_without_do_not_log_data() {
+    void flags_do_not_log_annotated_to_string_without_do_not_log_data() {
         helper().addSourceLines(
                         "Test.java",
                         // language=Java
@@ -157,12 +157,12 @@ class DangerousToStringDoNotLogTest {
                           private String name;
                           @DoNotLog
                           @Override
+                          // BUG: Diagnostic contains: toString() should not be annotated @DoNotLog
                           public String toString() {
                             return "Test{name=" + name + "}";
                           }
                         }
                         """)
-                .expectNoDiagnostics()
                 .doTest();
     }
 
