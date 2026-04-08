@@ -163,6 +163,29 @@ public final class SafetyAnnotations {
         return Safety.UNKNOWN;
     }
 
+    /**
+     * Returns the combined safety of a variable-like symbol (record component, field, or parameter)
+     * by considering the symbol's own annotations, its type's annotations, and its type symbol's
+     * annotations.
+     */
+    public static Safety getVariableSafety(Symbol symbol, VisitorState state) {
+        Safety symbolSafety = getSafety(symbol, state);
+        Safety typeSafety = getSafety(symbol.type, state);
+        Safety typeSymSafety = getSafety(symbol.type.tsym, state);
+        return Safety.mergeAssumingUnknownIsSame(symbolSafety, typeSafety, typeSymSafety);
+    }
+
+    /**
+     * Returns the combined safety of a method's return value by considering the method's own
+     * annotations, its return type's annotations, and its return type symbol's annotations.
+     */
+    public static Safety getMethodReturnSafety(MethodSymbol methodSymbol, VisitorState state) {
+        Safety symbolSafety = getSafety(methodSymbol, state);
+        Safety typeSafety = getSafety(methodSymbol.getReturnType(), state);
+        Safety typeSymSafety = getSafety(methodSymbol.getReturnType().tsym, state);
+        return Safety.mergeAssumingUnknownIsSame(symbolSafety, typeSafety, typeSymSafety);
+    }
+
     public static Safety getTypeSafetyFromAncestors(ClassTree classTree, VisitorState state) {
         Safety safety = SafetyAnnotations.getSafety(classTree.getExtendsClause(), state);
         for (Tree implemented : classTree.getImplementsClause()) {

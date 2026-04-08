@@ -26,6 +26,7 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
 import java.util.Locale;
+import java.util.Optional;
 import javax.lang.model.element.Modifier;
 
 /** Additional {@link Matcher} factory methods shared by baseline checks. */
@@ -104,6 +105,23 @@ final class MoreMatchers {
         // nested interfaces report a static modifier despite not being present
         return source.contains(modifier.name().toLowerCase(Locale.ENGLISH));
     }
+
+    /** Returns the {@code toString()} override declared by the class, if present. */
+    static Optional<MethodTree> getToString(ClassTree classTree, VisitorState state) {
+        for (Tree member : classTree.getMembers()) {
+            if (member instanceof MethodTree methodTree && TO_STRING.matches(methodTree, state)) {
+                return Optional.of(methodTree);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /** Matches non-static {@code toString()} methods with no parameters returning {@link String}. */
+    static final Matcher<MethodTree> TO_STRING = Matchers.allOf(
+            Matchers.methodIsNamed("toString"),
+            Matchers.methodHasNoParameters(),
+            Matchers.not(Matchers.isStatic()),
+            Matchers.methodReturns(Matchers.isSameType(String.class)));
 
     private MoreMatchers() {}
 }

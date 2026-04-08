@@ -16,8 +16,10 @@
 
 package com.palantir.baseline.errorprone;
 
+import com.google.errorprone.BugCheckerRefactoringTestHelper;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("MisformattedTestData")
 class SafeLoggingPropagationTest {
 
     @Test
@@ -229,6 +231,38 @@ class SafeLoggingPropagationTest {
                         "    return \"Test\" + token();",
                         "  }",
                         "}")
+                .doTest();
+    }
+
+    @Test
+    void testToStringConcatenatingDoNotLogField() {
+        // Uses BugCheckerRefactoringTestHelper directly because this is a two-pass fix:
+        // Pass 1 annotates toString, pass 2 (testPropagationBasedOnToString) propagates to the class.
+        BugCheckerRefactoringTestHelper.newInstance(SafeLoggingPropagation.class, getClass())
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @DoNotLog private String secret;
+                          @Override public String toString() {
+                            return "Test{secret=" + secret + "}";
+                          }
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public final class Test {
+                          @DoNotLog private String secret;
+                          @DoNotLog @Override public String toString() {
+                            return "Test{secret=" + secret + "}";
+                          }
+                        }
+                        """)
                 .doTest();
     }
 
