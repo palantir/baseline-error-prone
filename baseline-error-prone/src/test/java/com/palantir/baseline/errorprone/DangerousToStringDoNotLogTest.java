@@ -157,7 +157,7 @@ class DangerousToStringDoNotLogTest {
                           private String name;
                           @DoNotLog
                           @Override
-                          // BUG: Diagnostic contains: toString() should not be annotated @DoNotLog
+                          // BUG: Diagnostic contains: toString() should not return DoNotLog data
                           public String toString() {
                             return "Test{name=" + name + "}";
                           }

@@ -62,7 +62,7 @@ public final class DangerousToStringDoNotLog extends BugChecker implements BugCh
         // it should be excluded from toString rather than marking the output as sensitive.
         if (SafetyAnnotations.getAnnotatedSafety(method, state) == Safety.DO_NOT_LOG) {
             return buildDescription(method)
-                    .setMessage("toString() should not be annotated @DoNotLog. Remove the sensitive data"
+                    .setMessage("toString() should not return DoNotLog data. Remove the sensitive data"
                             + " from toString() instead of annotating the method.")
                     .build();
         }
