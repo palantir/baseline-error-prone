@@ -16,7 +16,7 @@ com.google.code.findbugs:jsr305:3.0.2 (2 constraints: 9e14e59e)
 
 com.google.errorprone:error_prone_annotation:2.47.0 (3 constraints: d338eef0)
 
-com.google.errorprone:error_prone_annotations:2.47.0 (13 constraints: e6ccdd04)
+com.google.errorprone:error_prone_annotations:2.47.0 (13 constraints: eacc2d09)
 
 com.google.errorprone:error_prone_check_api:2.47.0 (2 constraints: bc256100)
 
@@ -88,7 +88,7 @@ com.google.truth:truth:1.4.5 (2 constraints: 7726656a)
 
 com.netflix.nebula:nebula-test:10.6.2 (2 constraints: d61de72d)
 
-com.palantir.conjure.java:conjure-lib:8.76.0 (1 constraints: 47057d3b)
+com.palantir.conjure.java:conjure-lib:8.77.0 (1 constraints: 4805803b)
 
 com.palantir.conjure.java.api:errors:2.71.0 (2 constraints: 6f2106b1)
 
@@ -112,13 +112,13 @@ com.palantir.safe-logging:logger-slf4j:3.14.0 (1 constraints: 330e9350)
 
 com.palantir.safe-logging:logger-spi:3.14.0 (2 constraints: 751eacb0)
 
-com.palantir.safe-logging:preconditions:3.14.0 (8 constraints: 5a764687)
+com.palantir.safe-logging:preconditions:3.14.0 (8 constraints: 5b765f88)
 
 com.palantir.safe-logging:preconditions-assertj:3.14.0 (1 constraints: 3a05413b)
 
-com.palantir.safe-logging:safe-logging:3.14.0 (9 constraints: de884cfb)
+com.palantir.safe-logging:safe-logging:3.14.0 (9 constraints: df889bfc)
 
-com.palantir.tokens:auth-tokens:4.3.0 (2 constraints: f61401b7)
+com.palantir.tokens:auth-tokens:4.3.0 (2 constraints: f71404b7)
 
 com.palantir.tritium:tritium-ids:0.126.0 (1 constraints: fc0f94a6)
 
