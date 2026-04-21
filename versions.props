@@ -16,7 +16,7 @@ org.immutables:* = 2.12.1
 com.google.code.findbugs:jsr305 = 3.0.2
 com.google.errorprone:error_prone_* = 2.46.0
 com.palantir.gradle.utils:* = 0.23.0
-com.uber.nullaway:nullaway = 0.13.3
+com.uber.nullaway:nullaway = 0.13.4
 
 
 # test deps
