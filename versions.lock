@@ -94,7 +94,7 @@ com.palantir.conjure.java.api:errors:2.71.0 (2 constraints: 6f2106b1)
 
 com.palantir.conjure.java.api:test-utils:2.71.0 (1 constraints: 3c054a3b)
 
-com.palantir.conjure.java.runtime:conjure-java-annotations:8.33.0 (1 constraints: 4005643b)
+com.palantir.conjure.java.runtime:conjure-java-annotations:8.34.0 (1 constraints: 4105673b)
 
 com.palantir.gradle.plugintesting:configuration-cache-spec:0.67.0 (1 constraints: 3f054c3b)
 
