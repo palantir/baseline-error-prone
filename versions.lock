@@ -124,7 +124,7 @@ com.palantir.tritium:tritium-ids:0.126.0 (1 constraints: fc0f94a6)
 
 com.palantir.tritium:tritium-registry:0.126.0 (1 constraints: 6b05a240)
 
-commons-io:commons-io:2.21.0 (2 constraints: 0a1f468c)
+commons-io:commons-io:2.22.0 (2 constraints: 0b1f908c)
 
 commons-lang:commons-lang:2.6 (1 constraints: ac04232c)
 
