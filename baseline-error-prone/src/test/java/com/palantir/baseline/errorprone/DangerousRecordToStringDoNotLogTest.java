@@ -187,6 +187,25 @@ class DangerousRecordToStringDoNotLogTest {
     }
 
     @Test
+    void no_fix_when_toString_already_defined() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(String name, @DoNotLog String secret) {
+                          @Override
+                          public String toString() {
+                            return "Test{name=" + name + "}";
+                          }
+                        }
+                        """)
+                .expectUnchanged()
+                .doTest();
+    }
+
+    @Test
     void fix_generates_empty_bracket_toString_when_all_components_are_do_not_log() {
         fixHelper()
                 .addInputLines(
