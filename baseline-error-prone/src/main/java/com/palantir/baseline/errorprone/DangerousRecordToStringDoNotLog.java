@@ -20,6 +20,8 @@ import com.google.auto.service.AutoService;
 import com.google.errorprone.BugPattern;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
+import com.google.errorprone.fixes.SuggestedFix;
+import com.google.errorprone.fixes.SuggestedFixes;
 import com.google.errorprone.matchers.Description;
 import com.google.errorprone.util.ASTHelpers;
 import com.palantir.baseline.errorprone.safety.Safety;
@@ -27,6 +29,8 @@ import com.palantir.baseline.errorprone.safety.SafetyAnnotations;
 import com.sun.source.tree.ClassTree;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.RecordComponent;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Flags Java records with {@code @DoNotLog} components that don't override {@code toString()},
@@ -55,19 +59,48 @@ public final class DangerousRecordToStringDoNotLog extends BugChecker implements
         if (TestCheckUtils.isTestCode(state)) {
             return Description.NO_MATCH;
         }
-        // Report on classTree so that @SuppressWarnings on the class is recognized by error-prone's
-        // suppression mechanism for ClassTreeMatchers. Use state.reportMatch rather than returning
-        // early so that all offending components are flagged in a single pass.
-        for (RecordComponent recordComponent : classSymbol.getRecordComponents()) {
-            if (SafetyAnnotations.getVariableSafety(recordComponent, state) == Safety.DO_NOT_LOG) {
-                state.reportMatch(buildDescription(classTree)
-                        .setMessage(String.format(
-                                "Record component '%s' is @DoNotLog but will be included in the"
-                                        + " auto-generated toString(). Override toString() to exclude sensitive data.",
-                                recordComponent.getSimpleName()))
-                        .build());
-            }
+        List<? extends RecordComponent> violators = classSymbol.getRecordComponents().stream()
+                .filter(component -> SafetyAnnotations.getVariableSafety(component, state) == Safety.DO_NOT_LOG)
+                .toList();
+        if (violators.isEmpty()) {
+            return Description.NO_MATCH;
         }
+        // Report on classTree so that @SuppressWarnings on the class is recognized by error-prone's
+        // suppression mechanism for ClassTreeMatchers. Attach the fix only to the first report so that
+        // batch application doesn't insert the toString() method multiple times.
+        SuggestedFix fix = buildToStringFix(classTree, classSymbol, state);
+        state.reportMatch(describe(classTree, violators.get(0)).addFix(fix).build());
+        violators
+                .subList(1, violators.size())
+                .forEach(component ->
+                        state.reportMatch(describe(classTree, component).build()));
         return Description.NO_MATCH;
+    }
+
+    private Description.Builder describe(ClassTree classTree, RecordComponent component) {
+        return buildDescription(classTree)
+                .setMessage(String.format(
+                        "Record component '%s' is @DoNotLog but will be included in the"
+                                + " auto-generated toString(). Override toString() to exclude sensitive data.",
+                        component.getSimpleName()));
+    }
+
+    private static SuggestedFix buildToStringFix(ClassTree classTree, ClassSymbol classSymbol, VisitorState state) {
+        String recordName = classSymbol.getSimpleName().toString();
+        String components = classSymbol.getRecordComponents().stream()
+                .filter(component -> SafetyAnnotations.getVariableSafety(component, state) != Safety.DO_NOT_LOG)
+                .map(component -> component.getSimpleName().toString())
+                .map(name -> "\"" + name + "=\" + " + name)
+                .collect(Collectors.joining(" + \", \" + "));
+        String returnExpression = components.isEmpty()
+                ? "\"" + recordName + "[]\""
+                : "\"" + recordName + "[\" + " + components + " + \"]\"";
+        String toStringMethod = """
+            @Override
+            public String toString() {
+                return %s;
+            }
+            """.formatted(returnExpression);
+        return SuggestedFixes.addMembers(classTree, state, toStringMethod);
     }
 }

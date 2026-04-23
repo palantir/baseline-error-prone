@@ -16,6 +16,7 @@
 
 package com.palantir.baseline.errorprone;
 
+import com.google.errorprone.BugCheckerRefactoringTestHelper;
 import com.google.errorprone.CompilationTestHelper;
 import org.junit.jupiter.api.Test;
 
@@ -160,7 +161,61 @@ class DangerousRecordToStringDoNotLogTest {
                 .doTest();
     }
 
+    @Test
+    void fix_generates_toString_excluding_do_not_log_components() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(String name, @DoNotLog String secret, int count) {}
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(String name, @DoNotLog String secret, int count) {
+                            @Override
+                            public String toString() {
+                                return "Test[name=" + name + ", count=" + count + "]";
+                            }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void fix_generates_empty_bracket_toString_when_all_components_are_do_not_log() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(@DoNotLog String secret) {}
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(@DoNotLog String secret) {
+                            @Override
+                            public String toString() {
+                                return "Test[]";
+                            }
+                        }
+                        """)
+                .doTest();
+    }
+
     private CompilationTestHelper helper() {
         return CompilationTestHelper.newInstance(DangerousRecordToStringDoNotLog.class, getClass());
+    }
+
+    private BugCheckerRefactoringTestHelper fixHelper() {
+        return BugCheckerRefactoringTestHelper.newInstance(DangerousRecordToStringDoNotLog.class, getClass());
     }
 }
