@@ -91,20 +91,38 @@ class DangerousRecordToStringDoNotLogTest {
     }
 
     @Test
-    void allows_record_with_do_not_log_component_and_to_string_override() {
+    void allows_record_with_matching_to_string_override() {
         helper().addSourceLines(
                         "Test.java",
                         // language=Java
                         """
                         import com.palantir.logsafe.*;
                         public record Test(String name, @DoNotLog String secret) {
-                          @Override
-                          public String toString() {
-                            return "Test{name=" + name + "}";
-                          }
+                            @Override
+                            public String toString() {
+                                return "Test[name=" + name + ", secret=<redacted>]";
+                            }
                         }
                         """)
                 .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void flags_record_with_non_matching_to_string_override() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        // BUG: Diagnostic contains: Record component 'secret' is @DoNotLog
+                        public record Test(String name, @DoNotLog String secret) {
+                            @Override
+                            public String toString() {
+                                return "Test{name=" + name + "}";
+                            }
+                        }
+                        """)
                 .doTest();
     }
 
@@ -162,7 +180,7 @@ class DangerousRecordToStringDoNotLogTest {
     }
 
     @Test
-    void fix_generates_toString_excluding_do_not_log_components() {
+    void fix_generates_toString_with_redacted_do_not_log_components() {
         fixHelper()
                 .addInputLines(
                         "Test.java",
@@ -179,7 +197,7 @@ class DangerousRecordToStringDoNotLogTest {
                         public record Test(String name, @DoNotLog String secret, int count) {
                             @Override
                             public String toString() {
-                                return "Test[name=" + name + ", count=" + count + "]";
+                                return "Test[name=" + name + ", secret=<redacted>, count=" + count + "]";
                             }
                         }
                         """)
@@ -187,7 +205,7 @@ class DangerousRecordToStringDoNotLogTest {
     }
 
     @Test
-    void no_fix_when_toString_already_defined() {
+    void no_fix_when_toString_already_matches_expected_shape() {
         fixHelper()
                 .addInputLines(
                         "Test.java",
@@ -195,10 +213,10 @@ class DangerousRecordToStringDoNotLogTest {
                         """
                         import com.palantir.logsafe.*;
                         public record Test(String name, @DoNotLog String secret) {
-                          @Override
-                          public String toString() {
-                            return "Test{name=" + name + "}";
-                          }
+                            @Override
+                            public String toString() {
+                                return "Test[name=" + name + ", secret=<redacted>]";
+                            }
                         }
                         """)
                 .expectUnchanged()
@@ -206,7 +224,37 @@ class DangerousRecordToStringDoNotLogTest {
     }
 
     @Test
-    void fix_generates_empty_bracket_toString_when_all_components_are_do_not_log() {
+    void fix_replaces_non_matching_to_string() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(String name, @DoNotLog String secret) {
+                            @Override
+                            public String toString() {
+                                return "Test{name=" + name + "}";
+                            }
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(String name, @DoNotLog String secret) {
+                            @Override
+                            public String toString() {
+                                return "Test[name=" + name + ", secret=<redacted>]";
+                            }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void fix_generates_toString_with_only_redacted_components_when_all_are_do_not_log() {
         fixHelper()
                 .addInputLines(
                         "Test.java",
@@ -223,7 +271,7 @@ class DangerousRecordToStringDoNotLogTest {
                         public record Test(@DoNotLog String secret) {
                             @Override
                             public String toString() {
-                                return "Test[]";
+                                return "Test[secret=<redacted>]";
                             }
                         }
                         """)
