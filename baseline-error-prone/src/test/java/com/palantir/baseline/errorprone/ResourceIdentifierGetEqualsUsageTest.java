@@ -299,6 +299,295 @@ final class ResourceIdentifierGetEqualsUsageTest {
                 .doTest();
     }
 
+    @Test
+    void testObjectsEqualsHasService() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(rid.getService(), \"test\");",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasService(\"test\");",
+                        "  }",
+                        "}")
+                .doTest();
+
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(\"test\", rid.getService());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasService(\"test\");",
+                        "  }",
+                        "}")
+                .doTest();
+
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  private static final String CONSTANT = \"FOO\";",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(rid.getService(), CONSTANT);",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  private static final String CONSTANT = \"FOO\";",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasService(CONSTANT);",
+                        "  }",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    void testObjectsEqualsHasInstance() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(rid.getInstance(), \"test\");",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasInstance(\"test\");",
+                        "  }",
+                        "}")
+                .doTest();
+
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(\"test\", rid.getInstance());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasInstance(\"test\");",
+                        "  }",
+                        "}")
+                .doTest();
+
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  private static final String CONSTANT = \"FOO\";",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(rid.getInstance(), CONSTANT);",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  private static final String CONSTANT = \"FOO\";",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasInstance(CONSTANT);",
+                        "  }",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    void testObjectsEqualsHasType() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(rid.getType(), \"test\");",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasType(\"test\");",
+                        "  }",
+                        "}")
+                .doTest();
+
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(\"test\", rid.getType());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasType(\"test\");",
+                        "  }",
+                        "}")
+                .doTest();
+
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  private static final String CONSTANT = \"FOO\";",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(rid.getType(), CONSTANT);",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  private static final String CONSTANT = \"FOO\";",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasType(CONSTANT);",
+                        "  }",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    void testObjectsEqualsHasLocator() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(rid.getLocator(), \"test\");",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasLocator(\"test\");",
+                        "  }",
+                        "}")
+                .doTest();
+
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(\"test\", rid.getLocator());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasLocator(\"test\");",
+                        "  }",
+                        "}")
+                .doTest();
+
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  private static final String CONSTANT = \"FOO\";",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return Objects.equals(rid.getLocator(), CONSTANT);",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  private static final String CONSTANT = \"FOO\";",
+                        "  boolean f(ResourceIdentifier rid) {",
+                        "    return rid.hasLocator(CONSTANT);",
+                        "  }",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    void testObjectsEqualsBothRids() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import com.palantir.ri.ResourceIdentifier;",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(ResourceIdentifier a, ResourceIdentifier b) {",
+                        "    return Objects.equals(a.getService(), b.getService());",
+                        "  }",
+                        "}")
+                .expectUnchanged()
+                .doTest();
+    }
+
+    @Test
+    void testObjectsEqualsUnrelated() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.Objects;",
+                        "public class Test {",
+                        "  boolean f(String a, String b) {",
+                        "    return Objects.equals(a, b);",
+                        "  }",
+                        "}")
+                .expectUnchanged()
+                .doTest();
+    }
+
     private RefactoringValidator fix() {
         return RefactoringValidator.of(ResourceIdentifierGetEqualsUsage.class, getClass());
     }

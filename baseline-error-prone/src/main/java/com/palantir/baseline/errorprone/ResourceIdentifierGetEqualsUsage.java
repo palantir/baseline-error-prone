@@ -33,10 +33,11 @@ import javax.lang.model.element.Name;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-        summary = "Disallowed usage of ResourceIdentifier#get{Instance,Locator,Service,Type}#equals",
+        summary = "Disallowed usage of ResourceIdentifier#get{Instance,Locator,Service,Type} with equals",
         explanation = "ResourceIdentifier internally stores a single string for the entire RID. Each of the getX "
                 + "methods allocates a new string for that specific part of the RID. Use "
-                + "ResourceIdentifier#has{Instance,Locator,Service,Type} instead, which does not allocate any memory.",
+                + "ResourceIdentifier#has{Instance,Locator,Service,Type} instead of String#equals or "
+                + "Objects#equals on the result, which does not allocate any memory.",
         severity = SeverityLevel.WARNING,
         linkType = BugPattern.LinkType.CUSTOM,
         link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks")
@@ -46,6 +47,8 @@ public final class ResourceIdentifierGetEqualsUsage extends BugChecker
     private static final Matcher<ExpressionTree> EQUALS_MATCHER = MethodMatchers.instanceMethod()
             .onDescendantOf(String.class.getName())
             .named("equals");
+    private static final Matcher<ExpressionTree> OBJECTS_EQUALS_MATCHER =
+            MethodMatchers.staticMethod().onClass("java.util.Objects").named("equals");
     private static final Matcher<ExpressionTree> GET_MATCHER = MethodMatchers.instanceMethod()
             .onExactClass("com.palantir.ri.ResourceIdentifier")
             .namedAnyOf("getInstance", "getLocator", "getService", "getType");
@@ -56,21 +59,31 @@ public final class ResourceIdentifierGetEqualsUsage extends BugChecker
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
-        if (!EQUALS_MATCHER.matches(tree, state)) {
+        if (EQUALS_MATCHER.matches(tree, state)) {
+            if (GET_RECEIVER_MATCHER.matches(tree, state)) {
+                ExpressionTree ridTree = ASTHelpers.getReceiver(tree);
+                ExpressionTree valueTree = tree.getArguments().get(0);
+                return fix(tree, state, ridTree, valueTree);
+            } else if (GET_ARGUMENT_MATCHER.matches(tree, state)) {
+                ExpressionTree ridTree = tree.getArguments().get(0);
+                ExpressionTree valueTree = ASTHelpers.getReceiver(tree);
+                return fix(tree, state, ridTree, valueTree);
+            }
             return Description.NO_MATCH;
         }
 
-        if (GET_RECEIVER_MATCHER.matches(tree, state)) {
-            ExpressionTree ridTree = ASTHelpers.getReceiver(tree);
-            ExpressionTree valueTree = tree.getArguments().get(0);
-            return fix(tree, state, ridTree, valueTree);
-        } else if (GET_ARGUMENT_MATCHER.matches(tree, state)) {
-            ExpressionTree ridTree = tree.getArguments().get(0);
-            ExpressionTree valueTree = ASTHelpers.getReceiver(tree);
-            return fix(tree, state, ridTree, valueTree);
-        } else {
-            return Description.NO_MATCH;
+        if (OBJECTS_EQUALS_MATCHER.matches(tree, state) && tree.getArguments().size() == 2) {
+            ExpressionTree first = tree.getArguments().get(0);
+            ExpressionTree second = tree.getArguments().get(1);
+            boolean firstIsGet = GET_MATCHER.matches(first, state);
+            boolean secondIsGet = GET_MATCHER.matches(second, state);
+            if (firstIsGet && !secondIsGet) {
+                return fix(tree, state, first, second);
+            } else if (secondIsGet && !firstIsGet) {
+                return fix(tree, state, second, first);
+            }
         }
+        return Description.NO_MATCH;
     }
 
     private Description fix(
