@@ -47,9 +47,8 @@ public final class ResourceIdentifierGetEqualsUsage extends BugChecker
     private static final Matcher<ExpressionTree> EQUALS_MATCHER = MethodMatchers.instanceMethod()
             .onDescendantOf(String.class.getName())
             .named("equals");
-    private static final Matcher<ExpressionTree> OBJECTS_EQUALS_MATCHER = MethodMatchers.staticMethod()
-            .onClass("java.util.Objects")
-            .named("equals");
+    private static final Matcher<ExpressionTree> OBJECTS_EQUALS_MATCHER =
+            MethodMatchers.staticMethod().onClass("java.util.Objects").named("equals");
     private static final Matcher<ExpressionTree> GET_MATCHER = MethodMatchers.instanceMethod()
             .onExactClass("com.palantir.ri.ResourceIdentifier")
             .namedAnyOf("getInstance", "getLocator", "getService", "getType");
