@@ -21,45 +21,41 @@ final class JavaTimeSystemDefaultTimeZoneTest {
 
     @Test
     void clockSystemDefaultZone() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import java.time.Clock;",
-                        "class Test {",
-                        "  static void f() {",
-                        "    Clock clock = Clock.systemDefaultZone();",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import java.time.Clock;",
-                        "class Test {",
-                        "  static void f() {",
-                        "    Clock clock = Clock.systemUTC();",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.time.Clock;
+            class Test {
+              static void f() {
+                Clock clock = Clock.systemDefaultZone();
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import java.time.Clock;
+                class Test {
+                  static void f() {
+                    Clock clock = Clock.systemUTC();
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void zoneIdSystemDefault() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import java.time.ZoneId;",
-                        "class Test {",
-                        "  static void f() {",
-                        "    ZoneId zoneId = ZoneId.systemDefault();",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import java.time.ZoneId;",
-                        "import java.time.ZoneOffset;",
-                        "class Test {",
-                        "  static void f() {",
-                        "    ZoneId zoneId = ZoneOffset.UTC;",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.time.ZoneId;
+            class Test {
+              static void f() {
+                ZoneId zoneId = ZoneId.systemDefault();
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import java.time.ZoneId;
+                import java.time.ZoneOffset;
+                class Test {
+                  static void f() {
+                    ZoneId zoneId = ZoneOffset.UTC;
+                  }
+                }
+                """).doTest();
     }
 
     private RefactoringValidator fix() {

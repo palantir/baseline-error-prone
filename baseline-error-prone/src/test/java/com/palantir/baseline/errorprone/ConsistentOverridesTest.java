@@ -23,285 +23,260 @@ class ConsistentOverridesTest {
 
     @Test
     void ignores_generic_methods() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface ParameterizedInterface<T> {",
-                        "    void doStuff(T foo, T bar);",
-                        "  }",
-                        "  interface ParameterizedMethod {",
-                        "    <T> void otherStuff(T foo, T bar);",
-                        "  }",
-                        "  class DefaultFoo implements ParameterizedInterface<String>, ParameterizedMethod {",
-                        "    @Override",
-                        "    public void doStuff(String bar, String foo) {}",
-                        "    @Override",
-                        "    public <T> void otherStuff(T bar, T foo) {}",
-                        "  }",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface ParameterizedInterface<T> {
+                void doStuff(T foo, T bar);
+              }
+              interface ParameterizedMethod {
+                <T> void otherStuff(T foo, T bar);
+              }
+              class DefaultFoo implements ParameterizedInterface<String>, ParameterizedMethod {
+                @Override
+                public void doStuff(String bar, String foo) {}
+                @Override
+                public <T> void otherStuff(T bar, T foo) {}
+              }
+            }
+            """).expectUnchanged().doTest();
     }
 
     @Test
     void ignores_unambiguous_rename() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String foo, int bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(String bar, int foo) {}",
-                        "  }",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                void doStuff(String foo, int bar);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public void doStuff(String bar, int foo) {}
+              }
+            }
+            """).expectUnchanged().doTest();
     }
 
     @Test
     void ignores_unambiguous_generics_rename() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import " + List.class.getCanonicalName() + ";",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(List<String> foo, List<Integer> bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(List<String> bar, List<Integer> foo) {}",
-                        "  }",
-                        "}")
+        fix().addInputLines("Test.java", "import " + List.class.getCanonicalName() + ";", """
+            class Test {
+              interface Foo {
+                void doStuff(List<String> foo, List<Integer> bar);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public void doStuff(List<String> bar, List<Integer> foo) {}
+              }
+            }
+            """)
                 .expectUnchanged()
                 .doTest();
     }
 
     @Test
     void ignores_unhelpfulNames() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String a, String b);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(String foo, String bar) {}",
-                        "  }",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                void doStuff(String a, String b);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public void doStuff(String foo, String bar) {}
+              }
+            }
+            """).expectUnchanged().doTest();
     }
 
     @Test
     void ignores_caseInsensitiveRename() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String Foo, String Bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(String foo, String bar) {}",
-                        "  }",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                void doStuff(String Foo, String Bar);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public void doStuff(String foo, String bar) {}
+              }
+            }
+            """).expectUnchanged().doTest();
     }
 
     @Test
     void ignores_caseInsensitiveRenameWithUnused() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String Foo, String Bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(String _foo, String _bar) {}",
-                        "  }",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                void doStuff(String Foo, String Bar);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public void doStuff(String _foo, String _bar) {}
+              }
+            }
+            """).expectUnchanged().doTest();
     }
 
     @Test
     void allows_unused_variables() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String foo, String bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(String foo, String _bar) {}",
-                        "  }",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                void doStuff(String foo, String bar);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public void doStuff(String foo, String _bar) {}
+              }
+            }
+            """).expectUnchanged().doTest();
     }
 
     @Test
     void allows_unused_variable_names() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String foo, String bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(String foo, String _baz) {}",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String foo, String bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(String foo, String _bar) {}",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                void doStuff(String foo, String bar);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public void doStuff(String foo, String _baz) {}
+              }
+            }
+            """).addOutputLines("Test.java", """
+                class Test {
+                  interface Foo {
+                    void doStuff(String foo, String bar);
+                  }
+                  class DefaultFoo implements Foo {
+                    @Override
+                    public void doStuff(String foo, String _bar) {}
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void allows_unused_variables_to_be_used() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String foo, String _bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(String foo, String bar) {}",
-                        "  }",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                void doStuff(String foo, String _bar);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public void doStuff(String foo, String bar) {}
+              }
+            }
+            """).expectUnchanged().doTest();
     }
 
     @Test
     void swapped_names() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    boolean doStuff(String foo, String bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public boolean doStuff(String bar, String foo) {",
-                        "      return bar.equals(foo);",
-                        "    }",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    boolean doStuff(String foo, String bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public boolean doStuff(String foo, String bar) {",
-                        "      return foo.equals(bar);",
-                        "    }",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                boolean doStuff(String foo, String bar);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public boolean doStuff(String bar, String foo) {
+                  return bar.equals(foo);
+                }
+              }
+            }
+            """).addOutputLines("Test.java", """
+                class Test {
+                  interface Foo {
+                    boolean doStuff(String foo, String bar);
+                  }
+                  class DefaultFoo implements Foo {
+                    @Override
+                    public boolean doStuff(String foo, String bar) {
+                      return foo.equals(bar);
+                    }
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void overridden_name() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String foo, String bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(String foo, String baz) {}",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String foo, String bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public void doStuff(String foo, String bar) {}",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                void doStuff(String foo, String bar);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public void doStuff(String foo, String baz) {}
+              }
+            }
+            """).addOutputLines("Test.java", """
+                class Test {
+                  interface Foo {
+                    void doStuff(String foo, String bar);
+                  }
+                  class DefaultFoo implements Foo {
+                    @Override
+                    public void doStuff(String foo, String bar) {}
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void extended_interface() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String foo, String bar);",
-                        "  }",
-                        "  interface Bar extends Foo {",
-                        "    void doStuff(String foo, String baz);",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    void doStuff(String foo, String bar);",
-                        "  }",
-                        "  interface Bar extends Foo {",
-                        "    void doStuff(String foo, String bar);",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                void doStuff(String foo, String bar);
+              }
+              interface Bar extends Foo {
+                void doStuff(String foo, String baz);
+              }
+            }
+            """).addOutputLines("Test.java", """
+                class Test {
+                  interface Foo {
+                    void doStuff(String foo, String bar);
+                  }
+                  interface Bar extends Foo {
+                    void doStuff(String foo, String bar);
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void interface_has_one_meaningless_name() {
-        fix().addInputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    boolean doStuff(String a, String bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public boolean doStuff(String bang, String foo) {",
-                        "      return bang.equals(foo);",
-                        "    }",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "class Test {",
-                        "  interface Foo {",
-                        "    boolean doStuff(String a, String bar);",
-                        "  }",
-                        "  class DefaultFoo implements Foo {",
-                        "    @Override",
-                        "    public boolean doStuff(String bang, String bar) {",
-                        "      return bang.equals(bar);",
-                        "    }",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              interface Foo {
+                boolean doStuff(String a, String bar);
+              }
+              class DefaultFoo implements Foo {
+                @Override
+                public boolean doStuff(String bang, String foo) {
+                  return bang.equals(foo);
+                }
+              }
+            }
+            """).addOutputLines("Test.java", """
+                class Test {
+                  interface Foo {
+                    boolean doStuff(String a, String bar);
+                  }
+                  class DefaultFoo implements Foo {
+                    @Override
+                    public boolean doStuff(String bang, String bar) {
+                      return bang.equals(bar);
+                    }
+                  }
+                }
+                """).doTest();
     }
 
     private RefactoringValidator fix() {

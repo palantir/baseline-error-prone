@@ -23,103 +23,95 @@ class ProxyNonConstantTypeTest {
 
     @Test
     void testGuavaReflectionNewProxy() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import com.google.common.reflect.Reflection;",
-                        "class Test {",
-                        "  void f() {",
-                        "    // BUG: Diagnostic contains: proxy",
-                        "    Reflection.newProxy(Test.class, null);",
-                        "  }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import com.google.common.reflect.Reflection;
+            class Test {
+              void f() {
+                // BUG: Diagnostic contains: proxy
+                Reflection.newProxy(Test.class, null);
+              }
+            }
+            """).doTest();
     }
 
     @Test
     void testGuavaReflectionNewProxySuppression() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import com.google.common.reflect.Reflection;",
-                        "class Test {",
-                        "  void f() {",
-                        "    Reflection.newProxy(Test.class, null);",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import com.google.common.reflect.Reflection;",
-                        "class Test {",
-                        "  @SuppressWarnings(\"ProxyNonConstantType\")",
-                        "  void f() {",
-                        "    Reflection.newProxy(Test.class, null);",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import com.google.common.reflect.Reflection;
+            class Test {
+              void f() {
+                Reflection.newProxy(Test.class, null);
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import com.google.common.reflect.Reflection;
+                class Test {
+                  @SuppressWarnings("ProxyNonConstantType")
+                  void f() {
+                    Reflection.newProxy(Test.class, null);
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void testConstantInterfacesInline() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import java.lang.reflect.Proxy;",
-                        "class Test {",
-                        "  void f() {",
-                        "    Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{Test.class}, null);",
-                        "  }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import java.lang.reflect.Proxy;
+            class Test {
+              void f() {
+                Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{Test.class}, null);
+              }
+            }
+            """).doTest();
     }
 
     @Test
     void testConstantInterfacesDynamic() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import java.lang.reflect.Proxy;",
-                        "class Test {",
-                        "  void f(Class<?> iface) {",
-                        "    // BUG: Diagnostic contains: proxy",
-                        "    Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{iface}, null);",
-                        "  }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import java.lang.reflect.Proxy;
+            class Test {
+              void f(Class<?> iface) {
+                // BUG: Diagnostic contains: proxy
+                Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{iface}, null);
+              }
+            }
+            """).doTest();
     }
 
     @Test
     void testConstantInterfacesDynamicSuppression() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import java.lang.reflect.Proxy;",
-                        "class Test {",
-                        "  void f(Class<?> iface) {",
-                        "    Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{iface}, null);",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import java.lang.reflect.Proxy;",
-                        "class Test {",
-                        "  @SuppressWarnings(\"ProxyNonConstantType\")",
-                        "  void f(Class<?> iface) {",
-                        "    Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{iface}, null);",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.lang.reflect.Proxy;
+            class Test {
+              void f(Class<?> iface) {
+                Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{iface}, null);
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import java.lang.reflect.Proxy;
+                class Test {
+                  @SuppressWarnings("ProxyNonConstantType")
+                  void f(Class<?> iface) {
+                    Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{iface}, null);
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void testIgnoresTestCode() {
-        helper().addSourceLines(
-                        "Foo.java",
-                        "import java.lang.reflect.Proxy;",
-                        "import org.junit.Test;",
-                        "class Foo {",
-                        "  @Test",
-                        "  public void test() {}",
-                        "  void f(Class<?> iface) {",
-                        "    Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{iface}, null);",
-                        "  }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Foo.java", """
+            import java.lang.reflect.Proxy;
+            import org.junit.Test;
+            class Foo {
+              @Test
+              public void test() {}
+              void f(Class<?> iface) {
+                Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{iface}, null);
+              }
+            }
+            """).doTest();
     }
 
     private CompilationTestHelper helper() {

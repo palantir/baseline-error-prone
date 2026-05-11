@@ -31,66 +31,58 @@ public class JUnit5RuleUsageTest {
 
     @Test
     public void test_rule_with_junit5() {
-        compilationHelper
-                .addSourceLines(
-                        "TestCase.java",
-                        "import org.junit.Rule;",
-                        "import org.junit.jupiter.api.Test;",
-                        "// BUG: Diagnostic contains: Do not use Rule/ClassRule",
-                        "class TestCase {",
-                        "@Rule public int foo = 1;",
-                        "@Test",
-                        "public void test() { }",
-                        "}")
-                .doTest();
+        compilationHelper.addSourceLines("TestCase.java", """
+            import org.junit.Rule;
+            import org.junit.jupiter.api.Test;
+            // BUG: Diagnostic contains: Do not use Rule/ClassRule
+            class TestCase {
+            @Rule public int foo = 1;
+            @Test
+            public void test() { }
+            }
+            """).doTest();
     }
 
     @Test
     public void test_classrule_with_junit5() {
-        compilationHelper
-                .addSourceLines(
-                        "TestCase.java",
-                        "import org.junit.ClassRule;",
-                        "import org.junit.jupiter.api.Test;",
-                        "// BUG: Diagnostic contains: Do not use Rule/ClassRule",
-                        "class TestCase {",
-                        "@ClassRule public static int foo = 1;",
-                        "@Test",
-                        "public void test() { }",
-                        "}")
-                .doTest();
+        compilationHelper.addSourceLines("TestCase.java", """
+            import org.junit.ClassRule;
+            import org.junit.jupiter.api.Test;
+            // BUG: Diagnostic contains: Do not use Rule/ClassRule
+            class TestCase {
+            @ClassRule public static int foo = 1;
+            @Test
+            public void test() { }
+            }
+            """).doTest();
     }
 
     @Test
     public void test_rule_migration_support() {
-        compilationHelper
-                .addSourceLines(
-                        "TestCase.java",
-                        "import org.junit.Rule;",
-                        "import org.junit.jupiter.api.Test;",
-                        "import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;",
-                        "@SuppressWarnings(\"removal\")",
-                        "@EnableRuleMigrationSupport",
-                        "class TestCase {",
-                        "@Rule public static int foo = 1;",
-                        "@Test",
-                        "public void test() { }",
-                        "}")
-                .doTest();
+        compilationHelper.addSourceLines("TestCase.java", """
+            import org.junit.Rule;
+            import org.junit.jupiter.api.Test;
+            import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
+            @SuppressWarnings("removal")
+            @EnableRuleMigrationSupport
+            class TestCase {
+            @Rule public static int foo = 1;
+            @Test
+            public void test() { }
+            }
+            """).doTest();
     }
 
     @Test
     public void test_rule_with_junit4() {
-        compilationHelper
-                .addSourceLines(
-                        "TestCase.java",
-                        "import org.junit.Rule;",
-                        "import org.junit.Test;",
-                        "class TestCase {",
-                        "@Rule public static int foo = 1;",
-                        "@Test",
-                        "public void test() { }",
-                        "}")
-                .doTest();
+        compilationHelper.addSourceLines("TestCase.java", """
+            import org.junit.Rule;
+            import org.junit.Test;
+            class TestCase {
+            @Rule public static int foo = 1;
+            @Test
+            public void test() { }
+            }
+            """).doTest();
     }
 }

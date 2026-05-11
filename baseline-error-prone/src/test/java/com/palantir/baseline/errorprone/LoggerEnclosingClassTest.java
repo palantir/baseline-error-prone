@@ -22,134 +22,120 @@ class LoggerEnclosingClassTest {
 
     @Test
     void testFix() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    private static final Logger log = LoggerFactory.getLogger(String.class);",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+                private static final Logger log = LoggerFactory.getLogger(String.class);
+            }
+            """).addOutputLines("Test.java", """
+                import org.slf4j.*;
+                class Test {
+                    private static final Logger log = LoggerFactory.getLogger(Test.class);
+                }
+                """).doTest();
     }
 
     @Test
     void testFix_logsafe() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import com.palantir.logsafe.logger.*;",
-                        "class Test {",
-                        "    private static final SafeLogger log = SafeLoggerFactory.get(String.class);",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import com.palantir.logsafe.logger.*;",
-                        "class Test {",
-                        "    private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import com.palantir.logsafe.logger.*;
+            class Test {
+                private static final SafeLogger log = SafeLoggerFactory.get(String.class);
+            }
+            """).addOutputLines("Test.java", """
+                import com.palantir.logsafe.logger.*;
+                class Test {
+                    private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+                }
+                """).doTest();
     }
 
     @Test
     void testFix_generic() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test<T> {",
-                        "    private static final Logger log = LoggerFactory.getLogger(String.class);",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test<T> {",
-                        "    private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test<T> {
+                private static final Logger log = LoggerFactory.getLogger(String.class);
+            }
+            """).addOutputLines("Test.java", """
+                import org.slf4j.*;
+                class Test<T> {
+                    private static final Logger log = LoggerFactory.getLogger(Test.class);
+                }
+                """).doTest();
     }
 
     @Test
     void testFix_interface() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "interface Test {",
-                        "    Logger log = LoggerFactory.getLogger(String.class);",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "interface Test {",
-                        "    Logger log = LoggerFactory.getLogger(Test.class);",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            interface Test {
+                Logger log = LoggerFactory.getLogger(String.class);
+            }
+            """).addOutputLines("Test.java", """
+                import org.slf4j.*;
+                interface Test {
+                    Logger log = LoggerFactory.getLogger(Test.class);
+                }
+                """).doTest();
     }
 
     @Test
     void testFix_nested() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    interface Nested {",
-                        "        Logger log = LoggerFactory.getLogger(Test.class);",
-                        "    }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    interface Nested {",
-                        "        Logger log = LoggerFactory.getLogger(Nested.class);",
-                        "    }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+                interface Nested {
+                    Logger log = LoggerFactory.getLogger(Test.class);
+                }
+            }
+            """).addOutputLines("Test.java", """
+                import org.slf4j.*;
+                class Test {
+                    interface Nested {
+                        Logger log = LoggerFactory.getLogger(Nested.class);
+                    }
+                }
+                """).doTest();
     }
 
     @Test
     void testFix_anonymous() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    Runnable run = new Runnable() {",
-                        "        private final Logger log = LoggerFactory.getLogger(String.class);",
-                        "        @Override public void run() {}",
-                        "    };",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    Runnable run = new Runnable() {",
-                        "        private final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "        @Override public void run() {}",
-                        "    };",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+                Runnable run = new Runnable() {
+                    private final Logger log = LoggerFactory.getLogger(String.class);
+                    @Override public void run() {}
+                };
+            }
+            """).addOutputLines("Test.java", """
+                import org.slf4j.*;
+                class Test {
+                    Runnable run = new Runnable() {
+                        private final Logger log = LoggerFactory.getLogger(Test.class);
+                        @Override public void run() {}
+                    };
+                }
+                """).doTest();
     }
 
     @Test
     void testNegative() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        // Not great, but it's out of scope for this check to validate dynamic cases.
-                        "    private static final Logger log = LoggerFactory.getLogger(dynamic());",
-                        "    private static Class<String> dynamic() {",
-                        "        return String.class;",
-                        "    }",
-                        "    private static void func() {",
-                        "        LoggerFactory.getLogger(String.class);",
-                        "        Logger local = LoggerFactory.getLogger(String.class);",
-                        "    }",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+                // Not great, but it's out of scope for this check to validate dynamic cases.
+                private static final Logger log = LoggerFactory.getLogger(dynamic());
+                private static Class<String> dynamic() {
+                    return String.class;
+                }
+                private static void func() {
+                    LoggerFactory.getLogger(String.class);
+                    Logger local = LoggerFactory.getLogger(String.class);
+                }
+            }
+            """).expectUnchanged().doTest();
     }
 
     private RefactoringValidator fix() {

@@ -24,208 +24,202 @@ class Slf4jLevelCheckTest {
 
     @Test
     void testMessage() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import org.slf4j.Logger;",
-                        "import org.slf4j.LoggerFactory;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f() {",
-                        "    // BUG: Diagnostic contains: level must match the most severe",
-                        "    if (log.isInfoEnabled()) {",
-                        "        log.warn(\"foo\");",
-                        "    }",
-                        "  }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+            class Test {
+              private static final Logger log = LoggerFactory.getLogger(Test.class);
+              void f() {
+                // BUG: Diagnostic contains: level must match the most severe
+                if (log.isInfoEnabled()) {
+                    log.warn("foo");
+                }
+              }
+            }
+            """).doTest();
     }
 
     @Test
     void testElseNotMatched() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import org.slf4j.Logger;",
-                        "import org.slf4j.LoggerFactory;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f() {",
-                        "    if (log.isInfoEnabled()) {",
-                        "        log.warn(\"foo\");",
-                        "    } else {",
-                        "        log.warn(\"foo bar\");",
-                        "    }",
-                        "  }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+            class Test {
+              private static final Logger log = LoggerFactory.getLogger(Test.class);
+              void f() {
+                if (log.isInfoEnabled()) {
+                    log.warn("foo");
+                } else {
+                    log.warn("foo bar");
+                }
+              }
+            }
+            """).doTest();
     }
 
     @Test
     void testCatchNotMatched() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import org.slf4j.Logger;",
-                        "import org.slf4j.LoggerFactory;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f() {",
-                        "    if (log.isInfoEnabled()) {",
-                        "      try {",
-                        "        log.info(\"info\");",
-                        "      } catch (RuntimeException e) {",
-                        "        log.error(\"failed\", e);",
-                        "      }",
-                        "    }",
-                        "  }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+            class Test {
+              private static final Logger log = LoggerFactory.getLogger(Test.class);
+              void f() {
+                if (log.isInfoEnabled()) {
+                  try {
+                    log.info("info");
+                  } catch (RuntimeException e) {
+                    log.error("failed", e);
+                  }
+                }
+              }
+            }
+            """).doTest();
     }
 
     @Test
     void testCorrectLevel() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import org.slf4j.Logger;",
-                        "import org.slf4j.LoggerFactory;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f() {",
-                        "    if (log.isInfoEnabled()) {",
-                        "        log.info(\"foo\");",
-                        "    }",
-                        "  }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+            class Test {
+              private static final Logger log = LoggerFactory.getLogger(Test.class);
+              void f() {
+                if (log.isInfoEnabled()) {
+                    log.info("foo");
+                }
+              }
+            }
+            """).doTest();
     }
 
     @Test
     void testFix_simple() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.Logger;",
-                        "import org.slf4j.LoggerFactory;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f() {",
-                        "    if (log.isInfoEnabled()) {",
-                        "        log.warn(\"foo\");",
-                        "    }",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.Logger;",
-                        "import org.slf4j.LoggerFactory;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f() {",
-                        "    if (log.isWarnEnabled()) {",
-                        "        log.warn(\"foo\");",
-                        "    }",
-                        "  }",
-                        "}")
+        fix().addInputLines("Test.java", """
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+            class Test {
+              private static final Logger log = LoggerFactory.getLogger(Test.class);
+              void f() {
+                if (log.isInfoEnabled()) {
+                    log.warn("foo");
+                }
+              }
+            }
+            """)
+                .addOutputLines("Test.java", """
+                    import org.slf4j.Logger;
+                    import org.slf4j.LoggerFactory;
+                    class Test {
+                      private static final Logger log = LoggerFactory.getLogger(Test.class);
+                      void f() {
+                        if (log.isWarnEnabled()) {
+                            log.warn("foo");
+                        }
+                      }
+                    }
+                    """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
     @Test
     void testFix_nestedConditional() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.Logger;",
-                        "import org.slf4j.LoggerFactory;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f() {",
-                        "    if (log.isInfoEnabled()) {",
-                        "        if (this.getClass().getName().startsWith(\"c\")) {",
-                        "            log.info(\"foo\");",
-                        "        } else {",
-                        "            log.warn(\"bar\");",
-                        "        }",
-                        "    }",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.Logger;",
-                        "import org.slf4j.LoggerFactory;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f() {",
-                        "    if (log.isWarnEnabled()) {",
-                        "        if (this.getClass().getName().startsWith(\"c\")) {",
-                        "            log.info(\"foo\");",
-                        "        } else {",
-                        "            log.warn(\"bar\");",
-                        "        }",
-                        "    }",
-                        "  }",
-                        "}")
+        fix().addInputLines("Test.java", """
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+            class Test {
+              private static final Logger log = LoggerFactory.getLogger(Test.class);
+              void f() {
+                if (log.isInfoEnabled()) {
+                    if (this.getClass().getName().startsWith("c")) {
+                        log.info("foo");
+                    } else {
+                        log.warn("bar");
+                    }
+                }
+              }
+            }
+            """)
+                .addOutputLines("Test.java", """
+                    import org.slf4j.Logger;
+                    import org.slf4j.LoggerFactory;
+                    class Test {
+                      private static final Logger log = LoggerFactory.getLogger(Test.class);
+                      void f() {
+                        if (log.isWarnEnabled()) {
+                            if (this.getClass().getName().startsWith("c")) {
+                                log.info("foo");
+                            } else {
+                                log.warn("bar");
+                            }
+                        }
+                      }
+                    }
+                    """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
     @Test
     void testFix_nestedConditional_safelog() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import com.palantir.logsafe.logger.SafeLogger;",
-                        "import com.palantir.logsafe.logger.SafeLoggerFactory;",
-                        "class Test {",
-                        "  private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "  void f() {",
-                        "    if (log.isInfoEnabled()) {",
-                        "        if (this.getClass().getName().startsWith(\"c\")) {",
-                        "            log.info(\"foo\");",
-                        "        } else {",
-                        "            log.warn(\"bar\");",
-                        "        }",
-                        "    }",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import com.palantir.logsafe.logger.SafeLogger;",
-                        "import com.palantir.logsafe.logger.SafeLoggerFactory;",
-                        "class Test {",
-                        "  private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "  void f() {",
-                        "    if (log.isWarnEnabled()) {",
-                        "        if (this.getClass().getName().startsWith(\"c\")) {",
-                        "            log.info(\"foo\");",
-                        "        } else {",
-                        "            log.warn(\"bar\");",
-                        "        }",
-                        "    }",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import com.palantir.logsafe.logger.SafeLogger;
+            import com.palantir.logsafe.logger.SafeLoggerFactory;
+            class Test {
+              private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+              void f() {
+                if (log.isInfoEnabled()) {
+                    if (this.getClass().getName().startsWith("c")) {
+                        log.info("foo");
+                    } else {
+                        log.warn("bar");
+                    }
+                }
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import com.palantir.logsafe.logger.SafeLogger;
+                import com.palantir.logsafe.logger.SafeLoggerFactory;
+                class Test {
+                  private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+                  void f() {
+                    if (log.isWarnEnabled()) {
+                        if (this.getClass().getName().startsWith("c")) {
+                            log.info("foo");
+                        } else {
+                            log.warn("bar");
+                        }
+                    }
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void testFix_complexCondition() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.Logger;",
-                        "import org.slf4j.LoggerFactory;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f(boolean in) {",
-                        "    if (in && log.isInfoEnabled()) {",
-                        "        log.warn(\"foo\");",
-                        "    }",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.Logger;",
-                        "import org.slf4j.LoggerFactory;",
-                        "class Test {",
-                        "  private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f(boolean in) {",
-                        "    if (in && log.isWarnEnabled()) {",
-                        "        log.warn(\"foo\");",
-                        "    }",
-                        "  }",
-                        "}")
+        fix().addInputLines("Test.java", """
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+            class Test {
+              private static final Logger log = LoggerFactory.getLogger(Test.class);
+              void f(boolean in) {
+                if (in && log.isInfoEnabled()) {
+                    log.warn("foo");
+                }
+              }
+            }
+            """)
+                .addOutputLines("Test.java", """
+                    import org.slf4j.Logger;
+                    import org.slf4j.LoggerFactory;
+                    class Test {
+                      private static final Logger log = LoggerFactory.getLogger(Test.class);
+                      void f(boolean in) {
+                        if (in && log.isWarnEnabled()) {
+                            log.warn("foo");
+                        }
+                      }
+                    }
+                    """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 

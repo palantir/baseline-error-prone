@@ -22,58 +22,48 @@ class VarUsageTest {
 
     @Test
     void testSimple() {
-        fix().addInputLines(
-                        "Test.java",
-                        // format
-                        "class Test {",
-                        "  void function() {",
-                        "    var x = 3;",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        // format
-                        "class Test {",
-                        "  void function() {",
-                        "    int x = 3;",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              void function() {
+                var x = 3;
+              }
+            }
+            """).addOutputLines("Test.java", """
+                class Test {
+                  void function() {
+                    int x = 3;
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void testWithFinalModifier() {
-        fix().addInputLines(
-                        "Test.java",
-                        // format
-                        "class Test {",
-                        "  void function() {",
-                        "    final var x = 3;",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        // format
-                        "class Test {",
-                        "  void function() {",
-                        "    final int x = 3;",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            class Test {
+              void function() {
+                final var x = 3;
+              }
+            }
+            """).addOutputLines("Test.java", """
+                class Test {
+                  void function() {
+                    final int x = 3;
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void testNegative() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import java.util.stream.Stream;",
-                        "class Test {",
-                        "  void function(Stream<String> stream) {",
-                        "    stream.forEach(var -> System.out.println(var));",
-                        "  }",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.util.stream.Stream;
+            class Test {
+              void function(Stream<String> stream) {
+                stream.forEach(var -> System.out.println(var));
+              }
+            }
+            """).expectUnchanged().doTest();
     }
 
     private RefactoringValidator fix() {

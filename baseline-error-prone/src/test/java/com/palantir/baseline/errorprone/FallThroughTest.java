@@ -28,17 +28,17 @@ public class FallThroughTest {
         CompilationTestHelper compilationHelper = CompilationTestHelper.newInstance(FallThrough.class, getClass());
 
         compilationHelper
-                .addSourceLines(
-                        "Test.java",
-                        "class Test {",
-                        "  static void foo(int value) {",
-                        "    switch (value) {",
-                        "      case 42 -> {}",
-                        "      // BUG: Diagnostic matches: X",
-                        "      default -> {}",
-                        "    };",
-                        "  }",
-                        "}")
+                .addSourceLines("Test.java", """
+                    class Test {
+                      static void foo(int value) {
+                        switch (value) {
+                          case 42 -> {}
+                          // BUG: Diagnostic matches: X
+                          default -> {}
+                        };
+                      }
+                    }
+                    """)
                 .expectErrorMessage("X", input -> input.contains("Execution may fall through from the previous case"))
                 .doTest();
     }

@@ -22,57 +22,61 @@ class UnnecessarilyQualifiedTest {
 
     @Test
     void testUnnecessarilyQualified() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import java.util.List;",
-                        "import java.util.Set;",
-                        "class Test {",
-                        "  java.util.List<java.util.Set<Object>> get() {",
-                        "    return null;",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import java.util.List;",
-                        "import java.util.Set;",
-                        "class Test {",
-                        "  List<Set<Object>> get() {",
-                        "    return null;",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.util.List;
+            import java.util.Set;
+            class Test {
+              java.util.List<java.util.Set<Object>> get() {
+                return null;
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import java.util.List;
+                import java.util.Set;
+                class Test {
+                  List<Set<Object>> get() {
+                    return null;
+                  }
+                }
+                """).doTest();
     }
 
     @Test
     void testUnnecessarilyQualifiedType() {
-        fix().addInputLines("Test.java", "import java.util.List;", "class Test {", "  java.util.List value;", "}")
-                .addOutputLines("Test.java", "import java.util.List;", "class Test {", "  List value;", "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.util.List;
+            class Test {
+              java.util.List value;
+            }
+            """).addOutputLines("Test.java", """
+                import java.util.List;
+                class Test {
+                  List value;
+                }
+                """).doTest();
     }
 
     @Test
     void testEnclosedClassNotFlaggedWhenImportIsPresent() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import java.util.Map;",
-                        "import java.util.Map.Entry;",
-                        "import java.util.Set;",
-                        "class Test {",
-                        "  java.util.Map.Entry<?, ?> get() {",
-                        "    return null;",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import java.util.Map;",
-                        "import java.util.Map.Entry;",
-                        "import java.util.Set;",
-                        "class Test {",
-                        "  Map.Entry<?, ?> get() {",
-                        "    return null;",
-                        "  }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import java.util.Map;
+            import java.util.Map.Entry;
+            import java.util.Set;
+            class Test {
+              java.util.Map.Entry<?, ?> get() {
+                return null;
+              }
+            }
+            """).addOutputLines("Test.java", """
+                import java.util.Map;
+                import java.util.Map.Entry;
+                import java.util.Set;
+                class Test {
+                  Map.Entry<?, ?> get() {
+                    return null;
+                  }
+                }
+                """).doTest();
     }
 
     private RefactoringValidator fix() {

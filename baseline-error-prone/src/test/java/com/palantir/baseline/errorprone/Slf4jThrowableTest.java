@@ -23,47 +23,47 @@ class Slf4jThrowableTest {
 
     @Test
     void testFix() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f(RuntimeException t) {",
-                        "    log.trace(\"message\", \"first\", \"second\", t, \"third\");",
-                        "    log.debug(\"message\", t, \"first\", \"second\", \"third\");",
-                        "    log.info(\"message\", t);",
-                        "    log.warn(\"message\", \"first\", t, \"second\");",
-                        "    log.error(\"message\", t, \"arg\");",
-                        "  }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f(RuntimeException t) {",
-                        "    log.trace(\"message\", \"first\", \"second\", \"third\", t);",
-                        "    log.debug(\"message\", \"first\", \"second\", \"third\", t);",
-                        "    log.info(\"message\", t);",
-                        "    log.warn(\"message\", \"first\", \"second\", t);",
-                        "    log.error(\"message\", \"arg\", t);",
-                        "  }",
-                        "}")
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+            private static final Logger log = LoggerFactory.getLogger(Test.class);
+              void f(RuntimeException t) {
+                log.trace("message", "first", "second", t, "third");
+                log.debug("message", t, "first", "second", "third");
+                log.info("message", t);
+                log.warn("message", "first", t, "second");
+                log.error("message", t, "arg");
+              }
+            }
+            """)
+                .addOutputLines("Test.java", """
+                    import org.slf4j.*;
+                    class Test {
+                    private static final Logger log = LoggerFactory.getLogger(Test.class);
+                      void f(RuntimeException t) {
+                        log.trace("message", "first", "second", "third", t);
+                        log.debug("message", "first", "second", "third", t);
+                        log.info("message", t);
+                        log.warn("message", "first", "second", t);
+                        log.error("message", "arg", t);
+                      }
+                    }
+                    """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 
     @Test
     void testMultipleExceptionsNotFixed() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "  void f(Throwable one, Exception two) {",
-                        "    log.warn(\"message\", one, two);",
-                        "    log.error(\"message\",  \"arg\", one, two);",
-                        "  }",
-                        "}")
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+            private static final Logger log = LoggerFactory.getLogger(Test.class);
+              void f(Throwable one, Exception two) {
+                log.warn("message", one, two);
+                log.error("message",  "arg", one, two);
+              }
+            }
+            """)
                 .expectUnchanged()
                 // This should fail validation, but no fixes should be attempted
                 .doTestExpectingFailure(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);

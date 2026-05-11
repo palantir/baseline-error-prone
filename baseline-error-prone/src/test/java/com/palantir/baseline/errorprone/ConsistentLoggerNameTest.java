@@ -22,107 +22,93 @@ class ConsistentLoggerNameTest {
 
     @Test
     void testFix() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    private static final Logger LOG = LoggerFactory.getLogger(Test.class);",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+                private static final Logger LOG = LoggerFactory.getLogger(Test.class);
+            }
+            """).addOutputLines("Test.java", """
+                import org.slf4j.*;
+                class Test {
+                    private static final Logger log = LoggerFactory.getLogger(Test.class);
+                }
+                """).doTest();
     }
 
     @Test
     void testFix_safeLogging() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import com.palantir.logsafe.logger.*;",
-                        "class Test {",
-                        "    private static final SafeLogger LOG = SafeLoggerFactory.get(Test.class);",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import com.palantir.logsafe.logger.*;",
-                        "class Test {",
-                        "    private static final SafeLogger log = SafeLoggerFactory.get(Test.class);",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import com.palantir.logsafe.logger.*;
+            class Test {
+                private static final SafeLogger LOG = SafeLoggerFactory.get(Test.class);
+            }
+            """).addOutputLines("Test.java", """
+                import com.palantir.logsafe.logger.*;
+                class Test {
+                    private static final SafeLogger log = SafeLoggerFactory.get(Test.class);
+                }
+                """).doTest();
     }
 
     @Test
     void testFix_references() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    private static final Logger LOG = LoggerFactory.getLogger(Test.class);",
-                        "    private void foo() {",
-                        "        LOG.error(\"error\");",
-                        "    }",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    private static final Logger log = LoggerFactory.getLogger(Test.class);",
-                        "    private void foo() {",
-                        "        log.error(\"error\");",
-                        "    }",
-                        "}")
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+                private static final Logger LOG = LoggerFactory.getLogger(Test.class);
+                private void foo() {
+                    LOG.error("error");
+                }
+            }
+            """).addOutputLines("Test.java", """
+                import org.slf4j.*;
+                class Test {
+                    private static final Logger log = LoggerFactory.getLogger(Test.class);
+                    private void foo() {
+                        log.error("error");
+                    }
+                }
+                """).doTest();
     }
 
     @Test
     void ignores_local_variables() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    private Logger LOG = LoggerFactory.getLogger(Test.class);",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+                private Logger LOG = LoggerFactory.getLogger(Test.class);
+            }
+            """).expectUnchanged().doTest();
     }
 
     @Test
     void ignores_non_final_fields() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    private static Logger LOG = LoggerFactory.getLogger(Test.class);",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+                private static Logger LOG = LoggerFactory.getLogger(Test.class);
+            }
+            """).expectUnchanged().doTest();
     }
 
     @Test
     void ignores_non_private_fields() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "class Test {",
-                        "    static Logger LOG = LoggerFactory.getLogger(Test.class);",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            class Test {
+                static Logger LOG = LoggerFactory.getLogger(Test.class);
+            }
+            """).expectUnchanged().doTest();
     }
 
     @Test
     void ignores_field_on_interface() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import org.slf4j.*;",
-                        "interface Test {",
-                        "    static Logger LOG = LoggerFactory.getLogger(Test.class);",
-                        "}")
-                .expectUnchanged()
-                .doTest();
+        fix().addInputLines("Test.java", """
+            import org.slf4j.*;
+            interface Test {
+                static Logger LOG = LoggerFactory.getLogger(Test.class);
+            }
+            """).expectUnchanged().doTest();
     }
 
     private RefactoringValidator fix() {

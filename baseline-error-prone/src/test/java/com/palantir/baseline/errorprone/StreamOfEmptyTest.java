@@ -23,22 +23,22 @@ class StreamOfEmptyTest {
 
     @Test
     void testFix() {
-        fix().addInputLines(
-                        "Test.java",
-                        "import java.util.stream.Stream;",
-                        "public class Test {",
-                        "  Stream<Integer> i = Stream.of();",
-                        "  Stream<Integer> negative = Stream.of(1, 2);",
-                        "  Object o = Stream.<String>of();",
-                        "}")
-                .addOutputLines(
-                        "Test.java",
-                        "import java.util.stream.Stream;",
-                        "public class Test {",
-                        "  Stream<Integer> i = Stream.empty();",
-                        "  Stream<Integer> negative = Stream.of(1, 2);",
-                        "  Object o = Stream.<String>empty();",
-                        "}")
+        fix().addInputLines("Test.java", """
+            import java.util.stream.Stream;
+            public class Test {
+              Stream<Integer> i = Stream.of();
+              Stream<Integer> negative = Stream.of(1, 2);
+              Object o = Stream.<String>of();
+            }
+            """)
+                .addOutputLines("Test.java", """
+                    import java.util.stream.Stream;
+                    public class Test {
+                      Stream<Integer> i = Stream.empty();
+                      Stream<Integer> negative = Stream.of(1, 2);
+                      Object o = Stream.<String>empty();
+                    }
+                    """)
                 .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
     }
 

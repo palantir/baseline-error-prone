@@ -27,56 +27,52 @@ class DangerousJavaDeserializationTest {
 
     @Test
     void disallowDeserialization() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import java.io.ObjectInputStream;",
-                        "class Test {",
-                        "   Object f(ObjectInputStream ois) throws Exception {",
-                        "       // BUG: Diagnostic contains: serialization features for security reasons",
-                        "       return ois.readObject();",
-                        "   }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import java.io.ObjectInputStream;
+            class Test {
+               Object f(ObjectInputStream ois) throws Exception {
+                   // BUG: Diagnostic contains: serialization features for security reasons
+                   return ois.readObject();
+               }
+            }
+            """).doTest();
     }
 
     @Test
     void allowsReadObject() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import java.io.*;",
-                        "class Test implements Serializable {",
-                        "   private synchronized void readObject(ObjectInputStream ois) throws Exception {",
-                        "       ois.readObject();",
-                        "   }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import java.io.*;
+            class Test implements Serializable {
+               private synchronized void readObject(ObjectInputStream ois) throws Exception {
+                   ois.readObject();
+               }
+            }
+            """).doTest();
     }
 
     @Test
     void testCommonsLang() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import org.apache.commons.lang.SerializationUtils;",
-                        "class Test {",
-                        "   void f(byte[] data) {",
-                        "       // BUG: Diagnostic contains: serialization features for security reasons",
-                        "       SerializationUtils.deserialize(data);",
-                        "   }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import org.apache.commons.lang.SerializationUtils;
+            class Test {
+               void f(byte[] data) {
+                   // BUG: Diagnostic contains: serialization features for security reasons
+                   SerializationUtils.deserialize(data);
+               }
+            }
+            """).doTest();
     }
 
     @Test
     void testCommonsLang3() {
-        helper().addSourceLines(
-                        "Test.java",
-                        "import org.apache.commons.lang3.SerializationUtils;",
-                        "class Test {",
-                        "   void f(byte[] data) {",
-                        "       // BUG: Diagnostic contains: serialization features for security reasons",
-                        "       SerializationUtils.deserialize(data);",
-                        "   }",
-                        "}")
-                .doTest();
+        helper().addSourceLines("Test.java", """
+            import org.apache.commons.lang3.SerializationUtils;
+            class Test {
+               void f(byte[] data) {
+                   // BUG: Diagnostic contains: serialization features for security reasons
+                   SerializationUtils.deserialize(data);
+               }
+            }
+            """).doTest();
     }
 }
