@@ -52,6 +52,7 @@ allprojects {
     version System.env.CIRCLE_TAG ?: gitVersion()
     description = 'A collection of error-prone checks and configurations'
 
+    // TEMPHACK: re-enable when gradle-guide etc are errorprone 2.49.0 compatible
     pluginManager.withPlugin('net.ltgt.errorprone') {
         tasks.withType(JavaCompile).configureEach {
             options.errorprone.enabled = false
