@@ -22,8 +22,8 @@ import com.google.errorprone.BugPattern.SeverityLevel;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.matchers.Description;
-import com.google.errorprone.matchers.IsSubtypeOf;
 import com.google.errorprone.matchers.Matcher;
+import com.google.errorprone.matchers.Matchers;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.NewClassTree;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -44,8 +44,7 @@ public final class DangerousThreadPoolExecutorUsage extends BugChecker implement
             + "grow beyond the corePoolSize. If you have questions here, feel free to ask around internally, or "
             + "read the source.";
 
-    private static final String THREAD_POOL_EXECUTOR = ThreadPoolExecutor.class.getCanonicalName();
-    private static final Matcher<ExpressionTree> matcher = new IsSubtypeOf<>(THREAD_POOL_EXECUTOR);
+    private static final Matcher<ExpressionTree> matcher = Matchers.isSubtypeOf(ThreadPoolExecutor.class);
 
     private static final long serialVersionUID = 1L;
 

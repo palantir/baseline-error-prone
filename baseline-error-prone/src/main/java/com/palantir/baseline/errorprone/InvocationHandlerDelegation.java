@@ -29,7 +29,6 @@ import com.google.errorprone.matchers.Matchers;
 import com.google.errorprone.matchers.method.MethodMatchers;
 import com.google.errorprone.predicates.TypePredicate;
 import com.google.errorprone.predicates.TypePredicates;
-import com.google.errorprone.predicates.type.DescendantOf;
 import com.google.errorprone.suppliers.Suppliers;
 import com.google.errorprone.util.ASTHelpers;
 import com.sun.source.tree.ConditionalExpressionTree;
@@ -97,7 +96,7 @@ public final class InvocationHandlerDelegation extends BugChecker implements Bug
             Matchers.contains(ExpressionTree.class, UNWRAP_THROWABLE);
 
     private static final TypePredicate IS_ITE_SUBTYPE =
-            new DescendantOf(Suppliers.typeFromClass(InvocationTargetException.class));
+            TypePredicates.isDescendantOf(Suppliers.typeFromClass(InvocationTargetException.class));
 
     private static final TypePredicate IS_ITE_UNION = (TypePredicate) (type, state) -> {
         if (type.isUnion()) {
