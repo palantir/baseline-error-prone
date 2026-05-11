@@ -14,15 +14,15 @@ com.google.auto.value:auto-value-annotations:1.11.0 (4 constraints: ee3fa36e)
 
 com.google.code.findbugs:jsr305:3.0.2 (2 constraints: 9e14e59e)
 
-com.google.errorprone:error_prone_annotation:2.47.0 (3 constraints: d338eef0)
+com.google.errorprone:error_prone_annotation:2.49.0 (3 constraints: d93840f2)
 
-com.google.errorprone:error_prone_annotations:2.47.0 (13 constraints: eecc3909)
+com.google.errorprone:error_prone_annotations:2.49.0 (13 constraints: f4cc8b13)
 
-com.google.errorprone:error_prone_check_api:2.47.0 (2 constraints: bc256100)
+com.google.errorprone:error_prone_check_api:2.49.0 (2 constraints: c025dd00)
 
-com.google.errorprone:error_prone_core:2.47.0 (1 constraints: 3e054d3b)
+com.google.errorprone:error_prone_core:2.49.0 (1 constraints: 4105563b)
 
-com.google.googlejavaformat:google-java-format:1.27.0 (2 constraints: b6258eff)
+com.google.googlejavaformat:google-java-format:1.35.0 (2 constraints: b42552ff)
 
 com.google.guava:failureaccess:1.0.3 (1 constraints: 160ae3b4)
 
@@ -32,7 +32,7 @@ com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava (1 c
 
 com.google.j2objc:j2objc-annotations:3.1 (1 constraints: b809f1a0)
 
-com.google.protobuf:protobuf-java:3.25.5 (1 constraints: 2c1160c9)
+com.google.protobuf:protobuf-java:4.33.2 (1 constraints: 291161c9)
 
 com.palantir.gradle.utils:environment-variables:0.24.0 (2 constraints: b835fce8)
 
@@ -78,7 +78,7 @@ com.fasterxml.jackson.core:jackson-databind:2.21.1 (4 constraints: 68454811)
 
 com.fasterxml.jackson.module:jackson-module-afterburner:2.21.1 (1 constraints: 3805373b)
 
-com.google.errorprone:error_prone_test_helpers:2.47.0 (1 constraints: 3e054d3b)
+com.google.errorprone:error_prone_test_helpers:2.49.0 (1 constraints: 4105563b)
 
 com.google.jimfs:jimfs:1.3.0 (1 constraints: 5a141061)
 
