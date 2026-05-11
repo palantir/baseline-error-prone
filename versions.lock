@@ -96,13 +96,13 @@ com.palantir.conjure.java.api:test-utils:2.72.0 (1 constraints: 3d054d3b)
 
 com.palantir.conjure.java.runtime:conjure-java-annotations:8.34.0 (1 constraints: 4105673b)
 
-com.palantir.gradle.plugintesting:configuration-cache-spec:0.69.0 (1 constraints: 4105523b)
+com.palantir.gradle.plugintesting:configuration-cache-spec:0.70.0 (1 constraints: 39053b3b)
 
-com.palantir.gradle.plugintesting:discover-tests-cli:0.69.0 (1 constraints: 4105523b)
+com.palantir.gradle.plugintesting:discover-tests-cli:0.70.0 (1 constraints: 39053b3b)
 
-com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.69.0 (1 constraints: 4105523b)
+com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.70.0 (1 constraints: a8078b7e)
 
-com.palantir.gradle.plugintesting:plugin-testing-core:0.69.0 (2 constraints: 1e1f448f)
+com.palantir.gradle.plugintesting:plugin-testing-core:0.70.0 (2 constraints: 0e1fde8c)
 
 com.palantir.ri:resource-identifier:2.16.0 (2 constraints: 5a158fda)
 
@@ -124,7 +124,7 @@ com.palantir.tritium:tritium-ids:0.128.0 (1 constraints: fd0f97a6)
 
 com.palantir.tritium:tritium-registry:0.128.0 (1 constraints: 6d05a840)
 
-commons-io:commons-io:2.22.0 (2 constraints: 0b1f908c)
+commons-io:commons-io:2.22.0 (2 constraints: 0c1f938c)
 
 commons-lang:commons-lang:2.6 (1 constraints: ac04232c)
 
