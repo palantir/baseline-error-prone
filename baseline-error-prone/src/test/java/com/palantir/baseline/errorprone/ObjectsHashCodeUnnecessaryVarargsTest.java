@@ -31,6 +31,7 @@ class ObjectsHashCodeUnnecessaryVarargsTest {
                         "    Objects.hash(a);",
                         "    Objects.hash(a, a);",
                         "    Objects.hash(b);",
+                        "    // BUG: Diagnostic contains: non-varargs call of varargs method",
                         "    Objects.hash(c);",
                         "    Objects.hash(d);",
                         "  }",
