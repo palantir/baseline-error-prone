@@ -16,7 +16,7 @@ com.google.code.findbugs:jsr305:3.0.2 (2 constraints: 9e14e59e)
 
 com.google.errorprone:error_prone_annotation:2.49.0 (3 constraints: d93840f2)
 
-com.google.errorprone:error_prone_annotations:2.49.0 (13 constraints: facc4b20)
+com.google.errorprone:error_prone_annotations:2.49.0 (13 constraints: fccc5120)
 
 com.google.errorprone:error_prone_check_api:2.49.0 (2 constraints: c025dd00)
 
@@ -120,9 +120,9 @@ com.palantir.safe-logging:safe-logging:3.14.0 (9 constraints: e288b3fe)
 
 com.palantir.tokens:auth-tokens:4.4.0 (2 constraints: f81435b7)
 
-com.palantir.tritium:tritium-ids:0.128.0 (1 constraints: fd0f97a6)
+com.palantir.tritium:tritium-ids:0.129.0 (1 constraints: fd0f97a6)
 
-com.palantir.tritium:tritium-registry:0.128.0 (1 constraints: 6d05a840)
+com.palantir.tritium:tritium-registry:0.129.0 (1 constraints: 6e05ab40)
 
 commons-io:commons-io:2.22.0 (2 constraints: 0c1f938c)
 
