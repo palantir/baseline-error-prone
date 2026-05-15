@@ -306,6 +306,28 @@ class DangerousImmutablesToStringDoNotLogTest {
                 .doTest();
     }
 
+    @Test
+    void reports_one_diagnostic_per_do_not_log_attribute() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        import org.immutables.value.Value.Redacted;
+                        @Value.Immutable
+                        // BUG: Diagnostic contains: Attribute 'secret1()' is @DoNotLog
+                        // Attribute 'secret3()' is @DoNotLog
+                        interface Test {
+                          String name();
+                          @DoNotLog String secret1();
+                          @Redacted @DoNotLog String secret2();
+                          @DoNotLog String secret3();
+                        }
+                        """)
+                .doTest();
+    }
+
     private CompilationTestHelper helper() {
         return CompilationTestHelper.newInstance(DangerousImmutablesToStringDoNotLog.class, getClass());
     }
