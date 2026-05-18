@@ -16,6 +16,7 @@
 
 package com.palantir.baseline.errorprone;
 
+import com.google.errorprone.BugCheckerRefactoringTestHelper;
 import com.google.errorprone.CompilationTestHelper;
 import org.junit.jupiter.api.Test;
 
@@ -328,7 +329,301 @@ class DangerousImmutablesToStringDoNotLogTest {
                 .doTest();
     }
 
+    @Test
+    void fix_adds_redacted_to_do_not_log_attribute() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @DoNotLog String secret();
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @Value.Redacted
+                          @DoNotLog String secret();
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void fix_adds_redacted_to_do_not_log_type_attribute() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.tokens.auth.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          BearerToken token();
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.tokens.auth.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @Value.Redacted
+                          BearerToken token();
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void fix_adds_redacted_to_value_default_method() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          abstract String name();
+                          @DoNotLog
+                          @Value.Default
+                          String secret() {
+                            return "default";
+                          }
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          abstract String name();
+                          @Value.Redacted
+                          @DoNotLog
+                          @Value.Default
+                          String secret() {
+                            return "default";
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void fix_adds_redacted_to_value_derived_method() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          abstract String name();
+                          @DoNotLog
+                          @Value.Derived
+                          String secret() {
+                            return name();
+                          }
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          abstract String name();
+                          @Value.Redacted
+                          @DoNotLog
+                          @Value.Derived
+                          String secret() {
+                            return name();
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void fix_adds_redacted_to_jackson_annotated_method() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.fasterxml.jackson.annotation.*;
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          abstract String name();
+                          @DoNotLog
+                          @JsonProperty
+                          String secret() {
+                            return "default";
+                          }
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.fasterxml.jackson.annotation.*;
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          abstract String name();
+                          @Value.Redacted
+                          @DoNotLog
+                          @JsonProperty
+                          String secret() {
+                            return "default";
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void fix_adds_redacted_to_each_do_not_log_attribute() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @DoNotLog String secret1();
+                          @DoNotLog String secret2();
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @Value.Redacted
+                          @DoNotLog String secret1();
+                          @Value.Redacted
+                          @DoNotLog String secret2();
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void fix_leaves_safe_attributes_unchanged() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @DoNotLog String secret();
+                          int count();
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @Value.Redacted
+                          @DoNotLog String secret();
+                          int count();
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void fix_no_change_when_already_redacted() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        interface Test {
+                          String name();
+                          @DoNotLog @Value.Redacted String secret();
+                        }
+                        """)
+                .expectUnchanged()
+                .doTest();
+    }
+
+    @Test
+    void fix_no_change_when_custom_to_string_present() {
+        fixHelper()
+                .addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          abstract String name();
+                          @DoNotLog abstract String secret();
+                          @Override
+                          public String toString() {
+                            return "Test{name=" + name() + "}";
+                          }
+                        }
+                        """)
+                .expectUnchanged()
+                .doTest();
+    }
+
     private CompilationTestHelper helper() {
         return CompilationTestHelper.newInstance(DangerousImmutablesToStringDoNotLog.class, getClass());
+    }
+
+    private BugCheckerRefactoringTestHelper fixHelper() {
+        return BugCheckerRefactoringTestHelper.newInstance(DangerousImmutablesToStringDoNotLog.class, getClass());
     }
 }

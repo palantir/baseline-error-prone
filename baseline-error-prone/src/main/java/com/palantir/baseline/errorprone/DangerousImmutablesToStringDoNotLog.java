@@ -20,6 +20,8 @@ import com.google.auto.service.AutoService;
 import com.google.errorprone.BugPattern;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
+import com.google.errorprone.fixes.SuggestedFix;
+import com.google.errorprone.fixes.SuggestedFixes;
 import com.google.errorprone.matchers.Description;
 import com.google.errorprone.util.ASTHelpers;
 import com.palantir.baseline.errorprone.safety.Safety;
@@ -29,6 +31,8 @@ import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Flags {@code @Value.Immutable} types with {@code @DoNotLog} attributes that don't override
@@ -64,6 +68,7 @@ public final class DangerousImmutablesToStringDoNotLog extends BugChecker implem
         if (TestCheckUtils.isTestCode(state)) {
             return Description.NO_MATCH;
         }
+        List<MethodTree> violators = new ArrayList<>();
         for (Tree member : classTree.getMembers()) {
             if (!(member instanceof MethodTree methodTree)) {
                 continue;
@@ -79,18 +84,35 @@ public final class DangerousImmutablesToStringDoNotLog extends BugChecker implem
                     || ASTHelpers.hasAnnotation(methodSymbol, "org.immutables.value.Value.Lazy", state)) {
                 continue;
             }
-            // Report on classTree so that @SuppressWarnings on the class is recognized by error-prone's
-            // suppression mechanism for ClassTreeMatchers. Use state.reportMatch rather than returning
-            // early so that all offending attributes are flagged in a single pass.
             if (SafetyAnnotations.getMethodReturnSafety(methodSymbol, state) == Safety.DO_NOT_LOG) {
-                state.reportMatch(buildDescription(classTree)
-                        .setMessage(String.format(
-                                "Attribute '%s()' is @DoNotLog but will be included in the auto-generated toString()."
-                                        + " Annotate with @Value.Redacted, or implement a custom toString().",
-                                methodSymbol.getSimpleName()))
-                        .build());
+                violators.add(methodTree);
             }
         }
+        if (violators.isEmpty()) {
+            return Description.NO_MATCH;
+        }
+        SuggestedFix.Builder fixBuilder = SuggestedFix.builder();
+        String redacted = SuggestedFixes.qualifyType(state, fixBuilder, "org.immutables.value.Value.Redacted");
+        for (MethodTree methodTree : violators) {
+            fixBuilder.prefixWith(methodTree, "@" + redacted + "\n    ");
+        }
+        SuggestedFix fix = fixBuilder.build();
+        // Report on classTree so that @SuppressWarnings on the class is recognized by error-prone's
+        // suppression mechanism for ClassTreeMatchers. Attach the fix only to the first report so that
+        // batch application doesn't insert @Value.Redacted multiple times per attribute.
+        state.reportMatch(describe(classTree, violators.get(0)).addFix(fix).build());
+        for (int i = 1; i < violators.size(); i++) {
+            state.reportMatch(describe(classTree, violators.get(i)).build());
+        }
         return Description.NO_MATCH;
+    }
+
+    private Description.Builder describe(ClassTree classTree, MethodTree methodTree) {
+        MethodSymbol methodSymbol = ASTHelpers.getSymbol(methodTree);
+        return buildDescription(classTree)
+                .setMessage(String.format(
+                        "Attribute '%s()' is @DoNotLog but will be included in the auto-generated toString()."
+                                + " Annotate with @Value.Redacted, or implement a custom toString().",
+                        methodSymbol.getSimpleName()));
     }
 }
