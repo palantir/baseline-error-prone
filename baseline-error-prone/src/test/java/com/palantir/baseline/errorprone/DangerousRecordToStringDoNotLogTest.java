@@ -195,6 +195,7 @@ class DangerousRecordToStringDoNotLogTest {
                         """
                         import com.palantir.logsafe.*;
                         public record Test(String name, @DoNotLog String secret, int count) {
+
                             @Override
                             public String toString() {
                                 return "Test[name=" + name + ", secret=<redacted>, count=" + count + "]";
@@ -269,6 +270,7 @@ class DangerousRecordToStringDoNotLogTest {
                         """
                         import com.palantir.logsafe.*;
                         public record Test(@DoNotLog String secret) {
+
                             @Override
                             public String toString() {
                                 return "Test[secret=<redacted>]";
