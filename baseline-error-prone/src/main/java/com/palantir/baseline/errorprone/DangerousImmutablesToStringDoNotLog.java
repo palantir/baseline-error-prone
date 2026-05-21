@@ -88,21 +88,14 @@ public final class DangerousImmutablesToStringDoNotLog extends BugChecker implem
                 violators.add(methodTree);
             }
         }
-        if (violators.isEmpty()) {
-            return Description.NO_MATCH;
-        }
-        SuggestedFix.Builder fixBuilder = SuggestedFix.builder();
-        String redacted = SuggestedFixes.qualifyType(state, fixBuilder, "org.immutables.value.Value.Redacted");
-        for (MethodTree methodTree : violators) {
-            fixBuilder.prefixWith(methodTree, "@" + redacted + "\n    ");
-        }
-        SuggestedFix fix = fixBuilder.build();
         // Report on classTree so that @SuppressWarnings on the class is recognized by error-prone's
-        // suppression mechanism for ClassTreeMatchers. Attach the fix only to the first report so that
-        // batch application doesn't insert @Value.Redacted multiple times per attribute.
-        state.reportMatch(describe(classTree, violators.get(0)).addFix(fix).build());
-        for (int i = 1; i < violators.size(); i++) {
-            state.reportMatch(describe(classTree, violators.get(i)).build());
+        // suppression mechanism for ClassTreeMatchers.
+        for (MethodTree methodTree : violators) {
+            SuggestedFix.Builder fixBuilder = SuggestedFix.builder();
+            String redacted = SuggestedFixes.qualifyType(state, fixBuilder, "org.immutables.value.Value.Redacted");
+            fixBuilder.prefixWith(methodTree, "@" + redacted + "\n    ");
+            state.reportMatch(
+                    describe(classTree, methodTree).addFix(fixBuilder.build()).build());
         }
         return Description.NO_MATCH;
     }
