@@ -511,6 +511,41 @@ class SafeLoggingPropagationTest {
     }
 
     @Test
+    void includesDerivedMethodReturningDoNotLogField() {
+        fix().addInputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @Value.Immutable
+                        abstract class Test {
+                          @DoNotLog
+                          abstract String name();
+                          @Value.Derived
+                          String secret() { return name(); }
+                        }
+                        """)
+                .addOutputLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        import org.immutables.value.Value;
+                        @DoNotLog
+                        @Value.Immutable
+                        abstract class Test {
+                          @DoNotLog
+                          abstract String name();
+                          @DoNotLog
+                          @Value.Derived
+                          String secret() { return name(); }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
     void includesDefaultMethodWhenLazy() {
         fix().addInputLines(
                         "Test.java",
