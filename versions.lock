@@ -106,23 +106,23 @@ com.palantir.gradle.plugintesting:plugin-testing-core:0.71.0 (2 constraints: 101
 
 com.palantir.ri:resource-identifier:2.16.0 (2 constraints: 5a158fda)
 
-com.palantir.safe-logging:logger:3.15.0 (3 constraints: c921afd9)
+com.palantir.safe-logging:logger:3.15.0 (3 constraints: ca21b2d9)
 
 com.palantir.safe-logging:logger-slf4j:3.15.0 (1 constraints: 340e9650)
 
 com.palantir.safe-logging:logger-spi:3.15.0 (2 constraints: 771ee2b0)
 
-com.palantir.safe-logging:preconditions:3.15.0 (8 constraints: 6276668c)
+com.palantir.safe-logging:preconditions:3.15.0 (8 constraints: 64769b8c)
 
 com.palantir.safe-logging:preconditions-assertj:3.15.0 (1 constraints: 3b05443b)
 
-com.palantir.safe-logging:safe-logging:3.15.0 (9 constraints: e7884302)
+com.palantir.safe-logging:safe-logging:3.15.0 (9 constraints: e8884602)
 
 com.palantir.tokens:auth-tokens:4.4.0 (2 constraints: f81435b7)
 
-com.palantir.tritium:tritium-ids:0.129.0 (1 constraints: fd0f97a6)
+com.palantir.tritium:tritium-ids:0.130.0 (1 constraints: fd0f97a6)
 
-com.palantir.tritium:tritium-registry:0.129.0 (1 constraints: 6e05ab40)
+com.palantir.tritium:tritium-registry:0.130.0 (1 constraints: 66059440)
 
 commons-io:commons-io:2.22.0 (2 constraints: 0c1f938c)
 
