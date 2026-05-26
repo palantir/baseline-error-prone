@@ -109,7 +109,7 @@ class DangerousRecordToStringDoNotLogTest {
     }
 
     @Test
-    void flags_record_with_non_matching_to_string_override() {
+    void flags_record_with_to_string_that_leaks_do_not_log_component() {
         helper().addSourceLines(
                         "Test.java",
                         // language=Java
@@ -119,10 +119,64 @@ class DangerousRecordToStringDoNotLogTest {
                         public record Test(String name, @DoNotLog String secret) {
                             @Override
                             public String toString() {
+                                return "Test[name=" + name + ", secret=" + secret + "]";
+                            }
+                        }
+                        """)
+                .doTest();
+    }
+
+    @Test
+    void allows_record_with_custom_safe_to_string_returning_empty_string() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(String name, @DoNotLog String secret) {
+                            @Override
+                            public String toString() {
+                                return "";
+                            }
+                        }
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void allows_record_with_custom_safe_to_string_omitting_do_not_log_component() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(String name, @DoNotLog String secret) {
+                            @Override
+                            public String toString() {
                                 return "Test{name=" + name + "}";
                             }
                         }
                         """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void allows_record_with_custom_to_string_using_alternative_redaction_format() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        public record Test(String name, @DoNotLog String secret) {
+                            @Override
+                            public String toString() {
+                                return "Test{name=" + name + ", secret=***}";
+                            }
+                        }
+                        """)
+                .expectNoDiagnostics()
                 .doTest();
     }
 
@@ -225,7 +279,7 @@ class DangerousRecordToStringDoNotLogTest {
     }
 
     @Test
-    void fix_replaces_non_matching_to_string() {
+    void fix_replaces_to_string_that_leaks_do_not_log_component() {
         fixHelper()
                 .addInputLines(
                         "Test.java",
@@ -235,7 +289,7 @@ class DangerousRecordToStringDoNotLogTest {
                         public record Test(String name, @DoNotLog String secret) {
                             @Override
                             public String toString() {
-                                return "Test{name=" + name + "}";
+                                return "Test[name=" + name + ", secret=" + secret + "]";
                             }
                         }
                         """)

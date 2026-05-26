@@ -35,9 +35,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Flags Java records with {@code @DoNotLog} components whose {@code toString()} does not match the
- * expected toString implementation where each non-{@code @DoNotLog} component is rendered as {@code name=value} and
- * each {@code @DoNotLog} component is rendered as {@code name=<redacted>}.
+ * Flags Java records with {@code @DoNotLog} components that don't override {@code toString()} (the default record
+ * {@code toString()} would leak them) or whose {@code toString()} returns {@code @DoNotLog} data. The suggested fix
+ * generates a {@code toString()} where each non-{@code @DoNotLog} component is rendered as {@code name=value} and
+ * each {@code @DoNotLog} component is rendered as {@code name=<redacted>}; existing custom {@code toString()}
+ * implementations that don't return {@code @DoNotLog} data are accepted as-is.
  *
  * @see DangerousToStringDoNotLog
  * @see DangerousImmutablesToStringDoNotLog
@@ -47,8 +49,9 @@ import java.util.stream.Collectors;
         link = "https://github.com/palantir/baseline-error-prone#baseline-error-prone-checks",
         linkType = BugPattern.LinkType.CUSTOM,
         severity = BugPattern.SeverityLevel.ERROR,
-        summary = "Records with @DoNotLog components must override toString() with a body that redacts each @DoNotLog"
-                + " component.")
+        summary = "Records with @DoNotLog components must override toString() with a body that does not return"
+                + " @DoNotLog data; components may be redacted, omitted, or rendered in any format that does not"
+                + " leak their value.")
 public final class DangerousRecordToStringDoNotLog extends BugChecker implements BugChecker.ClassTreeMatcher {
 
     @Override
@@ -71,8 +74,12 @@ public final class DangerousRecordToStringDoNotLog extends BugChecker implements
         SuggestedFix fix;
         if (existingToString.isPresent()) {
             MethodTree method = existingToString.get();
-            String existingSource = state.getSourceForNode(method);
-            if (existingSource != null && stripWhitespace(existingSource).equals(stripWhitespace(expectedMethod))) {
+            Safety returnSafety = method.accept(new ReturnStatementSafetyScanner(method), state);
+            // Only flag when the return value is definitively DO_NOT_LOG. UNKNOWN (e.g. a call to an unannotated
+            // helper like `return render(secret)`) is treated as a non-match, accepting a false-negative risk in
+            // exchange for not flagging legitimate custom toString() implementations the safety analysis
+            // cannot model.
+            if (returnSafety != Safety.DO_NOT_LOG) {
                 return Description.NO_MATCH;
             }
             fix = SuggestedFix.replace(method, expectedMethod.stripTrailing());
@@ -114,9 +121,5 @@ public final class DangerousRecordToStringDoNotLog extends BugChecker implements
                 return "%s[%s]";
             }
             """.formatted(recordName, body);
-    }
-
-    private static String stripWhitespace(String source) {
-        return source.replaceAll("\\s+", "");
     }
 }
