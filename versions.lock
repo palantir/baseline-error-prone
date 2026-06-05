@@ -40,7 +40,7 @@ com.palantir.suppressible-error-prone:artifact-transforms:2.31.0 (1 constraints:
 
 com.palantir.suppressible-error-prone:gradle-suppressible-error-prone:2.31.0 (1 constraints: 38053a3b)
 
-com.uber.nullaway:nullaway:0.13.4 (1 constraints: 3a05303b)
+com.uber.nullaway:nullaway:0.13.5 (1 constraints: 3b05313b)
 
 io.github.eisop:dataflow-errorprone:3.41.0-eisop1 (3 constraints: 3e40ddde)
 
