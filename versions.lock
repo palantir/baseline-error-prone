@@ -76,7 +76,7 @@ com.fasterxml.jackson.core:jackson-core:2.21.4 (3 constraints: 2a3a3c75)
 
 com.fasterxml.jackson.core:jackson-databind:2.21.4 (4 constraints: 71456314)
 
-com.fasterxml.jackson.module:jackson-module-afterburner:2.21.4 (1 constraints: 3805373b)
+com.fasterxml.jackson.module:jackson-module-afterburner:2.21.4 (1 constraints: 3b053a3b)
 
 com.google.errorprone:error_prone_test_helpers:2.49.0 (1 constraints: 4105563b)
 
