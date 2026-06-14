@@ -74,7 +74,7 @@ com.fasterxml.jackson.core:jackson-annotations:2.21 (5 constraints: 93436905)
 
 com.fasterxml.jackson.core:jackson-core:2.21.4 (3 constraints: 2a3a3c75)
 
-com.fasterxml.jackson.core:jackson-databind:2.21.4 (4 constraints: 71456314)
+com.fasterxml.jackson.core:jackson-databind:2.21.4 (4 constraints: 74456614)
 
 com.fasterxml.jackson.module:jackson-module-afterburner:2.21.4 (1 constraints: 3b053a3b)
 
@@ -106,19 +106,19 @@ com.palantir.gradle.plugintesting:plugin-testing-core:0.72.0 (2 constraints: 121
 
 com.palantir.ri:resource-identifier:2.19.0 (2 constraints: 60152edb)
 
-com.palantir.safe-logging:logger:3.16.0 (3 constraints: cc2135da)
+com.palantir.safe-logging:logger:3.16.0 (3 constraints: cd2162da)
 
 com.palantir.safe-logging:logger-slf4j:3.16.0 (1 constraints: 350e9950)
 
 com.palantir.safe-logging:logger-spi:3.16.0 (2 constraints: 791e18b1)
 
-com.palantir.safe-logging:preconditions:3.16.0 (8 constraints: 6d764894)
+com.palantir.safe-logging:preconditions:3.16.0 (8 constraints: 6e76a494)
 
 com.palantir.safe-logging:preconditions-assertj:3.16.0 (1 constraints: 3c05473b)
 
 com.palantir.safe-logging:safe-logging:3.16.0 (9 constraints: f3888f0c)
 
-com.palantir.tokens:auth-tokens:4.5.0 (2 constraints: fb146cb7)
+com.palantir.tokens:auth-tokens:4.6.0 (2 constraints: fc149db7)
 
 com.palantir.tritium:tritium-ids:0.131.0 (1 constraints: fe0f9aa6)
 
