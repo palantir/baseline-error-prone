@@ -65,6 +65,6 @@ public final class DangerousIdentityKey extends MoreAbstractAsKeyOfSetOrMap {
                 (MethodSymbol) state.getSymtab().objectType.tsym.members().findFirst(methodName);
 
         return !Iterables.isEmpty(types.membersClosure(type, false)
-                .getSymbolsByName(methodName, m -> m != equals && m.overrides(equals, type.tsym, types, false)));
+                .getSymbolsByName(methodName, m -> !m.equals(equals) && m.overrides(equals, type.tsym, types, false)));
     }
 }

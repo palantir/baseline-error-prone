@@ -216,6 +216,7 @@ class CatchSpecificityTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testFixWithUnreachableConditional() {
         fix().addInputLines(
                         "Test.java",
@@ -277,6 +278,7 @@ class CatchSpecificityTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testFixWithUnreachableConditional_else() {
         fix().addInputLines(
                         "Test.java",
