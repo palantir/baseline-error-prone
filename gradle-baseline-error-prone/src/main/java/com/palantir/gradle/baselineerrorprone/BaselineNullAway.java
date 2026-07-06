@@ -69,7 +69,6 @@ public final class BaselineNullAway implements Plugin<Project> {
             @Override
             public void execute(ErrorProneOptions options) {
                 options.option("NullAway:AnnotatedPackages", String.join(",", DEFAULT_ANNOTATED_PACKAGES));
-                options.option("NullAway:JSpecifyMode", true);
                 // 2025-12-04: Disabled to avoid excessive logs
                 // See https://github.com/uber/NullAway/issues/1363
                 options.disable("RequireExplicitNullMarking");
