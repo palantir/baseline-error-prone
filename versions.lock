@@ -120,9 +120,9 @@ com.palantir.safe-logging:safe-logging:3.16.0 (9 constraints: f488920c)
 
 com.palantir.tokens:auth-tokens:4.6.0 (2 constraints: fc149db7)
 
-com.palantir.tritium:tritium-ids:0.133.0 (1 constraints: fe0f9aa6)
+com.palantir.tritium:tritium-ids:0.134.0 (1 constraints: fe0f9aa6)
 
-com.palantir.tritium:tritium-registry:0.133.0 (1 constraints: 69059d40)
+com.palantir.tritium:tritium-registry:0.134.0 (1 constraints: 6a05a040)
 
 commons-io:commons-io:2.22.0 (2 constraints: 0c1f938c)
 
