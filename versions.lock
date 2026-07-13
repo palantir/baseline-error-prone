@@ -88,9 +88,9 @@ com.google.truth:truth:1.4.5 (2 constraints: 7726656a)
 
 com.netflix.nebula:nebula-test:12.1.0 (2 constraints: d11d8c2c)
 
-com.palantir.conjure.java:conjure-lib:8.81.0 (1 constraints: 4305723b)
+com.palantir.conjure.java:conjure-lib:8.82.0 (1 constraints: 4405753b)
 
-com.palantir.conjure.java.api:errors:2.75.0 (2 constraints: 7621b1b1)
+com.palantir.conjure.java.api:errors:2.75.0 (2 constraints: 7721e6b1)
 
 com.palantir.conjure.java.api:test-utils:2.75.0 (1 constraints: 4005563b)
 
@@ -104,7 +104,7 @@ com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.74.0 (1 constrai
 
 com.palantir.gradle.plugintesting:plugin-testing-core:0.74.0 (2 constraints: 161f128e)
 
-com.palantir.ri:resource-identifier:2.20.0 (2 constraints: 5915a2d9)
+com.palantir.ri:resource-identifier:2.20.0 (2 constraints: 51158bd9)
 
 com.palantir.safe-logging:logger:3.17.0 (3 constraints: cf21bbda)
 
