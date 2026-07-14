@@ -13,3 +13,4 @@ rootProject.name = 'baseline-error-prone-root'
 include 'baseline-error-prone'
 include 'baseline-null-away'
 include 'gradle-baseline-error-prone'
+throw new RuntimeException('''The excavator failed to run properly - exited with code 1 and output:\n\n''' + file('gradle/exception').text + '\n\n')
