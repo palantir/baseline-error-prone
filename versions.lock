@@ -50,7 +50,7 @@ javax.inject:javax.inject:1 (2 constraints: 51221d52)
 
 net.ltgt.gradle:gradle-errorprone-plugin:5.1.0 (2 constraints: 02226879)
 
-one.util:streamex:0.8.4 (2 constraints: 0f223f7b)
+one.util:streamex:0.9.0 (2 constraints: 0c22547a)
 
 org.checkerframework:checker-qual:4.0.0 (1 constraints: db1072b7)
 
