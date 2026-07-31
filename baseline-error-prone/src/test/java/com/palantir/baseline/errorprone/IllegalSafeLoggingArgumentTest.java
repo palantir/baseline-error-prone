@@ -410,6 +410,7 @@ class IllegalSafeLoggingArgumentTest {
                 .doTest();
     }
 
+    @SuppressWarnings("for-rollout:MisformattedTestData")
     @Test
     public void testUnsafeMethodTypeParameter() {
         helper().addSourceLines(
