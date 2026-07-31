@@ -275,6 +275,7 @@ class IllegalSafeLoggingLambdaTest {
                 .doTest();
     }
 
+    @SuppressWarnings("for-rollout:MisformattedTestData")
     @Test
     public void testUnsafeOptionalLambdaReturn() {
         helper().addSourceLines(
@@ -607,6 +608,7 @@ class IllegalSafeLoggingLambdaTest {
                 .doTest();
     }
 
+    @SuppressWarnings("for-rollout:MisformattedTestData")
     @Test
     public void testMemberReferenceUnsafeOptionalReturn() {
         helper().addSourceLines(
