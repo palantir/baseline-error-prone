@@ -1045,6 +1045,7 @@ public final class SafetyPropagationTransfer implements ForwardTransferFunction<
         return symbolAndTypeSafety;
     }
 
+    @SuppressWarnings("for-rollout:ReferenceEquality")
     private Safety fieldInitializerSafetyIfAvailable(VarSymbol accessed) {
         if (!traversed.add(accessed)) {
             // Avoid infinite recursion between initializers with circular references. We recommend against
