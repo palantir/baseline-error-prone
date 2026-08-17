@@ -40,7 +40,7 @@ import javax.annotation.Nullable;
 public final class MoreASTHelpers {
 
     /** Removes any type that is a subtype of another type in the set. */
-    @SuppressWarnings("ReferenceEquality")
+    @SuppressWarnings({"ReferenceEquality", "for-rollout:TypeEquals"})
     static ImmutableList<Type> flattenTypesForAssignment(ImmutableList<Type> input, VisitorState state) {
         ImmutableList<Type> types =
                 input.stream().map(type -> broadenAnonymousType(type, state)).collect(ImmutableList.toImmutableList());

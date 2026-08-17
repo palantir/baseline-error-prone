@@ -57,6 +57,7 @@ import javax.annotation.Nullable;
 @SuppressWarnings("checkstyle:CyclomaticComplexity")
 public final class LambdaMethodReference extends BugChecker implements BugChecker.LambdaExpressionTreeMatcher {
 
+    @SuppressWarnings("for-rollout:RefactorSwitch")
     @Override
     public Description matchLambdaExpression(LambdaExpressionTree tree, VisitorState state) {
         LambdaExpressionTree.BodyKind bodyKind = tree.getBodyKind();

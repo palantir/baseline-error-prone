@@ -421,26 +421,31 @@ public final class StrictUnusedVariable extends BugChecker implements BugChecker
         Tree leaf = path.getLeaf();
         class Visitor extends SimpleTreeVisitor<Boolean, Void> {
 
+            @SuppressWarnings("for-rollout:ReferenceEquality")
             @Override
             public Boolean visitIf(IfTree tree, Void unused) {
                 return tree.getThenStatement() == leaf || tree.getElseStatement() == leaf;
             }
 
+            @SuppressWarnings("for-rollout:ReferenceEquality")
             @Override
             public Boolean visitDoWhileLoop(DoWhileLoopTree tree, Void unused) {
                 return tree.getStatement() == leaf;
             }
 
+            @SuppressWarnings("for-rollout:ReferenceEquality")
             @Override
             public Boolean visitWhileLoop(WhileLoopTree tree, Void unused) {
                 return tree.getStatement() == leaf;
             }
 
+            @SuppressWarnings("for-rollout:ReferenceEquality")
             @Override
             public Boolean visitForLoop(ForLoopTree tree, Void unused) {
                 return tree.getStatement() == leaf;
             }
 
+            @SuppressWarnings("for-rollout:ReferenceEquality")
             @Override
             public Boolean visitEnhancedForLoop(EnhancedForLoopTree tree, Void unused) {
                 return tree.getStatement() == leaf;
@@ -651,6 +656,7 @@ public final class StrictUnusedVariable extends BugChecker implements BugChecker
         return ImmutableList.of(fix.build());
     }
 
+    @SuppressWarnings("for-rollout:ReferenceEquality")
     private static boolean isEnhancedForLoopVar(TreePath variablePath) {
         Tree tree = variablePath.getLeaf();
         Tree parent = variablePath.getParentPath().getLeaf();
