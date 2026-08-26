@@ -16,7 +16,7 @@ com.google.code.findbugs:jsr305:3.0.2 (2 constraints: 9e14e59e)
 
 com.google.errorprone:error_prone_annotation:2.50.0 (3 constraints: c138fbec)
 
-com.google.errorprone:error_prone_annotations:2.50.0 (13 constraints: e0ccd4f0)
+com.google.errorprone:error_prone_annotations:2.50.0 (13 constraints: d8ccbdf0)
 
 com.google.errorprone:error_prone_check_api:2.50.0 (2 constraints: b025e0fe)
 
@@ -26,7 +26,7 @@ com.google.googlejavaformat:google-java-format:1.35.0 (2 constraints: b42552ff)
 
 com.google.guava:failureaccess:1.0.3 (1 constraints: 160ae3b4)
 
-com.google.guava:guava:33.7.1-jre (15 constraints: 3d114660)
+com.google.guava:guava:33.7.1-jre (15 constraints: 41115c61)
 
 com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava (1 constraints: bd17c918)
 
@@ -58,7 +58,7 @@ org.checkerframework:dataflow-nullaway:4.0.0 (2 constraints: 3a1128e1)
 
 org.immutables:value:2.12.2 (2 constraints: 0215eec1)
 
-org.jspecify:jspecify:1.0.1 (19 constraints: de304823)
+org.jspecify:jspecify:1.0.1 (19 constraints: df30c524)
 
 org.ow2.asm:asm:9.9.1 (3 constraints: 803f18dc)
 
@@ -106,23 +106,23 @@ com.palantir.gradle.plugintesting:plugin-testing-core:0.75.0 (2 constraints: 181
 
 com.palantir.ri:resource-identifier:2.21.0 (2 constraints: 5215bdd9)
 
-com.palantir.safe-logging:logger:3.18.0 (3 constraints: d22141db)
+com.palantir.safe-logging:logger:3.18.0 (3 constraints: d32144db)
 
 com.palantir.safe-logging:logger-slf4j:3.18.0 (1 constraints: 370e9f50)
 
 com.palantir.safe-logging:logger-spi:3.18.0 (2 constraints: 7d1e84b1)
 
-com.palantir.safe-logging:preconditions:3.18.0 (8 constraints: 7a76c69b)
+com.palantir.safe-logging:preconditions:3.18.0 (8 constraints: 7c76fb9b)
 
 com.palantir.safe-logging:preconditions-assertj:3.18.0 (1 constraints: 3e054d3b)
 
-com.palantir.safe-logging:safe-logging:3.18.0 (9 constraints: 0289fb16)
+com.palantir.safe-logging:safe-logging:3.18.0 (9 constraints: 0389fe16)
 
 com.palantir.tokens:auth-tokens:4.8.0 (2 constraints: 001505b8)
 
-com.palantir.tritium:tritium-ids:0.136.0 (1 constraints: fe0f9aa6)
+com.palantir.tritium:tritium-ids:0.137.0 (1 constraints: fe0f9aa6)
 
-com.palantir.tritium:tritium-registry:0.136.0 (1 constraints: 6c05a640)
+com.palantir.tritium:tritium-registry:0.137.0 (1 constraints: 6d05a940)
 
 commons-io:commons-io:2.22.0 (2 constraints: 0c1f938c)
 
