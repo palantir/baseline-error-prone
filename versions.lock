@@ -86,7 +86,7 @@ com.google.testing.compile:compile-testing:0.23.0 (1 constraints: 8b149b75)
 
 com.google.truth:truth:1.4.5 (2 constraints: 7726656a)
 
-com.netflix.nebula:nebula-test:12.1.0 (2 constraints: d11d8c2c)
+com.netflix.nebula:nebula-test:12.1.0 (2 constraints: cb1d802c)
 
 com.palantir.conjure.java:conjure-lib:8.84.0 (1 constraints: 46057b3b)
 
@@ -96,13 +96,13 @@ com.palantir.conjure.java.api:test-utils:2.77.0 (1 constraints: 42055c3b)
 
 com.palantir.conjure.java.runtime:conjure-java-annotations:8.34.0 (1 constraints: 4105673b)
 
-com.palantir.gradle.plugintesting:configuration-cache-spec:0.75.0 (1 constraints: 3e054a3b)
+com.palantir.gradle.plugintesting:configuration-cache-spec:0.76.0 (1 constraints: 3f054d3b)
 
-com.palantir.gradle.plugintesting:discover-tests-cli:0.75.0 (1 constraints: 3e054a3b)
+com.palantir.gradle.plugintesting:discover-tests-cli:0.76.0 (1 constraints: 3f054d3b)
 
-com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.75.0 (1 constraints: ad079f7e)
+com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.76.0 (1 constraints: ae07a37e)
 
-com.palantir.gradle.plugintesting:plugin-testing-core:0.75.0 (2 constraints: 181f5f8e)
+com.palantir.gradle.plugintesting:plugin-testing-core:0.76.0 (2 constraints: 1a1fac8e)
 
 com.palantir.ri:resource-identifier:2.21.0 (2 constraints: 5215bdd9)
 
@@ -146,13 +146,11 @@ org.apiguardian:apiguardian-api:1.1.2 (7 constraints: 677be455)
 
 org.assertj:assertj-core:3.27.7 (5 constraints: 6352d1f7)
 
-org.codehaus.groovy:groovy:3.0.24 (2 constraints: fd25697b)
-
 org.eclipse.collections:eclipse-collections:13.0.0 (1 constraints: 1c1091a9)
 
 org.eclipse.collections:eclipse-collections-api:13.0.0 (2 constraints: fa22df26)
 
-org.hamcrest:hamcrest:3.0 (2 constraints: 42185076)
+org.hamcrest:hamcrest:3.0 (1 constraints: 710b96d5)
 
 org.hamcrest:hamcrest-core:3.0 (4 constraints: 2a2bcb9d)
 
@@ -174,7 +172,7 @@ org.junit.jupiter:junit-jupiter-params:6.1.3 (2 constraints: c5242bd7)
 
 org.junit.platform:junit-platform-commons:6.1.3 (2 constraints: db20e44a)
 
-org.junit.platform:junit-platform-engine:6.1.3 (3 constraints: 2830d257)
+org.junit.platform:junit-platform-engine:6.1.3 (2 constraints: f3227f08)
 
 org.junit.platform:junit-platform-launcher:6.1.3 (3 constraints: d428c5a2)
 
@@ -187,7 +185,5 @@ org.opentest4j:opentest4j:1.3.0 (2 constraints: cf209249)
 org.reactivestreams:reactive-streams:1.0.3 (1 constraints: ef07e77b)
 
 org.slf4j:slf4j-api:2.0.17 (5 constraints: 9d437d5b)
-
-org.spockframework:spock-core:2.3-groovy-3.0 (1 constraints: 9b1bd765)
 
 org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:4.1.0 (1 constraints: 07050236)
