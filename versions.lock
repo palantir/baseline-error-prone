@@ -16,7 +16,7 @@ com.google.code.findbugs:jsr305:3.0.2 (2 constraints: 9e14e59e)
 
 com.google.errorprone:error_prone_annotation:2.50.0 (3 constraints: c138fbec)
 
-com.google.errorprone:error_prone_annotations:2.50.0 (13 constraints: d8ccbdf0)
+com.google.errorprone:error_prone_annotations:2.50.0 (13 constraints: d0cc1ee8)
 
 com.google.errorprone:error_prone_check_api:2.50.0 (2 constraints: b025e0fe)
 
@@ -88,9 +88,9 @@ com.google.truth:truth:1.4.5 (2 constraints: 7726656a)
 
 com.netflix.nebula:nebula-test:12.1.0 (2 constraints: cb1d802c)
 
-com.palantir.conjure.java:conjure-lib:8.84.0 (1 constraints: 46057b3b)
+com.palantir.conjure.java:conjure-lib:8.85.0 (1 constraints: 47057e3b)
 
-com.palantir.conjure.java.api:errors:2.77.0 (2 constraints: 7a2121b2)
+com.palantir.conjure.java.api:errors:2.77.0 (2 constraints: 7b2156b2)
 
 com.palantir.conjure.java.api:test-utils:2.77.0 (1 constraints: 42055c3b)
 
@@ -104,7 +104,7 @@ com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.76.0 (1 constrai
 
 com.palantir.gradle.plugintesting:plugin-testing-core:0.76.0 (2 constraints: 1a1fac8e)
 
-com.palantir.ri:resource-identifier:2.22.0 (2 constraints: 5315efd9)
+com.palantir.ri:resource-identifier:2.22.0 (2 constraints: 5415f2d9)
 
 com.palantir.safe-logging:logger:3.18.0 (3 constraints: d32144db)
 
@@ -112,13 +112,13 @@ com.palantir.safe-logging:logger-slf4j:3.18.0 (1 constraints: 370e9f50)
 
 com.palantir.safe-logging:logger-spi:3.18.0 (2 constraints: 7d1e84b1)
 
-com.palantir.safe-logging:preconditions:3.18.0 (8 constraints: 7d76b99c)
+com.palantir.safe-logging:preconditions:3.18.0 (8 constraints: 7e76d29d)
 
 com.palantir.safe-logging:preconditions-assertj:3.18.0 (1 constraints: 3e054d3b)
 
-com.palantir.safe-logging:safe-logging:3.18.0 (9 constraints: 0489f217)
+com.palantir.safe-logging:safe-logging:3.18.0 (9 constraints: 05894119)
 
-com.palantir.tokens:auth-tokens:4.8.0 (2 constraints: 001505b8)
+com.palantir.tokens:auth-tokens:4.8.0 (2 constraints: 011508b8)
 
 com.palantir.tritium:tritium-ids:0.137.0 (1 constraints: fe0f9aa6)
 
