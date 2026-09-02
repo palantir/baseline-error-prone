@@ -65,6 +65,10 @@ public final class DangerousRecordArrayField extends BugChecker implements BugCh
     private static boolean hasArrayField(ClassTree classTree, VisitorState state) {
         for (Tree member : classTree.getMembers()) {
             if (member instanceof VariableTree variableTree) {
+                // Skip static fields - they don't participate in record's equals/hashCode
+                if (ASTHelpers.getSymbol(variableTree).isStatic()) {
+                    continue;
+                }
                 if (IS_ARRAY_VARIABLE.matches(variableTree, state)) {
                     return true;
                 }
