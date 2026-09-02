@@ -40,7 +40,7 @@ com.palantir.suppressible-error-prone:artifact-transforms:2.33.0 (1 constraints:
 
 com.palantir.suppressible-error-prone:gradle-suppressible-error-prone:2.33.0 (1 constraints: 3a05403b)
 
-com.uber.nullaway:nullaway:0.13.7 (1 constraints: 3d05333b)
+com.uber.nullaway:nullaway:0.14.1 (1 constraints: 3805303b)
 
 io.github.eisop:dataflow-errorprone:3.41.0-eisop1 (3 constraints: 3e40ddde)
 
@@ -52,13 +52,13 @@ net.ltgt.gradle:gradle-errorprone-plugin:5.1.1 (2 constraints: 0522bb79)
 
 one.util:streamex:0.9.0 (2 constraints: 0922537a)
 
-org.checkerframework:checker-qual:4.0.0 (1 constraints: db1072b7)
+org.checkerframework:checker-qual:4.2.2 (1 constraints: df107ab7)
 
-org.checkerframework:dataflow-nullaway:4.0.0 (2 constraints: 3a1128e1)
+org.checkerframework:dataflow-nullaway:4.2.2 (2 constraints: 3e1130e1)
 
 org.immutables:value:2.12.2 (2 constraints: 0215eec1)
 
-org.jspecify:jspecify:1.0.1 (19 constraints: e0307026)
+org.jspecify:jspecify:1.0.1 (19 constraints: e130ca27)
 
 org.ow2.asm:asm:9.10.1 (3 constraints: a83fb81b)
 
