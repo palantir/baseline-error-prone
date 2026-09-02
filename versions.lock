@@ -58,7 +58,7 @@ org.checkerframework:dataflow-nullaway:4.0.0 (2 constraints: 3a1128e1)
 
 org.immutables:value:2.12.2 (2 constraints: 0215eec1)
 
-org.jspecify:jspecify:1.0.1 (19 constraints: df30c524)
+org.jspecify:jspecify:1.0.1 (19 constraints: e0307026)
 
 org.ow2.asm:asm:9.10.1 (3 constraints: a83fb81b)
 
@@ -106,19 +106,19 @@ com.palantir.gradle.plugintesting:plugin-testing-core:0.76.0 (2 constraints: 1a1
 
 com.palantir.ri:resource-identifier:2.22.0 (2 constraints: 5415f2d9)
 
-com.palantir.safe-logging:logger:3.18.0 (3 constraints: d32144db)
+com.palantir.safe-logging:logger:3.18.0 (3 constraints: d42171db)
 
 com.palantir.safe-logging:logger-slf4j:3.18.0 (1 constraints: 370e9f50)
 
 com.palantir.safe-logging:logger-spi:3.18.0 (2 constraints: 7d1e84b1)
 
-com.palantir.safe-logging:preconditions:3.18.0 (8 constraints: 7f76bd9e)
+com.palantir.safe-logging:preconditions:3.18.0 (8 constraints: 8076199f)
 
 com.palantir.safe-logging:preconditions-assertj:3.18.0 (1 constraints: 3e054d3b)
 
 com.palantir.safe-logging:safe-logging:3.18.0 (9 constraints: 0689621a)
 
-com.palantir.tokens:auth-tokens:4.8.0 (2 constraints: 011508b8)
+com.palantir.tokens:auth-tokens:4.9.0 (2 constraints: 021539b8)
 
 com.palantir.tritium:tritium-ids:0.137.0 (1 constraints: fe0f9aa6)
 
