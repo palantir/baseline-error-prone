@@ -167,7 +167,6 @@ import org.checkerframework.errorprone.javacutil.TreePathUtil;
  * Heavily modified fork from error-prone NullnessPropagationTransfer (apache 2).
  * @see <a href="https://github.com/google/error-prone/blob/v2.11.0/check_api/src/main/java/com/google/errorprone/dataflow/nullnesspropagation/NullnessPropagationTransfer.java">NullnessPropagationTransfer</a>
  */
-@SuppressWarnings("PatternMatchingInstanceof")
 public final class SafetyPropagationTransfer implements ForwardTransferFunction<Safety, AccessPathStore<Safety>> {
 
     private static final Matcher<Tree> THROWABLE_SUBTYPE = Matchers.isSubtypeOf(Throwable.class);
@@ -1045,7 +1044,6 @@ public final class SafetyPropagationTransfer implements ForwardTransferFunction<
         return symbolAndTypeSafety;
     }
 
-    @SuppressWarnings("for-rollout:ReferenceEquality")
     private Safety fieldInitializerSafetyIfAvailable(VarSymbol accessed) {
         if (!traversed.add(accessed)) {
             // Avoid infinite recursion between initializers with circular references. We recommend against

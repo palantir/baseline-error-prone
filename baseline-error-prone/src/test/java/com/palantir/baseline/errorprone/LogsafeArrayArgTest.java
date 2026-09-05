@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 
 class LogsafeArrayArgTest {
 
-    @SuppressWarnings("for-rollout:MisformattedTestData")
     @Test
     void testNormalUsage() {
         helper().addSourceLines(
@@ -39,7 +38,6 @@ class LogsafeArrayArgTest {
                 .doTest();
     }
 
-    @SuppressWarnings("for-rollout:MisformattedTestData")
     @Test
     void testFixedUsage() {
         helper().addSourceLines(
@@ -58,7 +56,6 @@ class LogsafeArrayArgTest {
                 .doTest();
     }
 
-    @SuppressWarnings("for-rollout:MisformattedTestData")
     @Test
     void testSafe() {
         helper().addSourceLines(
@@ -77,7 +74,6 @@ class LogsafeArrayArgTest {
                 .doTest();
     }
 
-    @SuppressWarnings("for-rollout:MisformattedTestData")
     @Test
     void testUnsafe() {
         helper().addSourceLines(
@@ -96,7 +92,6 @@ class LogsafeArrayArgTest {
                 .doTest();
     }
 
-    @SuppressWarnings("for-rollout:MisformattedTestData")
     @Test
     void testPrimitive() {
         helper().addSourceLines(

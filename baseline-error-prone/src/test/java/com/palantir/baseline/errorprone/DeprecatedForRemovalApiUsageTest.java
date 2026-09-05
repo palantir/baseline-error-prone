@@ -148,7 +148,6 @@ public class DeprecatedForRemovalApiUsageTest {
 
     @Test
     // Error-prone wants to inline the Deprecated annotation, which looks worse
-    @SuppressWarnings("MisformattedTestData")
     public void throws_on_deprecated_field_access() {
         helper().addSourceLines(
                         "Helper.java",
