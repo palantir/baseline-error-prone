@@ -29,6 +29,7 @@ import com.palantir.baseline.errorprone.safety.SafetyAnnotations;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
+import com.sun.tools.javac.code.Symbol.MethodSymbol;
 import com.sun.tools.javac.code.Symbol.RecordComponent;
 import java.util.List;
 import java.util.Optional;
@@ -65,6 +66,7 @@ public final class DangerousRecordToStringDoNotLog extends BugChecker implements
         }
         List<? extends RecordComponent> violators = classSymbol.getRecordComponents().stream()
                 .filter(component -> SafetyAnnotations.getVariableSafety(component, state) == Safety.DO_NOT_LOG)
+                .filter(component -> !hasLoggableToString(component, state))
                 .toList();
         if (violators.isEmpty()) {
             return Description.NO_MATCH;
@@ -95,6 +97,26 @@ public final class DangerousRecordToStringDoNotLog extends BugChecker implements
                 .forEach(component ->
                         state.reportMatch(describe(classTree, component).build()));
         return Description.NO_MATCH;
+    }
+
+    private static boolean hasLoggableToString(RecordComponent component, VisitorState state) {
+        if (component.type.isPrimitive()) {
+            return false;
+        }
+        MethodSymbol toString = ASTHelpers.matchingMethods(
+                        state.getNames().toString,
+                        method -> !method.isStatic()
+                                && method.getParameters().isEmpty()
+                                && state.getTypes().isSameType(method.getReturnType(), state.getSymtab().stringType),
+                        component.type,
+                        state.getTypes())
+                .findFirst()
+                .orElse(null);
+        if (toString == null) {
+            return false;
+        }
+        Safety safety = SafetyAnnotations.getMethodReturnSafety(toString, state);
+        return safety == Safety.SAFE || safety == Safety.UNSAFE;
     }
 
     private Description.Builder describe(ClassTree classTree, RecordComponent component) {

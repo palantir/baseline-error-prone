@@ -109,6 +109,55 @@ class DangerousRecordToStringDoNotLogTest {
     }
 
     @Test
+    void allows_record_containing_do_not_log_type_with_safe_to_string() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+
+                        public record Test(Secret secret) {}
+
+                        @DoNotLog
+                        record Secret(@DoNotLog String value) {
+                            @Override
+                            @Safe
+                            public String toString() {
+                                return "Secret[value=<redacted>]";
+                            }
+                        }
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void allows_nested_records_transitively_containing_type_with_safe_to_string() {
+        helper().addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+
+                        public record Test(Request request) {}
+
+                        @DoNotLog
+                        record Request(Secret secret) {}
+
+                        @DoNotLog
+                        record Secret(@DoNotLog String value) {
+                            @Override
+                            @Safe
+                            public String toString() {
+                                return "Secret[value=<redacted>]";
+                            }
+                        }
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
     void flags_record_with_to_string_that_leaks_do_not_log_component() {
         helper().addSourceLines(
                         "Test.java",
