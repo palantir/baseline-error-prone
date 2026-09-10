@@ -87,6 +87,313 @@ public class PreferStreamToListTest {
     }
 
     @Test
+    void collectorsToList_sameGenericType() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  <T> List<T> collect(Stream<T> stream) {",
+                        "    return stream.collect(Collectors.toList());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  <T> List<T> collect(Stream<T> stream) {",
+                        "    return stream.toList();",
+                        "  }",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_widenedGenericMapReturnType() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.function.Function;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  <T> List<T> collect(Stream<String> stream, Function<String, ? extends T> mapper) {",
+                        "    return stream.map(mapper).collect(Collectors.toList());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.function.Function;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  <T> List<T> collect(Stream<String> stream, Function<String, ? extends T> mapper) {",
+                        "    return stream.<T>map(mapper).toList();",
+                        "  }",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_widenedGenericType_noMatch() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  <T> List<T> collect(Stream<? extends T> stream) {",
+                        "    return stream.collect(Collectors.toList());",
+                        "  }",
+                        "}")
+                .expectUnchanged()
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_widenedAssignmentType_noMatch() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  List<CharSequence> values = Stream.of(\"hello\").collect(Collectors.toList());",
+                        "}")
+                .expectUnchanged()
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_widenedMapAssignmentType() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values = Stream.of(\"hello\")",
+                        "      .map(value -> new Dog())",
+                        "      .collect(Collectors.toList());",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values = Stream.of(\"hello\")",
+                        "      .<Animal>map(value -> new Dog())",
+                        "      .toList();",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_widenedReturnType_noMatch() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  List<CharSequence> values() {",
+                        "    return Stream.of(\"hello\").collect(Collectors.toList());",
+                        "  }",
+                        "}")
+                .expectUnchanged()
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_widenedMapReturnType() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values(Stream<String> stream) {",
+                        "    return stream.map(value -> new Dog()).collect(Collectors.toList());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values(Stream<String> stream) {",
+                        "    return stream.<Animal>map(value -> new Dog()).toList();",
+                        "  }",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_widenedFlatMapReturnType() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values(Stream<String> stream) {",
+                        "    return stream.flatMap(value -> Stream.of(new Dog())).collect(Collectors.toList());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values(Stream<String> stream) {",
+                        "    return stream.<Animal>flatMap(value -> Stream.of(new Dog())).toList();",
+                        "  }",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_widensTransformBeforeTypePreservingOperations() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values(Stream<String> stream) {",
+                        "    return stream.map(value -> new Dog())",
+                        "        .filter(value -> true)",
+                        "        .limit(10)",
+                        "        .collect(Collectors.toList());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values(Stream<String> stream) {",
+                        "    return stream.<Animal>map(value -> new Dog())",
+                        "        .filter(value -> true)",
+                        "        .limit(10)",
+                        "        .toList();",
+                        "  }",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_widenedMapToObjAssignmentType() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.IntStream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values = IntStream.range(0, 10)",
+                        "      .mapToObj(value -> new Dog())",
+                        "      .collect(Collectors.toList());",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.IntStream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values = IntStream.range(0, 10)",
+                        "      .<Animal>mapToObj(value -> new Dog())",
+                        "      .toList();",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_widenedMapMultiReturnType() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values(Stream<String> stream) {",
+                        "    return stream",
+                        "        .<Dog>mapMulti((value, downstream) -> downstream.accept(new Dog()))",
+                        "        .collect(Collectors.toList());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  interface Animal {}",
+                        "  static final class Dog implements Animal {}",
+                        "  List<Animal> values(Stream<String> stream) {",
+                        "    return stream",
+                        "        .<Animal>mapMulti((value, downstream) -> downstream.accept(new Dog()))",
+                        "        .toList();",
+                        "  }",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    void collectorsToList_covariantReturnType() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  List<? extends CharSequence> values() {",
+                        "    return Stream.of(\"hello\").collect(Collectors.toList());",
+                        "  }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "import java.util.List;",
+                        "import java.util.stream.Collectors;",
+                        "import java.util.stream.Stream;",
+                        "public class Test {",
+                        "  List<? extends CharSequence> values() {",
+                        "    return Stream.of(\"hello\").toList();",
+                        "  }",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
     void collectorsToUnmodifiableList_noMatch() {
         fix().addInputLines(
                         "Test.java",

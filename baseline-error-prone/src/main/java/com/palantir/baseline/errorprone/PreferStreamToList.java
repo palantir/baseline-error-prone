@@ -25,10 +25,13 @@ import com.google.errorprone.fixes.SuggestedFix;
 import com.google.errorprone.fixes.SuggestedFixes;
 import com.google.errorprone.matchers.Description;
 import com.google.errorprone.matchers.Matcher;
+import com.google.errorprone.matchers.Matchers;
 import com.google.errorprone.matchers.method.MethodMatchers;
+import com.google.errorprone.util.ASTHelpers;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
-import java.util.Collections;
+import com.sun.tools.javac.code.Type;
+import java.util.List;
 
 @AutoService(BugChecker.class)
 @BugPattern(
@@ -44,20 +47,39 @@ public final class PreferStreamToList extends BugChecker implements BugChecker.M
 
     private static final Matcher<ExpressionTree> STREAM_COLLECT = MethodMatchers.instanceMethod()
             .onDescendantOf("java.util.stream.Stream")
-            .named("collect");
+            .named("collect")
+            .withParameters("java.util.stream.Collector");
 
     private static final Matcher<ExpressionTree> COLLECTORS_TO_LIST = MethodMatchers.staticMethod()
             .onClass("java.util.stream.Collectors")
             .named("toList")
-            .withParameters(Collections.emptyList());
+            .withNoParameters();
+
+    private static final Matcher<ExpressionTree> STREAM_ELEMENT_TRANSFORM = Matchers.anyOf(
+            MethodMatchers.instanceMethod()
+                    .onDescendantOf("java.util.stream.Stream")
+                    .namedAnyOf("map", "flatMap")
+                    .withParameters("java.util.function.Function"),
+            MethodMatchers.instanceMethod()
+                    .onDescendantOf("java.util.stream.Stream")
+                    .named("mapMulti")
+                    .withParameters("java.util.function.BiConsumer"),
+            MethodMatchers.instanceMethod()
+                    .onDescendantOf("java.util.stream.IntStream")
+                    .named("mapToObj")
+                    .withParameters("java.util.function.IntFunction"),
+            MethodMatchers.instanceMethod()
+                    .onDescendantOf("java.util.stream.LongStream")
+                    .named("mapToObj")
+                    .withParameters("java.util.function.LongFunction"),
+            MethodMatchers.instanceMethod()
+                    .onDescendantOf("java.util.stream.DoubleStream")
+                    .named("mapToObj")
+                    .withParameters("java.util.function.DoubleFunction"));
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
         if (!STREAM_COLLECT.matches(tree, state)) {
-            return Description.NO_MATCH;
-        }
-
-        if (tree.getArguments().size() != 1) {
             return Description.NO_MATCH;
         }
 
@@ -66,11 +88,64 @@ public final class PreferStreamToList extends BugChecker implements BugChecker.M
             return Description.NO_MATCH;
         }
 
-        return buildDescription(tree)
-                .addFix(SuggestedFix.builder()
-                        .delete(argument)
-                        .merge(SuggestedFixes.renameMethodInvocation(tree, "toList", state))
-                        .build())
+        SuggestedFix replacement = replaceCollector(tree, argument, state);
+        if (SuggestedFixes.compilesWithFix(replacement, state)) {
+            return buildDescription(tree).addFix(replacement).build();
+        }
+
+        SuggestedFix widenedStreamFix =
+                widenStreamElementType(tree, replacement, getResultElementType(tree, state), state);
+        if (widenedStreamFix != null) {
+            return buildDescription(tree).addFix(widenedStreamFix).build();
+        }
+
+        return Description.NO_MATCH;
+    }
+
+    private static SuggestedFix replaceCollector(
+            MethodInvocationTree tree, ExpressionTree argument, VisitorState state) {
+        return SuggestedFix.builder()
+                .delete(argument)
+                .merge(SuggestedFixes.renameMethodInvocation(tree, "toList", state))
                 .build();
+    }
+
+    private static SuggestedFix widenStreamElementType(
+            MethodInvocationTree tree, SuggestedFix replacement, Type resultElementType, VisitorState state) {
+        if (resultElementType == null) {
+            return null;
+        }
+
+        ExpressionTree current = ASTHelpers.getReceiver(tree);
+        while (current instanceof MethodInvocationTree invocation) {
+            if (invocation.getTypeArguments().size() <= 1 && STREAM_ELEMENT_TRANSFORM.matches(invocation, state)) {
+                SuggestedFix.Builder fix = SuggestedFix.builder().merge(replacement);
+                String elementType = SuggestedFixes.prettyType(state, fix, resultElementType);
+                if (invocation.getTypeArguments().isEmpty()) {
+                    String methodName =
+                            ASTHelpers.getSymbol(invocation).getSimpleName().toString();
+                    fix.merge(SuggestedFixes.renameMethodInvocation(
+                            invocation, '<' + elementType + '>' + methodName, state));
+                } else {
+                    fix.replace(invocation.getTypeArguments().get(0), elementType);
+                }
+                SuggestedFix candidate = fix.build();
+                if (SuggestedFixes.compilesWithFix(candidate, state)) {
+                    return candidate;
+                }
+            }
+            current = ASTHelpers.getReceiver(invocation);
+        }
+        return null;
+    }
+
+    private static Type getResultElementType(MethodInvocationTree tree, VisitorState state) {
+        Type resultType = ASTHelpers.getType(tree);
+        Type listType = resultType == null
+                ? null
+                : state.getTypes().asSuper(resultType, state.getSymbolFromString(List.class.getName()));
+        return listType == null || listType.getTypeArguments().size() != 1
+                ? null
+                : listType.getTypeArguments().get(0);
     }
 }
