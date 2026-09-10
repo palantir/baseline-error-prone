@@ -58,7 +58,6 @@ public final class RawTypes extends BugChecker
         return testType(tree.getIdentifier(), state);
     }
 
-    @SuppressWarnings("for-rollout:ReferenceEquality")
     @Override
     public Description matchClass(ClassTree tree, VisitorState state) {
         Description extendsResult = testType(tree.getExtendsClause(), state);
@@ -78,7 +77,6 @@ public final class RawTypes extends BugChecker
         return testType(tree.getType(), state);
     }
 
-    @SuppressWarnings("for-rollout:ReferenceEquality")
     private Description testTypes(Iterable<? extends Tree> types, VisitorState state) {
         for (Tree type : types) {
             Description description = testType(type, state);

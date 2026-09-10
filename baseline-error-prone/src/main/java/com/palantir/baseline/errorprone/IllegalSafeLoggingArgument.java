@@ -128,7 +128,7 @@ public final class IllegalSafeLoggingArgument extends BugChecker
                 tree, tree.getTypeArguments(), tree.getArguments(), ASTHelpers.getSymbol(tree), state);
     }
 
-    @SuppressWarnings({"CheckStyle", "ReferenceEquality", "for-rollout:TypeEquals"})
+    @SuppressWarnings({"CheckStyle", "ReferenceEquality"})
     private Description matchCtorOrMethodInvocation(
             ExpressionTree tree,
             List<? extends Tree> typeArguments,

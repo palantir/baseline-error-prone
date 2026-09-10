@@ -175,7 +175,6 @@ public final class Slf4jLevelCheck extends BugChecker implements IfTreeMatcher {
         }
     }
 
-    @SuppressWarnings("unused")
     private enum LogLevel {
         TRACE,
         DEBUG,
@@ -186,12 +185,10 @@ public final class Slf4jLevelCheck extends BugChecker implements IfTreeMatcher {
         private final String levelCheckMethodName =
                 "is" + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name()) + "Enabled";
 
-        @SuppressWarnings("ImmutableEnumChecker")
         private final Matcher<ExpressionTree> levelCheckMatcher = MethodMatchers.instanceMethod()
                 .onDescendantOfAny("org.slf4j.Logger", "com.palantir.logsafe.logger.SafeLogger")
                 .named(levelCheckMethodName);
 
-        @SuppressWarnings("ImmutableEnumChecker")
         private final Matcher<ExpressionTree> logMatcher = MethodMatchers.instanceMethod()
                 .onDescendantOfAny("org.slf4j.Logger", "com.palantir.logsafe.logger.SafeLogger")
                 .named(name().toLowerCase(Locale.ENGLISH));
