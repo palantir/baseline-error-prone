@@ -56,7 +56,7 @@ org.checkerframework:checker-qual:4.0.0 (1 constraints: db1072b7)
 
 org.checkerframework:dataflow-nullaway:4.0.0 (2 constraints: 3a1128e1)
 
-org.immutables:value:2.12.2 (2 constraints: 0215eec1)
+org.immutables:value:2.12.2 (1 constraints: 3905373b)
 
 org.jspecify:jspecify:1.0.1 (19 constraints: e0307026)
 
@@ -90,9 +90,9 @@ com.netflix.nebula:nebula-test:12.1.0 (2 constraints: cb1d802c)
 
 com.palantir.conjure.java:conjure-lib:8.86.0 (1 constraints: 4805813b)
 
-com.palantir.conjure.java.api:errors:2.78.0 (2 constraints: 7d218eb2)
+com.palantir.conjure.java.api:errors:2.79.0 (2 constraints: 7e2191b2)
 
-com.palantir.conjure.java.api:test-utils:2.78.0 (1 constraints: 43055f3b)
+com.palantir.conjure.java.api:test-utils:2.79.0 (1 constraints: 4405623b)
 
 com.palantir.conjure.java.runtime:conjure-java-annotations:8.34.0 (1 constraints: 4105673b)
 
@@ -112,11 +112,11 @@ com.palantir.safe-logging:logger-slf4j:3.19.0 (1 constraints: 380ea250)
 
 com.palantir.safe-logging:logger-spi:3.19.0 (2 constraints: 7f1ebab1)
 
-com.palantir.safe-logging:preconditions:3.19.0 (8 constraints: 8376ffa1)
+com.palantir.safe-logging:preconditions:3.19.0 (8 constraints: 8476eaa2)
 
 com.palantir.safe-logging:preconditions-assertj:3.19.0 (1 constraints: 3f05503b)
 
-com.palantir.safe-logging:safe-logging:3.19.0 (9 constraints: 0c89321f)
+com.palantir.safe-logging:safe-logging:3.19.0 (9 constraints: 0d895320)
 
 com.palantir.tokens:auth-tokens:4.9.0 (2 constraints: 03153cb8)
 
