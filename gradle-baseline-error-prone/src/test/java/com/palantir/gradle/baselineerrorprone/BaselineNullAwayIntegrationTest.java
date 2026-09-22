@@ -83,7 +83,7 @@ class BaselineNullAwayIntegrationTest {
 
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
 
-        assertThat(result).output().contains("[NullAway] dereferenced expression throwable.getMessage() is @Nullable");
+        assertThat(result).output().contains("[NullAway] dereferenced expression 'throwable.getMessage()' is @Nullable");
     }
 
     @Test
