@@ -22,6 +22,8 @@ import com.google.errorprone.BugPattern.LinkType;
 import com.google.errorprone.BugPattern.SeverityLevel;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
+import com.google.errorprone.bugpatterns.BugChecker.ClassTreeMatcher;
+import com.google.errorprone.bugpatterns.BugChecker.PackageTreeMatcher;
 import com.google.errorprone.fixes.SuggestedFix;
 import com.google.errorprone.fixes.SuggestedFixes;
 import com.google.errorprone.matchers.AnnotationMatcherUtils;
@@ -32,12 +34,12 @@ import com.google.errorprone.util.ASTHelpers;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.PackageTree;
+import com.sun.source.tree.Tree;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -50,17 +52,25 @@ import javax.annotation.Nullable;
                 + "retention forces consumers to add a Immutables annotations to their compile classpath."
                 + "Instead use a meta-annotation with SOURCE retention."
                 + "See https://github.com/immutables/immutables/issues/291.")
-public final class ImmutablesStyle extends BugChecker implements BugChecker.ClassTreeMatcher {
+public final class ImmutablesStyle extends BugChecker implements ClassTreeMatcher, PackageTreeMatcher {
 
-    private static final Matcher<ClassTree> STYLE_ANNOTATION =
-            Matchers.hasAnnotation("org.immutables.value.Value$Style");
+    private static final Matcher<Tree> STYLE_ANNOTATION = Matchers.hasAnnotation("org.immutables.value.Value$Style");
+
+    @Override
+    public Description matchPackage(PackageTree tree, VisitorState state) {
+        if (STYLE_ANNOTATION.matches(tree, state)) {
+            return buildDescription(tree).build();
+        }
+
+        return Description.NO_MATCH;
+    }
 
     @Override
     public Description matchClass(ClassTree tree, VisitorState state) {
         if (STYLE_ANNOTATION.matches(tree, state)) {
             switch (tree.getKind()) {
                 case CLASS, INTERFACE -> {
-                    return matchStyleAnnotatedType(tree, state);
+                    return buildDescription(tree).build();
                 }
                 case ANNOTATION_TYPE -> {
                     return matchStyleMetaAnnotation(tree, state);
@@ -68,36 +78,8 @@ public final class ImmutablesStyle extends BugChecker implements BugChecker.Clas
                 default -> {}
             }
         }
-        return Description.NO_MATCH;
-    }
 
-    private Description matchStyleAnnotatedType(ClassTree tree, VisitorState state) {
-        if (ASTHelpers.enclosingClass(ASTHelpers.getSymbol(tree)) == null) {
-            // Top level class, we cannot create new files with suggested fixes, nor should we create
-            // additional top-level classes.
-            return buildDescription(tree).build();
-        }
-        SuggestedFix.Builder fix = SuggestedFix.builder();
-        String qualifiedTarget = SuggestedFixes.qualifyType(state, fix, Target.class.getName());
-        String qualifiedElementType = SuggestedFixes.qualifyType(state, fix, ElementType.class.getName());
-        String qualifiedRetention = SuggestedFixes.qualifyType(state, fix, Retention.class.getName());
-        String qualifiedRetentionPolicy = SuggestedFixes.qualifyType(state, fix, RetentionPolicy.class.getName());
-        AnnotationTree styleAnnotationTree = getAnnotation(tree, "org.immutables.value.Value$Style", state);
-        return buildDescription(tree)
-                .addFix(fix.prefixWith(
-                                tree,
-                                String.format(
-                                        "\n@%s(%s.TYPE)\n@%s(%s.SOURCE)\n%s\n@interface %sStyle {}\n@%sStyle\n",
-                                        qualifiedTarget,
-                                        qualifiedElementType,
-                                        qualifiedRetention,
-                                        qualifiedRetentionPolicy,
-                                        state.getSourceForNode(styleAnnotationTree),
-                                        tree.getSimpleName(),
-                                        tree.getSimpleName()))
-                        .replace(styleAnnotationTree, "")
-                        .build())
-                .build();
+        return Description.NO_MATCH;
     }
 
     private Description matchStyleMetaAnnotation(ClassTree tree, VisitorState state) {
@@ -112,6 +94,7 @@ public final class ImmutablesStyle extends BugChecker implements BugChecker.Clas
                             SuggestedFixes.qualifyType(state, fix, RetentionPolicy.class.getName())));
             return buildDescription(tree).addFix(fix.build()).build();
         }
+
         ExpressionTree retentionValue = AnnotationMatcherUtils.getArgument(retention, "value");
         Symbol retentionValueSymbol = ASTHelpers.getSymbol(retentionValue);
         if (retentionValueSymbol == null
@@ -125,6 +108,7 @@ public final class ImmutablesStyle extends BugChecker implements BugChecker.Clas
                             "%s.SOURCE", SuggestedFixes.qualifyType(state, fix, RetentionPolicy.class.getName())))));
             return buildDescription(tree).addFix(fix.build()).build();
         }
+
         return Description.NO_MATCH;
     }
 
