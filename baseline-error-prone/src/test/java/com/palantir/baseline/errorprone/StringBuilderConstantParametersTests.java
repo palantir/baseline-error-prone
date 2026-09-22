@@ -312,6 +312,50 @@ public class StringBuilderConstantParametersTests {
     }
 
     @Test
+    public void suggestedFixParenthesizesWhenResultIsMethodReceiver() {
+        RefactoringValidator.of(StringBuilderConstantParameters.class, getClass())
+                .addInputLines(
+                        "Test.java",
+                        "class Test {",
+                        "   String f(String foo, String bar) {",
+                        "       return new StringBuilder(foo)",
+                        "           .append(\"_\")",
+                        "           .append(bar)",
+                        "           .toString()",
+                        "           .toLowerCase();",
+                        "   }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "class Test {",
+                        "   String f(String foo, String bar) {",
+                        "       return (foo + \"_\" + bar).toLowerCase();",
+                        "   }",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
+    public void suggestedFixDoesNotParenthesizeWhenResultIsMethodArgument() {
+        RefactoringValidator.of(StringBuilderConstantParameters.class, getClass())
+                .addInputLines(
+                        "Test.java",
+                        "class Test {",
+                        "   void f(String foo, String bar) {",
+                        "       System.out.println(new StringBuilder(foo).append(\"_\").append(bar).toString());",
+                        "   }",
+                        "}")
+                .addOutputLines(
+                        "Test.java",
+                        "class Test {",
+                        "   void f(String foo, String bar) {",
+                        "       System.out.println(foo + \"_\" + bar);",
+                        "   }",
+                        "}")
+                .doTest(BugCheckerRefactoringTestHelper.TestMode.TEXT_MATCH);
+    }
+
+    @Test
     public void negativeDynamicStringBuilder() {
         compilationHelper
                 .addSourceLines(
