@@ -18,16 +18,19 @@ package com.palantir.baseline.errorprone;
 import com.google.errorprone.CompilationTestHelper;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("MisformattedTestData")
 public class ImmutablesStyleTest {
-
     @Test
     public void testClass_inlineAnnotation() {
         helper().addSourceLines(
                         "Person.java",
-                        "import org.immutables.value.Value;",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "// BUG: Diagnostic contains: ImmutablesStyle",
-                        "public interface Person {}")
+                        // language=Java
+                        """
+                        import org.immutables.value.Value;
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        // BUG: Diagnostic contains: ImmutablesStyle
+                        public interface Person {}
+                        """)
                 .doTest();
     }
 
@@ -35,17 +38,22 @@ public class ImmutablesStyleTest {
     public void testClass_metaAnnotation() {
         helper().addSourceLines(
                         "ValueStyle.java",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import org.immutables.value.Value;",
-                        "@Retention(RetentionPolicy.SOURCE)\n",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "public @interface ValueStyle {}")
+                        // language=Java
+                        """
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import org.immutables.value.Value;
+                        @Retention(RetentionPolicy.SOURCE)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        public @interface ValueStyle {}
+                        """)
                 .addSourceLines(
                         "Person.java",
-                        "import org.immutables.value.Value;",
-                        "@ValueStyle",
-                        "public interface Person {}")
+                        // language=Java
+                        """
+                        @ValueStyle
+                        public interface Person {}
+                        """)
                 .doTest();
     }
 
@@ -53,10 +61,13 @@ public class ImmutablesStyleTest {
     public void testPackage_inlineAnnotation() {
         helper().addSourceLines(
                         "package-info.java",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "// BUG: Diagnostic contains: ImmutablesStyle",
-                        "package com.example;",
-                        "import org.immutables.value.Value;")
+                        // language=Java
+                        """
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        // BUG: Diagnostic contains: ImmutablesStyle
+                        package com.example;
+                        import org.immutables.value.Value;
+                        """)
                 .doTest();
     }
 
@@ -64,18 +75,23 @@ public class ImmutablesStyleTest {
     public void testPackage_metaAnnotation() {
         helper().addSourceLines(
                         "ValueStyle.java",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import org.immutables.value.Value;",
-                        "@Retention(RetentionPolicy.SOURCE)\n",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "public @interface ValueStyle {}")
+                        // language=Java
+                        """
+                        package com.example;
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import org.immutables.value.Value;
+                        @Retention(RetentionPolicy.SOURCE)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        public @interface ValueStyle {}
+                        """)
                 .addSourceLines(
                         "package-info.java",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "// BUG: Diagnostic contains: ImmutablesStyle",
-                        "package com.example;",
-                        "import org.immutables.value.Value;")
+                        // language=Java
+                        """
+                        @ValueStyle
+                        package com.example;
+                        """)
                 .doTest();
     }
 
@@ -83,11 +99,20 @@ public class ImmutablesStyleTest {
     public void testMetaAnnotation_defaultRetention() {
         helper().addSourceLines(
                         "ValueStyle.java",
-                        "import org.immutables.value.Value;",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "// BUG: Diagnostic contains: ImmutablesStyle",
-                        "public @interface ValueStyle {}")
-                .addSourceLines("Person.java", "@ValueStyle", "public interface Person {}")
+                        // language=Java
+                        """
+                        import org.immutables.value.Value;
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        // BUG: Diagnostic contains: ImmutablesStyle
+                        public @interface ValueStyle {}
+                        """)
+                .addSourceLines(
+                        "Person.java",
+                        // language=Java
+                        """
+                        @ValueStyle
+                        public interface Person {}
+                        """)
                 .doTest();
     }
 
@@ -95,68 +120,23 @@ public class ImmutablesStyleTest {
     public void fixMetaAnnotation_defaultRetention() {
         fix().addInputLines(
                         "ValueStyle.java",
-                        "import org.immutables.value.Value;",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "public @interface ValueStyle {}")
+                        // language=Java
+                        """
+                        import org.immutables.value.Value;
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        public @interface ValueStyle {}
+                        """)
                 .addOutputLines(
                         "ValueStyle.java",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import org.immutables.value.Value;",
-                        "@Retention(RetentionPolicy.SOURCE)",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "public @interface ValueStyle {}")
-                .doTest();
-    }
-
-    @Test
-    public void testMetaAnnotation_classRetention() {
-        helper().addSourceLines(
-                        "ValueStyle.java",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import org.immutables.value.Value;",
-                        "@Retention(RetentionPolicy.CLASS)\n",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "// BUG: Diagnostic contains: ImmutablesStyle",
-                        "public @interface ValueStyle {}")
-                .addSourceLines("Person.java", "@ValueStyle", "public interface Person {}")
-                .doTest();
-    }
-
-    @Test
-    public void fixMetaAnnotation_classRetention() {
-        fix().addInputLines(
-                        "ValueStyle.java",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import org.immutables.value.Value;",
-                        "@Retention(RetentionPolicy.CLASS)",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)",
-                        "public @interface ValueStyle {}")
-                .addOutputLines(
-                        "ValueStyle.java",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import org.immutables.value.Value;",
-                        "@Retention(RetentionPolicy.SOURCE)",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)",
-                        "public @interface ValueStyle {}")
-                .doTest();
-    }
-
-    @Test
-    public void testMetaAnnotation_runtimeRetention() {
-        helper().addSourceLines(
-                        "ValueStyle.java",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import org.immutables.value.Value;",
-                        "@Retention(RetentionPolicy.RUNTIME)\n",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "// BUG: Diagnostic contains: ImmutablesStyle",
-                        "public @interface ValueStyle {}")
-                .addSourceLines("Person.java", "@ValueStyle", "public interface Person {}")
+                        // language=Java
+                        """
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import org.immutables.value.Value;
+                        @Retention(RetentionPolicy.SOURCE)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        public @interface ValueStyle {}
+                        """)
                 .doTest();
     }
 
@@ -164,13 +144,97 @@ public class ImmutablesStyleTest {
     public void testMetaAnnotation_sourceRetention() {
         helper().addSourceLines(
                         "ValueStyle.java",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import org.immutables.value.Value;",
-                        "@Retention(RetentionPolicy.SOURCE)\n",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)\n",
-                        "public @interface ValueStyle {}")
-                .addSourceLines("Person.java", "@ValueStyle", "public interface Person {}")
+                        // language=Java
+                        """
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import org.immutables.value.Value;
+                        @Retention(RetentionPolicy.SOURCE)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        public @interface ValueStyle {}
+                        """)
+                .addSourceLines(
+                        "Person.java",
+                        // language=Java
+                        """
+                        @ValueStyle
+                        public interface Person {}
+                        """)
+                .doTest();
+    }
+
+    @Test
+    public void testMetaAnnotation_classRetention() {
+        helper().addSourceLines(
+                        "ValueStyle.java",
+                        // language=Java
+                        """
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import org.immutables.value.Value;
+                        @Retention(RetentionPolicy.CLASS)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        // BUG: Diagnostic contains: ImmutablesStyle
+                        public @interface ValueStyle {}
+                        """)
+                .addSourceLines(
+                        "Person.java",
+                        // language=Java
+                        """
+                        @ValueStyle
+                        public interface Person {}
+                        """)
+                .doTest();
+    }
+
+    @Test
+    public void fixMetaAnnotation_classRetention() {
+        fix().addInputLines(
+                        "ValueStyle.java",
+                        // language=Java
+                        """
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import org.immutables.value.Value;
+                        @Retention(RetentionPolicy.CLASS)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        public @interface ValueStyle {}
+                        """)
+                .addOutputLines(
+                        "ValueStyle.java",
+                        // language=Java
+                        """
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import org.immutables.value.Value;
+                        @Retention(RetentionPolicy.SOURCE)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        public @interface ValueStyle {}
+                        """)
+                .doTest();
+    }
+
+    @Test
+    public void testMetaAnnotation_runtimeRetention() {
+        helper().addSourceLines(
+                        "ValueStyle.java",
+                        // language=Java
+                        """
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import org.immutables.value.Value;
+                        @Retention(RetentionPolicy.RUNTIME)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        // BUG: Diagnostic contains: ImmutablesStyle
+                        public @interface ValueStyle {}
+                        """)
+                .addSourceLines(
+                        "Person.java",
+                        // language=Java
+                        """
+                        @ValueStyle
+                        public interface Person {}
+                        """)
                 .doTest();
     }
 
@@ -178,20 +242,26 @@ public class ImmutablesStyleTest {
     public void fixMetaAnnotation_runtimeRetention() {
         fix().addInputLines(
                         "ValueStyle.java",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import org.immutables.value.Value;",
-                        "@Retention(value = RetentionPolicy.RUNTIME)",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)",
-                        "public @interface ValueStyle {}")
+                        // language=Java
+                        """
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import org.immutables.value.Value;
+                        @Retention(value = RetentionPolicy.RUNTIME)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        public @interface ValueStyle {}
+                        """)
                 .addOutputLines(
                         "ValueStyle.java",
-                        "import java.lang.annotation.Retention;",
-                        "import java.lang.annotation.RetentionPolicy;",
-                        "import org.immutables.value.Value;",
-                        "@Retention(value = RetentionPolicy.SOURCE)",
-                        "@Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)",
-                        "public @interface ValueStyle {}")
+                        // language=Java
+                        """
+                        import java.lang.annotation.Retention;
+                        import java.lang.annotation.RetentionPolicy;
+                        import org.immutables.value.Value;
+                        @Retention(value = RetentionPolicy.SOURCE)
+                        @Value.Style(visibility = Value.Style.ImplementationVisibility.PUBLIC)
+                        public @interface ValueStyle {}
+                        """)
                 .doTest();
     }
 
