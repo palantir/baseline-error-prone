@@ -445,15 +445,14 @@ class BaselineErrorProneIntegrationTest {
             CheckConfigurationMethod checkConfigurationMethod, GradleInvoker gradle, RootProject project) {
         // ***DELINEATOR FOR REVIEW: setup
         String checkName = "Slf4jLogsafeArgs";
-        String turnOffCheck =
-                switch (checkConfigurationMethod) {
-                    case ARG -> "options.errorprone.disable '" + checkName + "'";
-                    case DSL -> """
-                        options.errorprone {
-                            check '%s', net.ltgt.gradle.errorprone.CheckSeverity.OFF
-                        }
-                        """.formatted(checkName);
-                };
+        String turnOffCheck = switch (checkConfigurationMethod) {
+            case ARG -> "options.errorprone.disable '" + checkName + "'";
+            case DSL -> """
+                options.errorprone {
+                    check '%s', net.ltgt.gradle.errorprone.CheckSeverity.OFF
+                }
+                """.formatted(checkName);
+        };
 
         standardBuildFile(project);
         project.buildGradle().append("""
