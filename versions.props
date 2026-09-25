@@ -22,7 +22,7 @@ com.uber.nullaway:nullaway = 0.14.2
 # test deps
 com.fasterxml.jackson.*:* = 2.22.1
 com.netflix.nebula:nebula-test = 12.1.0
-com.palantir.conjure.java:* = 8.87.0
+com.palantir.conjure.java:* = 8.88.0
 com.palantir.conjure.java.api:* = 2.79.0
 com.palantir.conjure.java.runtime:* = 8.34.0
 com.palantir.ri:* = 2.22.0
