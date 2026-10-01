@@ -104,7 +104,7 @@ com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.77.0 (1 constrai
 
 com.palantir.gradle.plugintesting:plugin-testing-core:0.77.0 (2 constraints: 1c1ff98e)
 
-com.palantir.ri:resource-identifier:2.23.0 (2 constraints: 57152ada)
+com.palantir.ri:resource-identifier:2.24.0 (2 constraints: 58155cda)
 
 com.palantir.safe-logging:logger:3.20.0 (3 constraints: cf2148d9)
 
@@ -112,11 +112,11 @@ com.palantir.safe-logging:logger-slf4j:3.20.0 (1 constraints: 300e8b50)
 
 com.palantir.safe-logging:logger-spi:3.20.0 (2 constraints: 6f1e0cb0)
 
-com.palantir.safe-logging:preconditions:3.20.0 (8 constraints: 70760c8d)
+com.palantir.safe-logging:preconditions:3.20.0 (8 constraints: 68761d87)
 
 com.palantir.safe-logging:preconditions-assertj:3.20.0 (1 constraints: 3705393b)
 
-com.palantir.safe-logging:safe-logging:3.20.0 (9 constraints: df88c1fa)
+com.palantir.safe-logging:safe-logging:3.20.0 (9 constraints: d78822f3)
 
 com.palantir.tokens:auth-tokens:4.10.0 (2 constraints: 5315cad9)
 
