@@ -1,0 +1,7 @@
+type: fix
+fix:
+  description: '`StringBuilderConstantParameters` now parenthesizes its suggested
+    fix when the replaced `toString()` call is used as the receiver of a further
+    method or field access, preventing the fix from silently changing behavior.'
+  links:
+  - https://github.com/palantir/baseline-error-prone/pull/341
