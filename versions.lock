@@ -104,7 +104,7 @@ com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.78.0 (1 constrai
 
 com.palantir.gradle.plugintesting:plugin-testing-core:0.78.0 (2 constraints: 1e1f468f)
 
-com.palantir.ri:resource-identifier:2.24.0 (2 constraints: 59155fda)
+com.palantir.ri:resource-identifier:2.25.0 (2 constraints: 5a1591da)
 
 com.palantir.safe-logging:logger:3.20.0 (3 constraints: bf21cad7)
 
