@@ -56,7 +56,7 @@ org.checkerframework:checker-qual:4.2.3 (1 constraints: e0107bb7)
 
 org.checkerframework:dataflow-nullaway:4.2.3 (2 constraints: 3f1131e1)
 
-org.immutables:value:2.12.2 (1 constraints: 3905373b)
+org.immutables:value:2.12.3 (1 constraints: 3a05383b)
 
 org.jspecify:jspecify:1.0.1 (20 constraints: 343f79ce)
 
