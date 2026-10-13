@@ -36,6 +36,7 @@ public abstract class BaselineErrorProneExtension {
             // "CatchSpecificity",
             "CollectionStreamForEach",
             "CompileTimeConstantViolatesLiskovSubstitution",
+            "ConjureToStringOrdering",
             "ConsistentLoggerName",
             "ConsistentOverrides",
             "DeprecatedGuavaObjects",

@@ -123,6 +123,7 @@ checks](https://errorprone.info):
 - `PreferInputStreamTransferTo`: Prefer JDK `InputStream.transferTo(OutputStream)` over utility methods such as `com.google.common.io.ByteStreams.copy(InputStream, OutputStream)`, `org.apache.commons.io.IOUtils.copy(InputStream, OutputStream)`, `org.apache.commons.io.IOUtils.copyLong(InputStream, OutputStream)`.
 - `ConjureEndpointDeprecatedForRemoval`: Conjure endpoints marked with Deprecated and `forRemoval = true` should not be used as they are scheduled to be removed.
 - `ResourceIdentifierGetEqualsUsage`: Use `ResourceIdentifier#has{Instance,Locator,Service,Type}` to avoid allocation when checking RID component equality.
+- `ConjureToStringOrdering`: Conjure-generated types make no guarantees about their `toString()` representation, so comparators should not order them by it. `ResourceIdentifier` and Conjure string and rid aliases are `Comparable`, so they can be ordered directly.
 - `DeprecatedApiUsage` and `DeprecatedForRemovalApiUsage`: Usage of APIs marked as `@Deprecated` or `@Deprecated(forRemoval = true)` is discouraged. These checks replace the build-in compiler checks, that are enabled with the `-Xlint:deprecation` and `-Xlint:removal` (default on) flags, to allow for auto-suppression upon library upgrades that newly deprecate APIs.
 
 ### Programmatic Application
