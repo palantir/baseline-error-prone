@@ -84,7 +84,16 @@ public final class DangerousRecordToStringDoNotLog extends BugChecker implements
             }
             fix = SuggestedFix.replace(method, expectedMethod.stripTrailing());
         } else {
-            fix = SuggestedFixes.addMembers(classTree, state, expectedMethod);
+            // If record does not override toString() and the record components have  @Safe toString() functions,
+            // treat is as a non-match.
+            violators = violators.stream()
+                    .filter(component -> !hasSafeToString(component, state))
+                    .toList();
+            if (violators.isEmpty()) {
+                return Description.NO_MATCH;
+            } else {
+                fix = SuggestedFixes.addMembers(classTree, state, expectedMethod);
+            }
         }
         // Report on classTree so that @SuppressWarnings on the class is recognized by error-prone's
         // suppression mechanism for ClassTreeMatchers. Attach the fix only to the first report so that
@@ -121,5 +130,20 @@ public final class DangerousRecordToStringDoNotLog extends BugChecker implements
                 return "%s[%s]";
             }
             """.formatted(recordName, body);
+    }
+
+    private static boolean hasSafeToString(RecordComponent component, VisitorState state) {
+        if (component.type.isPrimitive()) {
+            return false;
+        }
+
+        return ASTHelpers.matchingMethods(
+                        state.getName("toString"),
+                        method -> !method.isStatic() && method.getParameters().isEmpty(),
+                        component.type,
+                        state.getTypes())
+                .findFirst()
+                .map(method -> SafetyAnnotations.getMethodReturnSafety(method, state) == Safety.SAFE)
+                .orElse(false);
     }
 }
