@@ -28,7 +28,6 @@ import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * This test depends on ./gradlew :baseline-error-prone:publishToMavenLocal
@@ -170,10 +169,8 @@ class BaselineErrorProneIntegrationTest {
         assertThat(result).output().contains("[ArrayEquals] Reference equality used to compare arrays");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"new IllegalStateException(\"Failed\")", "failure()"})
-    void compilejava_fails_when_caught_exception_is_unused(
-            String replacement, GradleInvoker gradle, RootProject project) {
+    @Test
+    void compilejava_fails_when_exception_constructor_discards_cause(GradleInvoker gradle, RootProject project) {
         standardBuildFile(project);
         project.mainSourceSet().java().writeClass("""
             package test;
@@ -182,7 +179,28 @@ class BaselineErrorProneIntegrationTest {
                     try {
                         action.run();
                     } catch (RuntimeException e) {
-                        throw %s;
+                        throw new IllegalStateException("Failed");
+                    }
+                }
+            }
+            """);
+
+        InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
+        assertThat(result).task(":compileJava").failed();
+        assertThat(result).output().contains("error: [UnusedException]");
+    }
+
+    @Test
+    void compilejava_fails_when_exception_factory_discards_cause(GradleInvoker gradle, RootProject project) {
+        standardBuildFile(project);
+        project.mainSourceSet().java().writeClass("""
+            package test;
+            public class Test {
+                void test(Runnable action) {
+                    try {
+                        action.run();
+                    } catch (RuntimeException e) {
+                        throw failure();
                     }
                 }
 
@@ -190,17 +208,15 @@ class BaselineErrorProneIntegrationTest {
                     return new IllegalStateException("Failed");
                 }
             }
-            """, replacement);
+            """);
 
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
         assertThat(result).task(":compileJava").failed();
         assertThat(result).output().contains("error: [UnusedException]");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"new IllegalStateException(\"Failed\", e)", "failure(e)"})
-    void compilejava_succeeds_when_caught_exception_is_preserved(
-            String replacement, GradleInvoker gradle, RootProject project) {
+    @Test
+    void compilejava_succeeds_when_exception_constructor_preserves_cause(GradleInvoker gradle, RootProject project) {
         standardBuildFile(project);
         project.mainSourceSet().java().writeClass("""
             package test;
@@ -209,7 +225,27 @@ class BaselineErrorProneIntegrationTest {
                     try {
                         action.run();
                     } catch (RuntimeException e) {
-                        throw %s;
+                        throw new IllegalStateException("Failed", e);
+                    }
+                }
+            }
+            """);
+
+        InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
+        assertThat(result).task(":compileJava").succeeded();
+    }
+
+    @Test
+    void compilejava_succeeds_when_exception_factory_preserves_cause(GradleInvoker gradle, RootProject project) {
+        standardBuildFile(project);
+        project.mainSourceSet().java().writeClass("""
+            package test;
+            public class Test {
+                void test(Runnable action) {
+                    try {
+                        action.run();
+                    } catch (RuntimeException e) {
+                        throw failure(e);
                     }
                 }
 
@@ -217,7 +253,7 @@ class BaselineErrorProneIntegrationTest {
                     return new IllegalStateException("Failed", cause);
                 }
             }
-            """, replacement);
+            """);
 
         InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
         assertThat(result).task(":compileJava").succeeded();
