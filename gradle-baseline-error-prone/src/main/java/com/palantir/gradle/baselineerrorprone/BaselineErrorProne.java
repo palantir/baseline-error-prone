@@ -291,7 +291,8 @@ public final class BaselineErrorProne implements Plugin<Project> {
                 "JavaDurationGetSecondsGetNano",
                 "URLEqualsHashCode",
                 "BoxedPrimitiveEquality",
-                "ReferenceEquality");
+                "ReferenceEquality",
+                "UnusedException");
         // Relax some checks for test code
         if (errorProneOptions.getCompilingTestOnlyCode().get()) {
             errorProneOptions.disable("UnnecessaryLambda");

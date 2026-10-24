@@ -28,6 +28,7 @@ import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * This test depends on ./gradlew :baseline-error-prone:publishToMavenLocal
@@ -167,6 +168,59 @@ class BaselineErrorProneIntegrationTest {
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
         assertThat(result).task(":compileJava").failed();
         assertThat(result).output().contains("[ArrayEquals] Reference equality used to compare arrays");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"new IllegalStateException(\"Failed\")", "failure()"})
+    void compilejava_fails_when_caught_exception_is_unused(
+            String replacement, GradleInvoker gradle, RootProject project) {
+        standardBuildFile(project);
+        project.mainSourceSet().java().writeClass("""
+            package test;
+            public class Test {
+                void test(Runnable action) {
+                    try {
+                        action.run();
+                    } catch (RuntimeException e) {
+                        throw %s;
+                    }
+                }
+
+                static IllegalStateException failure() {
+                    return new IllegalStateException("Failed");
+                }
+            }
+            """, replacement);
+
+        InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
+        assertThat(result).task(":compileJava").failed();
+        assertThat(result).output().contains("error: [UnusedException]");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"new IllegalStateException(\"Failed\", e)", "failure(e)"})
+    void compilejava_succeeds_when_caught_exception_is_preserved(
+            String replacement, GradleInvoker gradle, RootProject project) {
+        standardBuildFile(project);
+        project.mainSourceSet().java().writeClass("""
+            package test;
+            public class Test {
+                void test(Runnable action) {
+                    try {
+                        action.run();
+                    } catch (RuntimeException e) {
+                        throw %s;
+                    }
+                }
+
+                static IllegalStateException failure(Throwable cause) {
+                    return new IllegalStateException("Failed", cause);
+                }
+            }
+            """, replacement);
+
+        InvocationResult result = gradle.withArgs("compileJava").buildsSuccessfully();
+        assertThat(result).task(":compileJava").succeeded();
     }
 
     @Test
