@@ -88,7 +88,7 @@ com.google.truth:truth:1.4.5 (2 constraints: 7726656a)
 
 com.netflix.nebula:nebula-test:12.1.0 (2 constraints: cb1d802c)
 
-com.palantir.conjure.java:conjure-lib:8.95.0 (1 constraints: 4805823b)
+com.palantir.conjure.java:conjure-lib:8.96.0 (1 constraints: 4905853b)
 
 com.palantir.conjure.java.api:errors:2.81.0 (2 constraints: 712140b1)
 
