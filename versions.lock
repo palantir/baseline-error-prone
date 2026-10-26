@@ -88,7 +88,7 @@ com.google.truth:truth:1.4.5 (2 constraints: 7726656a)
 
 com.netflix.nebula:nebula-test:12.1.0 (2 constraints: cb1d802c)
 
-com.palantir.conjure.java:conjure-lib:8.96.0 (1 constraints: 4905853b)
+com.palantir.conjure.java:conjure-lib:8.97.0 (1 constraints: 4a05883b)
 
 com.palantir.conjure.java.api:errors:2.81.0 (2 constraints: 712140b1)
 
@@ -112,11 +112,11 @@ com.palantir.safe-logging:logger-slf4j:3.21.0 (1 constraints: 310e8e50)
 
 com.palantir.safe-logging:logger-spi:3.21.0 (2 constraints: 711e42b0)
 
-com.palantir.safe-logging:preconditions:3.21.0 (8 constraints: 4a760e7d)
+com.palantir.safe-logging:preconditions:3.21.0 (8 constraints: 4b76277e)
 
 com.palantir.safe-logging:preconditions-assertj:3.21.0 (1 constraints: 38053c3b)
 
-com.palantir.safe-logging:safe-logging:3.21.0 (9 constraints: cc8885ed)
+com.palantir.safe-logging:safe-logging:3.21.0 (9 constraints: cd88d4ee)
 
 com.palantir.tokens:auth-tokens:4.12.0 (2 constraints: 571534da)
 
