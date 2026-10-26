@@ -283,6 +283,11 @@ public final class BaselineErrorProne implements Plugin<Project> {
                 "WildcardImport",
                 "YodaCondition");
 
+        errorProneOptions.enable(
+                // Disabled by default in error-prone
+                // https://github.com/google/error-prone/blob/f659ef2f2d1a5c01d2145dba06be33417145fd69/core/src/main/java/com/google/errorprone/scanner/BuiltInCheckerSuppliers.java#L1376
+                "UnusedException");
+
         errorProneOptions.error(
                 "EqualsHashCode",
                 "EqualsIncompatibleType",
