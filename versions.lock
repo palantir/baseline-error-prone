@@ -72,11 +72,11 @@ cglib:cglib-nodep:3.2.2 (1 constraints: 490ded24)
 
 com.fasterxml.jackson.core:jackson-annotations:2.22 (5 constraints: 98431807)
 
-com.fasterxml.jackson.core:jackson-core:2.22.3 (3 constraints: 2a3a4275)
+com.fasterxml.jackson.core:jackson-core:2.22.4 (3 constraints: 2c3ae375)
 
-com.fasterxml.jackson.core:jackson-databind:2.22.3 (4 constraints: 74456e14)
+com.fasterxml.jackson.core:jackson-databind:2.22.4 (4 constraints: 7545f514)
 
-com.fasterxml.jackson.module:jackson-module-afterburner:2.22.3 (1 constraints: 3b053c3b)
+com.fasterxml.jackson.module:jackson-module-afterburner:2.22.4 (1 constraints: 3c053d3b)
 
 com.google.errorprone:error_prone_test_helpers:2.50.0 (1 constraints: 4105563b)
 
