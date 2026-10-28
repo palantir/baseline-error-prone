@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
+// Portions adapted from
+// https://github.com/google/error-prone/blob/d802cff975/core/src/main/java/com/google/errorprone/bugpatterns/AbstractAsKeyOfSetOrMap.java
+// Copyright 2018 The Error Prone Authors.
+
 package com.palantir.baseline.errorprone;
 
 import com.google.errorprone.VisitorState;
-import com.google.errorprone.bugpatterns.AbstractAsKeyOfSetOrMap;
+import com.google.errorprone.bugpatterns.BugChecker;
+import com.google.errorprone.bugpatterns.BugChecker.MethodInvocationTreeMatcher;
+import com.google.errorprone.bugpatterns.BugChecker.NewClassTreeMatcher;
 import com.google.errorprone.matchers.Description;
 import com.google.errorprone.matchers.Matcher;
 import com.google.errorprone.matchers.Matchers;
@@ -26,14 +32,62 @@ import com.google.errorprone.suppliers.Supplier;
 import com.google.errorprone.util.ASTHelpers;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Tree;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
 import java.util.List;
 import java.util.function.IntPredicate;
 
-/** Extension atop {@link AbstractAsKeyOfSetOrMap} to apply to caches and collectors. */
-abstract class MoreAbstractAsKeyOfSetOrMap extends AbstractAsKeyOfSetOrMap {
+/** Checks for bad key types in hash-based sets, maps, caches and collectors. */
+abstract class MoreAbstractAsKeyOfSetOrMap extends BugChecker
+        implements MethodInvocationTreeMatcher, NewClassTreeMatcher {
+
+    private static final Matcher<ExpressionTree> CONSTRUCTS_SET = Matchers.anyOf(
+            MethodMatchers.staticMethod()
+                    .onClass("com.google.common.collect.Sets")
+                    .named("newHashSet"),
+            Matchers.constructor().forClass("java.util.HashSet"));
+
+    private static final Matcher<ExpressionTree> CONSTRUCTS_MULTISET = Matchers.anyOf(
+            MethodMatchers.staticMethod()
+                    .onClass("com.google.common.collect.HashMultiset")
+                    .named("create")
+                    .withNoParameters(),
+            MethodMatchers.staticMethod()
+                    .onClass("com.google.common.collect.LinkedHashMultiset")
+                    .named("create"));
+
+    private static final Matcher<ExpressionTree> CONSTRUCTS_MAP = Matchers.anyOf(
+            MethodMatchers.staticMethod()
+                    .onClass("com.google.common.collect.Maps")
+                    .named("newHashMap"),
+            Matchers.constructor().forClass("java.util.HashMap"),
+            MethodMatchers.staticMethod()
+                    .onClass("com.google.common.collect.Maps")
+                    .named("newLinkedHashMap"),
+            Matchers.constructor().forClass("java.util.LinkedHashMap"),
+            Matchers.constructor().forClass("java.util.concurrent.ConcurrentHashMap"),
+            MethodMatchers.staticMethod()
+                    .onClass("com.google.common.collect.HashBiMap")
+                    .named("create"));
+
+    private static final Matcher<ExpressionTree> CONSTRUCTS_MULTIMAP = Matchers.anyOf(
+            MethodMatchers.staticMethod()
+                    .onClass("com.google.common.collect.HashMultimap")
+                    .named("create"),
+            MethodMatchers.staticMethod()
+                    .onClass("com.google.common.collect.LinkedHashMultimap")
+                    .named("create"),
+            MethodMatchers.staticMethod()
+                    .onClass("com.google.common.collect.ArrayListMultimap")
+                    .named("create"),
+            MethodMatchers.staticMethod()
+                    .onClass("com.google.common.collect.LinkedListMultimap")
+                    .named("create"));
+
+    private static final Matcher<ExpressionTree> CONSTRUCTS_SET_OR_MAP =
+            Matchers.anyOf(CONSTRUCTS_SET, CONSTRUCTS_MAP, CONSTRUCTS_MULTIMAP, CONSTRUCTS_MULTISET);
 
     private static final Matcher<ExpressionTree> GUAVA_CACHE_BUILDER = MethodMatchers.instanceMethod()
             .onDescendantOf("com.google.common.cache.CacheBuilder")
@@ -135,11 +189,7 @@ abstract class MoreAbstractAsKeyOfSetOrMap extends AbstractAsKeyOfSetOrMap {
 
     @Override
     public final Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
-        Description superResult = super.matchMethodInvocation(tree, state);
-        if (!Description.NO_MATCH.equals(superResult)) {
-            return superResult;
-        }
-        if (HASH_KEYED_METHODS.matches(tree, state)) {
+        if (CONSTRUCTS_SET_OR_MAP.matches(tree, state) || HASH_KEYED_METHODS.matches(tree, state)) {
             return checkType(tree, ASTHelpers.getResultType(tree), state);
         }
         if (HASH_KEYED_COLLECTOR_METHODS.matches(tree, state)) {
@@ -166,6 +216,16 @@ abstract class MoreAbstractAsKeyOfSetOrMap extends AbstractAsKeyOfSetOrMap {
 
         return Description.NO_MATCH;
     }
+
+    @Override
+    public final Description matchNewClass(NewClassTree tree, VisitorState state) {
+        if (CONSTRUCTS_SET_OR_MAP.matches(tree, state)) {
+            return checkType(tree, ASTHelpers.getResultType(tree), state);
+        }
+        return Description.NO_MATCH;
+    }
+
+    protected abstract boolean isBadType(Type type, VisitorState state);
 
     private Description checkType(Tree tree, Type type, VisitorState state) {
         List<Type> typeArguments = type.getTypeArguments();
