@@ -26,19 +26,31 @@ import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.ReturnTree;
 import com.sun.source.util.TreePath;
-import com.sun.source.util.TreeScanner;
+import com.sun.source.util.TreePathScanner;
+import javax.annotation.Nullable;
 import org.checkerframework.errorprone.javacutil.TreePathUtil;
 
 /**
  * Scans return statements within a method and computes the combined {@link Safety} of all returned expressions.
  * Stops at scope boundaries (nested classes, lambdas) to avoid analyzing returns from inner scopes.
  */
-final class ReturnStatementSafetyScanner extends TreeScanner<Safety, VisitorState> {
+final class ReturnStatementSafetyScanner extends TreePathScanner<Safety, VisitorState> {
 
     private final MethodTree target;
 
-    ReturnStatementSafetyScanner(MethodTree target) {
+    private ReturnStatementSafetyScanner(MethodTree target) {
         this.target = target;
+    }
+
+    /**
+     * Returns the combined safety of all values returned by the method at {@code methodPath}, or {@code null} if
+     * the method returns no values. Return paths are built from {@code methodPath} rather than searched for from
+     * the compilation unit, which is both cheaper and allows the method's dataflow analysis to be reused.
+     */
+    @Nullable
+    static Safety combinedReturnSafety(TreePath methodPath, VisitorState state) {
+        MethodTree method = (MethodTree) methodPath.getLeaf();
+        return new ReturnStatementSafetyScanner(method).scan(methodPath, state);
     }
 
     @Override
@@ -48,7 +60,7 @@ final class ReturnStatementSafetyScanner extends TreeScanner<Safety, VisitorStat
             return null;
         }
         // Validate that the discovered ReturnTree is from the same scope as the 'target' method.
-        TreePath path = TreePath.getPath(visitorState.getPath().getCompilationUnit(), expression);
+        TreePath path = new TreePath(getCurrentPath(), expression);
         if (target.equals(TreePathUtil.enclosingMethodOrLambda(path))) {
             return SafetyAnalysis.of(visitorState.withPath(path));
         } else {
