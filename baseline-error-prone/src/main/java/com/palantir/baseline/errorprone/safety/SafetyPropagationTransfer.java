@@ -958,7 +958,7 @@ public final class SafetyPropagationTransfer implements ForwardTransferFunction<
         }
         try {
             UnderlyingAST ast = createAst(enclosingPath);
-            ControlFlowGraph cfg = CFGBuilder.build(state.getPath().getCompilationUnit(), ast, false, false, javacEnv);
+            ControlFlowGraph cfg = SafetyAnalysis.buildCfg(enclosingPath, ast, javacEnv);
             Analysis<Safety, AccessPathStore<Safety>, SafetyPropagationTransfer> analysis =
                     new ForwardAnalysisImpl<>(this);
             analysis.performAnalysis(cfg);

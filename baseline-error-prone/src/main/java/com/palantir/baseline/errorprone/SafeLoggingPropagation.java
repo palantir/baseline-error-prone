@@ -312,7 +312,7 @@ public final class SafeLoggingPropagation extends BugChecker
         if (TestCheckUtils.isTestCode(state)) {
             return Description.NO_MATCH;
         }
-        Safety combinedReturnSafety = method.accept(new ReturnStatementSafetyScanner(method), state);
+        Safety combinedReturnSafety = ReturnStatementSafetyScanner.combinedReturnSafety(state.getPath(), state);
         if (combinedReturnSafety == null) {
             return Description.NO_MATCH;
         }

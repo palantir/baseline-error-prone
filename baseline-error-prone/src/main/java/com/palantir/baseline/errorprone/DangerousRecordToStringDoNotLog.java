@@ -28,6 +28,7 @@ import com.palantir.baseline.errorprone.safety.Safety;
 import com.palantir.baseline.errorprone.safety.SafetyAnnotations;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.MethodTree;
+import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.RecordComponent;
 import java.util.List;
@@ -74,7 +75,8 @@ public final class DangerousRecordToStringDoNotLog extends BugChecker implements
         SuggestedFix fix;
         if (existingToString.isPresent()) {
             MethodTree method = existingToString.get();
-            Safety returnSafety = method.accept(new ReturnStatementSafetyScanner(method), state);
+            Safety returnSafety =
+                    ReturnStatementSafetyScanner.combinedReturnSafety(new TreePath(state.getPath(), method), state);
             // Only flag when the return value is definitively DO_NOT_LOG. UNKNOWN (e.g. a call to an unannotated
             // helper like `return render(secret)`) is treated as a non-match, accepting a false-negative risk in
             // exchange for not flagging legitimate custom toString() implementations the safety analysis

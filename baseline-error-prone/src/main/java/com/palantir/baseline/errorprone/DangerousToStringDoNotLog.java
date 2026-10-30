@@ -66,7 +66,7 @@ public final class DangerousToStringDoNotLog extends BugChecker implements BugCh
                             + " from toString() instead of annotating the method.")
                     .build();
         }
-        Safety combinedReturnSafety = method.accept(new ReturnStatementSafetyScanner(method), state);
+        Safety combinedReturnSafety = ReturnStatementSafetyScanner.combinedReturnSafety(state.getPath(), state);
         if (combinedReturnSafety == Safety.DO_NOT_LOG) {
             return buildDescription(method).build();
         }
