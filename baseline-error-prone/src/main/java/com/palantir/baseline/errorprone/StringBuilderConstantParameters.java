@@ -36,6 +36,7 @@ import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.NewClassTree;
+import com.sun.source.tree.Tree;
 import com.sun.source.util.SimpleTreeVisitor;
 import com.sun.tools.javac.code.Type;
 import java.util.ArrayList;
@@ -92,16 +93,22 @@ public final class StringBuilderConstantParameters extends BugChecker
                 .map(ignored -> Stream.<String>empty())
                 .orElseGet(() -> Stream.of("\"\""));
 
+        String replacement = Streams.concat(
+                        prefixStream, arguments.stream().map(node -> getArgumentSourceString(state, node)))
+                .collect(Collectors.joining(" + "));
+        // If the toString() invocation being replaced is itself the receiver of another method
+        // invocation or field access (e.g. 'new StringBuilder(...).append(...).toString().toLowerCase()'),
+        // the concatenation must be parenthesized to bind correctly, otherwise only the final term would
+        // be part of the receiver: 'foo + "_" + bar.toLowerCase()' instead of '(foo + "_" + bar).toLowerCase()'.
+        Tree parent = state.getPath().getParentPath().getLeaf();
+        if (parent instanceof MemberSelectTree memberSelectTree
+                && memberSelectTree.getExpression().equals(tree)) {
+            replacement = '(' + replacement + ')';
+        }
+
         return buildDescription(tree)
                 .setMessage(MESSAGE)
-                .addFix(SuggestedFix.builder()
-                        .replace(
-                                tree,
-                                Streams.concat(
-                                                prefixStream,
-                                                arguments.stream().map(node -> getArgumentSourceString(state, node)))
-                                        .collect(Collectors.joining(" + ")))
-                        .build())
+                .addFix(SuggestedFix.builder().replace(tree, replacement).build())
                 .build();
     }
 
