@@ -76,6 +76,18 @@ class VarUsageTest {
                 .doTest();
     }
 
+    @Test
+    void testImplicitlyTypedLambdaParameter() {
+        fix().addInputLines(
+                        "Test.java",
+                        "import java.util.function.Predicate;",
+                        "class Test {",
+                        "  static final Predicate<String> ALWAYS = value -> true;",
+                        "}")
+                .expectUnchanged()
+                .doTest();
+    }
+
     private RefactoringValidator fix() {
         return RefactoringValidator.of(VarUsage.class, getClass());
     }
