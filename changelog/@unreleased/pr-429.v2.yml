@@ -1,0 +1,6 @@
+type: fix
+fix:
+  description: '`VarUsage` no longer crashes on implicitly typed lambda parameters on
+    JDK 27, and flags `var` declarations there again.'
+  links:
+  - https://github.com/palantir/baseline-error-prone/pull/429
