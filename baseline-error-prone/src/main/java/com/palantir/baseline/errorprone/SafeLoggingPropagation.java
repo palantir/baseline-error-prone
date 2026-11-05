@@ -44,6 +44,7 @@ import com.sun.tools.javac.code.Symbol.RecordComponent;
 import com.sun.tools.javac.code.Symbol.TypeSymbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.util.Name;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Modifier;
 
 @AutoService(BugChecker.class)
@@ -126,8 +127,10 @@ public final class SafeLoggingPropagation extends BugChecker
         return false;
     }
 
+    @SuppressWarnings("for-rollout:deprecation")
     private static boolean immutablesDefaultAsDefault(Attribute.Compound styleAnnotation) {
-        return MoreAnnotations.getValue(styleAnnotation, "defaultAsDefault")
+        return MoreAnnotations.getValue((AnnotationMirror) styleAnnotation, "defaultAsDefault")
+                .map(Attribute.class::cast)
                 .map(attr -> (boolean) attr.getValue())
                 .orElse(false);
     }

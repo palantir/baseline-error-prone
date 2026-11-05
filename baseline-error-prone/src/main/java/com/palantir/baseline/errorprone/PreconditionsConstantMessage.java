@@ -47,6 +47,7 @@ public final class PreconditionsConstantMessage extends BugChecker implements Bu
     private final Matcher<ExpressionTree> compileTimeConstExpressionMatcher =
             new CompileTimeConstantExpressionMatcher();
 
+    @SuppressWarnings("for-rollout:OrphanedFormatString")
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
         if (!PRECONDITIONS_METHOD.matches(tree, state)) {
