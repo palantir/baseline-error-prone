@@ -119,4 +119,35 @@ public final class DangerousRecordArrayFieldTest {
                         "}")
                 .doTest();
     }
+
+    @Test
+    public void testStaticArrayFieldInRecord() {
+        compilationHelper
+                .addSourceLines(
+                        "Test.java",
+                        "import java.util.*;",
+                        "import java.util.regex.Pattern;",
+                        "class Test {",
+                        "    private record MyRecord(String name) {",
+                        "        public static byte[] STATIC_PAYLOAD = new byte[0];",
+                        "    }",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    public void testStaticAndNonStaticArrayFieldInRecord() {
+        compilationHelper
+                .addSourceLines(
+                        "Test.java",
+                        "import java.util.*;",
+                        "import java.util.regex.Pattern;",
+                        "class Test {",
+                        "    // BUG: Diagnostic contains: Record type has an array field and",
+                        "    private record MyRecord(String name, byte[] payload) {",
+                        "        public static byte[] STATIC_PAYLOAD = new byte[0];",
+                        "    }",
+                        "}")
+                .doTest();
+    }
 }
