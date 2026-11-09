@@ -118,6 +118,7 @@ public final class BaselineErrorProne implements Plugin<Project> {
                 // We often use javadoc comments without javadoc parameter information.
                 "NotJavadoc",
                 "PreferImmutableStreamExCollections",
+                "RefactorSwitch",
                 "UnnecessaryTestMethodPrefix",
                 "UnusedVariable",
                 // Low-value fix, and mock-style tests are generally bad anyway
