@@ -301,6 +301,9 @@ public final class BaselineErrorProne implements Plugin<Project> {
         if (errorProneOptions.getCompilingTestOnlyCode().get()) {
             errorProneOptions.disable("UnnecessaryLambda");
         }
+
+        // This performs gratuitous refactors that are not objective improvements.
+        errorProneOptions.option("RefactorSwitch:EnableSimplifySwitch", false);
     }
 
     private static final class DisableXlintRemoval implements CommandLineArgumentProvider {
