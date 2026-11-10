@@ -72,7 +72,6 @@ public final class PreferUncheckedIoException extends BugChecker implements NewC
         return Description.NO_MATCH;
     }
 
-    @SuppressWarnings("for-rollout:RefactorSwitch")
     private static boolean matchesArguments(NewClassTree tree, VisitorState state) {
         return switch (tree.getArguments().size()) {
             case 0 -> {
