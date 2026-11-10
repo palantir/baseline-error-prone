@@ -127,7 +127,6 @@ public final class SafeLoggingPropagation extends BugChecker
         return false;
     }
 
-    @SuppressWarnings("for-rollout:deprecation")
     private static boolean immutablesDefaultAsDefault(Attribute.Compound styleAnnotation) {
         return MoreAnnotations.getValue((AnnotationMirror) styleAnnotation, "defaultAsDefault")
                 .map(Attribute.class::cast)
