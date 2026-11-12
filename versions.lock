@@ -148,7 +148,7 @@ junit:junit:4.13.2 (5 constraints: f24bad6a)
 
 net.bytebuddy:byte-buddy:1.18.3 (2 constraints: 9c16b43e)
 
-org.apache.commons:commons-lang3:3.21.0 (1 constraints: 38053c3b)
+org.apache.commons:commons-lang3:3.22.0 (1 constraints: 39053f3b)
 
 org.apiguardian:apiguardian-api:1.1.2 (7 constraints: 677be455)
 
