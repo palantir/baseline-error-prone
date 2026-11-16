@@ -34,11 +34,11 @@ com.google.j2objc:j2objc-annotations:3.1 (1 constraints: b809f1a0)
 
 com.google.protobuf:protobuf-java:4.36.2 (1 constraints: 2c116ac9)
 
-com.palantir.gradle.utils:environment-variables:0.31.0 (2 constraints: b635f7e8)
+com.palantir.gradle.utils:environment-variables:0.31.0 (2 constraints: b735fae8)
 
-com.palantir.suppressible-error-prone:artifact-transforms:2.35.0 (1 constraints: 301d57d8)
+com.palantir.suppressible-error-prone:artifact-transforms:2.36.0 (1 constraints: 311d5ad8)
 
-com.palantir.suppressible-error-prone:gradle-suppressible-error-prone:2.35.0 (1 constraints: 3c05463b)
+com.palantir.suppressible-error-prone:gradle-suppressible-error-prone:2.36.0 (1 constraints: 3d05493b)
 
 com.uber.nullaway:nullaway:0.14.3 (1 constraints: 3a05323b)
 
@@ -48,7 +48,7 @@ io.github.java-diff-utils:java-diff-utils:4.18 (1 constraints: ba12cf08)
 
 javax.inject:javax.inject:1 (2 constraints: 51221d52)
 
-net.ltgt.gradle:gradle-errorprone-plugin:5.2.0 (2 constraints: 0522bd79)
+net.ltgt.gradle:gradle-errorprone-plugin:5.2.0 (2 constraints: 0522bf79)
 
 one.util:streamex:0.9.0 (2 constraints: 0922537a)
 
