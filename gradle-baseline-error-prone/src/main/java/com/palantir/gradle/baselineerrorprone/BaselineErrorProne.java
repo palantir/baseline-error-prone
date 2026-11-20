@@ -105,7 +105,6 @@ public final class BaselineErrorProne implements Plugin<Project> {
 
         errorProneOptions.disable(
                 "AutoCloseableMustBeClosed",
-                "CatchSpecificity",
                 "CanIgnoreReturnValueSuggester",
                 // https://github.com/google/error-prone/issues/4544
                 "DistinctVarargsChecker",
