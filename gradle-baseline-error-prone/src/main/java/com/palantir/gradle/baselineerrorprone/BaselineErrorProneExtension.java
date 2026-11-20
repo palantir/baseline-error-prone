@@ -32,8 +32,6 @@ public abstract class BaselineErrorProneExtension {
             "AvoidNewHashMapInt",
             "BugCheckerAutoService",
             "CatchBlockLogException",
-            // TODO(ckozak): re-enable pending scala check
-            // "CatchSpecificity",
             "CollectionStreamForEach",
             "CompileTimeConstantViolatesLiskovSubstitution",
             "ConsistentLoggerName",
@@ -79,8 +77,7 @@ public abstract class BaselineErrorProneExtension {
             "ThrowError",
             "UnnecessarilyQualified",
             "UnnecessaryLambdaArgumentParentheses",
-            // TODO(ckozak): re-enable pending scala check
-            // "ThrowSpecificity",
+            "ThrowSpecificity",
             "UnsafeGaugeRegistration",
             "VarUsage",
             "ZeroWarmupRateLimiter",
