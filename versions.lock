@@ -128,9 +128,9 @@ com.palantir.safe-logging:safe-logging:3.21.0 (9 constraints: cf88f8ef)
 
 com.palantir.tokens:auth-tokens:4.14.0 (2 constraints: 5a159bda)
 
-com.palantir.tritium:tritium-ids:0.143.0 (1 constraints: fe0f9aa6)
+com.palantir.tritium:tritium-ids:0.144.0 (1 constraints: fe0f9aa6)
 
-com.palantir.tritium:tritium-registry:0.143.0 (1 constraints: 6a05a140)
+com.palantir.tritium:tritium-registry:0.144.0 (1 constraints: 6b05a440)
 
 commons-io:commons-io:2.22.0 (2 constraints: 0c1f938c)
 
@@ -192,6 +192,6 @@ org.opentest4j:opentest4j:1.3.0 (2 constraints: cf209249)
 
 org.reactivestreams:reactive-streams:1.0.3 (1 constraints: ef07e77b)
 
-org.slf4j:slf4j-api:2.0.17 (5 constraints: 9d437d5b)
+org.slf4j:slf4j-api:2.0.19 (5 constraints: 9f43d75b)
 
 org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:4.1.0 (1 constraints: 07050236)
