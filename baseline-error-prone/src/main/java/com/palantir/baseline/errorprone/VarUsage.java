@@ -45,9 +45,11 @@ public final class VarUsage extends BugChecker implements BugChecker.VariableTre
     public Description matchVariable(VariableTree tree, VisitorState state) {
         Tree typeTree = tree.getType();
         // The AST doesn't differentiate between 'var' and a concrete type, so we check the source
-        // prior to tokenizing the variable tree.
-        String sourceType = state.getSourceForNode(typeTree);
-        if (sourceType != null) {
+        // prior to tokenizing the variable tree. JDK 25 javac gives 'var' a synthetic type tree with no
+        // source; JDK 27 javac gives it the keyword's own position, and gives an implicitly typed lambda
+        // parameter no type tree at all (google/error-prone#6165).
+        String sourceType = typeTree == null ? null : state.getSourceForNode(typeTree);
+        if (sourceType != null && !sourceType.equals("var")) {
             return Description.NO_MATCH;
         }
         TreePath parentPath = state.getPath().getParentPath();
