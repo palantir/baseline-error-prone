@@ -2258,6 +2258,105 @@ class IllegalSafeLoggingArgumentTest {
                 .doTest();
     }
 
+    @Test
+    public void testUnsafeArgumentInFieldInitializer() {
+        helper().addSourceLines(
+                        "Test.java",
+                        "import com.palantir.logsafe.*;",
+                        "class Test {",
+                        "  @Unsafe static Object unsafeMethod() { return null; }",
+                        "  // BUG: Diagnostic contains: Dangerous argument value: arg is 'UNSAFE'",
+                        "  private final Object field = fun(unsafeMethod());",
+                        "  private static Object fun(@Safe Object obj) { return obj; }",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    public void testUnsafeArgumentInStaticInitializerBlock() {
+        helper().addSourceLines(
+                        "Test.java",
+                        "import com.palantir.logsafe.*;",
+                        "class Test {",
+                        "  @Unsafe static Object unsafeMethod() { return null; }",
+                        "  static {",
+                        "    // BUG: Diagnostic contains: Dangerous argument value: arg is 'UNSAFE'",
+                        "    fun(unsafeMethod());",
+                        "  }",
+                        "  private static void fun(@Safe Object obj) {}",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    public void testUnsafeArgumentInLambdaFieldInitializer() {
+        helper().addSourceLines(
+                        "Test.java",
+                        "import com.palantir.logsafe.*;",
+                        "class Test {",
+                        "  @Unsafe static Object unsafeMethod() { return null; }",
+                        "  // BUG: Diagnostic contains: Dangerous argument value: arg is 'UNSAFE'",
+                        "  private final Runnable field = () -> fun(unsafeMethod());",
+                        "  private static void fun(@Safe Object obj) {}",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    public void testUnsafeArgumentAfterManyLambdas() {
+        // Each lambda is analyzed separately. There are more lambdas than SafetyAnalysis retains, so the
+        // analysis of 'f' is evicted and must be recomputed for the final call.
+        helper().addSourceLines(
+                        "Test.java",
+                        "import com.palantir.logsafe.*;",
+                        "class Test {",
+                        "  @Unsafe static Object unsafeMethod() { return null; }",
+                        "  @Safe static Object safeMethod() { return null; }",
+                        "  void f() {",
+                        "    // BUG: Diagnostic contains: Dangerous argument value: arg is 'UNSAFE'",
+                        "    fun(unsafeMethod());",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    run(() -> fun(safeMethod()));",
+                        "    // BUG: Diagnostic contains: Dangerous argument value: arg is 'UNSAFE'",
+                        "    fun(unsafeMethod());",
+                        "  }",
+                        "  private static void run(Runnable runnable) {}",
+                        "  private static void fun(@Safe Object obj) {}",
+                        "}")
+                .doTest();
+    }
+
     private CompilationTestHelper helper() {
         return CompilationTestHelper.newInstance(IllegalSafeLoggingArgument.class, getClass());
     }
