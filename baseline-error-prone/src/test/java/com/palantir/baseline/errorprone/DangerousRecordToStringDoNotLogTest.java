@@ -334,6 +334,114 @@ class DangerousRecordToStringDoNotLogTest {
                 .doTest();
     }
 
+    @Test
+    void allows_record_with_do_not_log_component_with_safe_to_string() {
+        helper().addSourceLines(
+                        "Secret.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        @DoNotLog
+                        public interface Secret {
+                          String value();
+                        }
+                        """)
+                .addSourceLines(
+                        "SecretImpl.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.Safe;
+                        public record SecretImpl(String value) implements Secret {
+                          @Override
+                          @Safe
+                          public String toString() {
+                            return "<redacted>";
+                          }
+                        }
+                        """)
+                .addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        public record Test(String name, SecretImpl secret) {}
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void allows_record_with_component_with_inherited_safe_to_string_annotation() {
+        helper().addSourceLines(
+                        "Secret.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        @DoNotLog
+                        public interface Secret {
+                          String value();
+
+                          @Override
+                          @Safe
+                          String toString();
+                        }
+                        """)
+                .addSourceLines(
+                        "SecretImpl.java",
+                        // language=Java
+                        """
+                        public record SecretImpl(String value) implements Secret {
+                          @Override
+                          public String toString() {
+                            return "<redacted>";
+                          }
+                        }
+                        """)
+                .addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        public record Test(String name, SecretImpl secret) {}
+                        """)
+                .expectNoDiagnostics()
+                .doTest();
+    }
+
+    @Test
+    void flags_custom_to_string_leaking_component_with_safe_to_string() {
+        helper().addSourceLines(
+                        "Secret.java",
+                        // language=Java
+                        """
+                        import com.palantir.logsafe.*;
+                        @DoNotLog
+                        public final class Secret {
+                          @DoNotLog
+                          public String value() {
+                            return "secret";
+                          }
+
+                          @Override
+                          @Safe
+                          public String toString() {
+                            return "<redacted>";
+                          }
+                        }
+                        """)
+                .addSourceLines(
+                        "Test.java",
+                        // language=Java
+                        """
+                        // BUG: Diagnostic contains: Record component 'secret' is @DoNotLog
+                        public record Test(Secret secret) {
+                          @Override
+                          public String toString() {
+                            return secret.value();
+                          }
+                        }
+                        """)
+                .doTest();
+    }
+
     private CompilationTestHelper helper() {
         return CompilationTestHelper.newInstance(DangerousRecordToStringDoNotLog.class, getClass());
     }
