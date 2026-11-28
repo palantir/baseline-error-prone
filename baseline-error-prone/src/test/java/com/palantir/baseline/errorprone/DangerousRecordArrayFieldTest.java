@@ -119,4 +119,48 @@ public final class DangerousRecordArrayFieldTest {
                         "}")
                 .doTest();
     }
+
+    @Test
+    public void testStaticArrayField_shouldNotFlag() {
+        compilationHelper
+                .addSourceLines(
+                        "Test.java",
+                        "import java.util.*;",
+                        "class Test {",
+                        "    private record MyRecord(String name, int value) {",
+                        "        private static final byte[] STATIC_ARRAY = new byte[10];",
+                        "    }",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    public void testStaticArrayField_withInstanceArrayField_shouldFlag() {
+        compilationHelper
+                .addSourceLines(
+                        "Test.java",
+                        "import java.util.*;",
+                        "class Test {",
+                        "    // BUG: Diagnostic contains: Record type has an array field and",
+                        "    private record MyRecord(String name, byte[] payload) {",
+                        "        private static final byte[] STATIC_ARRAY = new byte[10];",
+                        "    }",
+                        "}")
+                .doTest();
+    }
+
+    @Test
+    public void testOnlyStaticArrayFields_shouldNotFlag() {
+        compilationHelper
+                .addSourceLines(
+                        "Test.java",
+                        "import java.util.*;",
+                        "class Test {",
+                        "    private record MyRecord(String name, int value) {",
+                        "        private static final byte[] CONSTANTS = {1, 2, 3};",
+                        "        private static byte[] mutableStatic = new byte[5];",
+                        "    }",
+                        "}")
+                .doTest();
+    }
 }
