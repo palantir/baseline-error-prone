@@ -104,6 +104,8 @@ checks](https://errorprone.info):
 - `LogsafeArgName`: Prevent certain named arguments as being logged as safe. Specify unsafe argument names using `LogsafeArgName:UnsafeArgNames` errorProne flag.
 - `ImplicitPublicBuilderConstructor`: Prevent builders from unintentionally leaking public constructors.
 - `ImmutablesBuilderMissingInitialization`: Prevent building Immutables.org builders when not all fields have been populated.
+- `ImmutablesDefaultLostOnDeserialization`: Immutables `@Value.Default` values which return a subtype (or a customised builder instance) of the declared type are silently replaced by the declared type's defaults whenever the property is present in deserialized input.
+- `ImmutablesDefaultOverrideMissingAnnotation`: Overrides of Immutables `@Value.Default` accessors must also be annotated `@Value.Default`, otherwise the attribute can no longer be set through the builder or deserialized.
 - `UnnecessarilyQualified`: Types should not be qualified if they are also imported.
 - `DeprecatedGuavaObjects`: `com.google.common.base.Objects` has been obviated by `java.util.Objects`.
 - `JavaTimeSystemDefaultTimeZone`: Avoid using the system default time zone.
